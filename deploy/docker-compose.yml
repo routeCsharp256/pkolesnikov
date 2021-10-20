@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:80"
     depends_on: 
-      - stock-api	  
+      - stock-api
       - emailing-service
       - supply-service
       - employees-service
