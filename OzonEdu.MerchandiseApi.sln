@@ -8,7 +8,6 @@ ProjectSection(SolutionItems) = preProject
 	Dockerfile = Dockerfile
 	.dockerignore = .dockerignore
 	.editorconfig = .editorconfig
-	docker-compose.yml = docker-compose.yml
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{655397D1-F301-4EF4-B437-C6442DD3629D}"
