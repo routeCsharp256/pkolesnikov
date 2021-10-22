@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\OzonEdu.MerchandiseApi", "src\OzonEdu.MerchandiseApi\OzonEdu.MerchandiseApi.csproj", "{5482868A-E0F5-4C2E-B263-99AAA4798F59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{E5470515-C733-4E8A-A044-C71DF9025F90}"
+ProjectSection(SolutionItems) = preProject
+	README.md = README.md
+	Dockerfile = Dockerfile
+	.dockerignore = .dockerignore
+	.editorconfig = .editorconfig
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{655397D1-F301-4EF4-B437-C6442DD3629D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{838A86C8-C927-4F21-BA40-C57EABD3D9DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{3EBE84CF-083A-4FBF-B9D7-4EA9E35BDF23}"
+ProjectSection(SolutionItems) = preProject
+	deploy\docker-compose.yml = deploy\docker-compose.yml
+EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5482868A-E0F5-4C2E-B263-99AAA4798F59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5482868A-E0F5-4C2E-B263-99AAA4798F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5482868A-E0F5-4C2E-B263-99AAA4798F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5482868A-E0F5-4C2E-B263-99AAA4798F59}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5482868A-E0F5-4C2E-B263-99AAA4798F59} = {655397D1-F301-4EF4-B437-C6442DD3629D}
+	EndGlobalSection
+EndGlobal
