@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OzonEdu.MerchandiseApi.Infrastructure.Middlewares;
 
 namespace OzonEdu.MerchandiseApi
 {
@@ -21,12 +22,14 @@ namespace OzonEdu.MerchandiseApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseHttpsRedirection();
-
+            app.Map("/ready",
+                builder => builder.UseMiddleware<ReadyMiddleware>());
+            app.Map("/live",
+                builder => builder.UseMiddleware<LiveMiddleware>());
+            app.Map("/version",
+                builder => builder.UseMiddleware<VersionMiddleware>());
+            app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseRouting();
-
-            app.UseAuthorization();
-
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
