@@ -31,7 +31,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
         {
             var path = request.Path.Value;
 
-            if (path is null || !path.StartsWith(RouteConstant.MerchRoute))
+            if (path is null || !path.StartsWith(RouteConstant.Route))
                 return;
             
             await Task.Run(() =>

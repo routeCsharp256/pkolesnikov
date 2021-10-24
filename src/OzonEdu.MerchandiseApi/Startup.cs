@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OzonEdu.MerchandiseApi.Infrastructure.Filters;
 using OzonEdu.MerchandiseApi.Infrastructure.Middlewares;
 
 namespace OzonEdu.MerchandiseApi
@@ -17,18 +18,11 @@ namespace OzonEdu.MerchandiseApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.Map("/ready",
-                builder => builder.UseMiddleware<ReadyMiddleware>());
-            app.Map("/live",
-                builder => builder.UseMiddleware<LiveMiddleware>());
-            app.Map("/version",
-                builder => builder.UseMiddleware<VersionMiddleware>());
-            app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
