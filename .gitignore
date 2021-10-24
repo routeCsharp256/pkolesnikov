@@ -2,3 +2,6 @@
 src/OzonEdu.MerchandiseApi/bin/
 src/OzonEdu.MerchandiseApi/obj/
 src/OzonEdu.MerchandiseApi/Properties/launchSettings.json
+src/OzonEdu.MerchandiseApi.HttpClients/obj/
+src/OzonEdu.MerchandiseApi.HttpModels/bin/
+src/OzonEdu.MerchandiseApi.HttpModels/obj/

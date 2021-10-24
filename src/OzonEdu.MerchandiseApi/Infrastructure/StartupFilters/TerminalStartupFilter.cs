@@ -18,6 +18,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.StartupFilters
                 app.Map("/version",
                     builder => builder.UseMiddleware<VersionMiddleware>());
                 app.UseMiddleware<RequestLoggingMiddleware>();
+                app.UseMiddleware<ResponseLoggingMiddleware>();
                 next(app);
             };
         }

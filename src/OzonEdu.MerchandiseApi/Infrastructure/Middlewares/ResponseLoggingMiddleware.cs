@@ -1,21 +1,20 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Text;
 using OzonEdu.MerchandiseApi.Constants;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 {
-    public class RequestLoggingMiddleware
+    public class ResponseLoggingMiddleware
     {
         private const int HeaderNameSpace = -30;
         
         private readonly RequestDelegate _next;
         private readonly ILogger<RequestLoggingMiddleware> _logger;
 
-        public RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)
+        public ResponseLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -23,13 +22,13 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            await LogRequest(context.Request);
             await _next(context);
+            await LogResponse(context.Response);
         }
 
-        private async Task LogRequest(HttpRequest request)
+        private async Task LogResponse(HttpResponse response)
         {
-            var path = request.Path.Value;
+            var path = response.HttpContext.Request.Path.Value;
 
             if (path is null || !path.StartsWith(RouteConstant.Route))
                 return;
@@ -38,11 +37,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
             {
                 var stringBuilder = new StringBuilder();
 
-                stringBuilder.AppendLine("Request logged");
+                stringBuilder.AppendLine("Response logged");
                 stringBuilder.AppendLine($"Route - {path}");
                 stringBuilder.AppendLine("Headers:");
 
-                var headersString = request
+                var headersString = response
                     .Headers
                     .Select(h => $"\t{h.Key, HeaderNameSpace}{h.Value}");
                 

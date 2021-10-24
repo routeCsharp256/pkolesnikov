@@ -22,4 +22,8 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OzonEdu.MerchandiseApi.HttpModels\OzonEdu.MerchandiseApi.HttpModels.csproj" />
+    </ItemGroup>
+
 </Project>

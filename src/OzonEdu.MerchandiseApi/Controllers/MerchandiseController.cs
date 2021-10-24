@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using OzonEdu.MerchandiseApi.Constants;
+using OzonEdu.MerchandiseApi.HttpModels;
 
 namespace OzonEdu.MerchandiseApi.Controllers
 {
@@ -17,9 +18,16 @@ namespace OzonEdu.MerchandiseApi.Controllers
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> RequestMerch(CancellationToken token)
+        public async Task<ActionResult<GetMerchResponse>> GetMerch(GetMerchRequest request, CancellationToken token)
         {
-            return Ok();
+            return Ok(new GetMerchResponse());
+        }
+        
+        [HttpGet("/issuance")]
+        public async Task<ActionResult<GetMerchIssuanceResponse>> GetMerchIssuance(GetMerchIssuanceRequest request, 
+            CancellationToken token)
+        {
+            return Ok(new GetMerchResponse());
         }
     }
 }
