@@ -1,7 +1,18 @@
 .idea/
-src/OzonEdu.MerchandiseApi/bin/
-src/OzonEdu.MerchandiseApi/obj/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
 src/OzonEdu.MerchandiseApi/Properties/launchSettings.json
-src/OzonEdu.MerchandiseApi.HttpClients/obj/
-src/OzonEdu.MerchandiseApi.HttpModels/bin/
-src/OzonEdu.MerchandiseApi.HttpModels/obj/
