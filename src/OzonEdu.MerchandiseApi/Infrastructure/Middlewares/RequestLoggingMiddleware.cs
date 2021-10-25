@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
 using System.Text;
 using OzonEdu.MerchandiseApi.Constants;
 
@@ -10,8 +8,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 {
     public class RequestLoggingMiddleware
     {
-        private const int HeaderNameSpace = -30;
-        
         private readonly RequestDelegate _next;
         private readonly ILogger<RequestLoggingMiddleware> _logger;
 
@@ -37,17 +33,10 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
             await Task.Run(() =>
             {
                 var stringBuilder = new StringBuilder();
-
                 stringBuilder.AppendLine("Request logged");
                 stringBuilder.AppendLine($"Route - {path}");
                 stringBuilder.AppendLine("Headers:");
-
-                var headersString = request
-                    .Headers
-                    .Select(h => $"\t{h.Key, HeaderNameSpace}{h.Value}");
-                
-                stringBuilder.Append(string.Join("\n", headersString));
-
+                stringBuilder.AppendLine(request.Headers.ToString());
                 _logger.LogInformation(stringBuilder.ToString());
             });
         }

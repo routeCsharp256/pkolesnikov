@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -9,8 +8,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 {
     public class ResponseLoggingMiddleware
     {
-        private const int HeaderNameSpace = -30;
-        
         private readonly RequestDelegate _next;
         private readonly ILogger<RequestLoggingMiddleware> _logger;
 
@@ -28,7 +25,10 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 
         private async Task LogResponse(HttpResponse response)
         {
-            var path = response.HttpContext.Request.Path.Value;
+            var path = response.HttpContext
+                .Request
+                .Path
+                .Value;
 
             if (path is null || !path.StartsWith(RouteConstant.Route))
                 return;
@@ -36,17 +36,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
             await Task.Run(() =>
             {
                 var stringBuilder = new StringBuilder();
-
                 stringBuilder.AppendLine("Response logged");
                 stringBuilder.AppendLine($"Route - {path}");
                 stringBuilder.AppendLine("Headers:");
-
-                var headersString = response
-                    .Headers
-                    .Select(h => $"\t{h.Key, HeaderNameSpace}{h.Value}");
-                
-                stringBuilder.Append(string.Join("\n", headersString));
-
+                stringBuilder.AppendLine("Headers:");
+                stringBuilder.AppendLine(response.Headers.ToString());
                 _logger.LogInformation(stringBuilder.ToString());
             });
         }
