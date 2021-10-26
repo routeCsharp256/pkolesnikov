@@ -20,9 +20,10 @@ namespace OzonEdu.MerchandiseApi.Controllers
         /// <param name="token">  </param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<GetMerchResponse>> GetMerch(GetMerchRequest request, CancellationToken token)
+        public async Task<ActionResult<GetMerchResponse>> GetMerch([FromQuery] GetMerchRequest request, 
+            CancellationToken token)
         {
-            return await Task.Run(() => Ok(new GetMerchResponse()), token);
+            return await Task.Run(() => Ok(new GetMerchResponse(request.Id)), token);
         }
         
         [HttpGet("issuance")]

@@ -16,3 +16,4 @@ bld/
 [Ll]ogs/
 
 src/OzonEdu.MerchandiseApi/Properties/launchSettings.json
+.vs/

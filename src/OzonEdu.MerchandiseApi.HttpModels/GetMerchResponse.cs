@@ -1,7 +1,12 @@
 ﻿namespace OzonEdu.MerchandiseApi.HttpModels
 {
-    public record GetMerchResponse
+    public class GetMerchResponse
     {
-        public string Description { get; set; } = "This is merch response description";
+        public string Description { get; set; }
+
+        public GetMerchResponse(long id)
+        {
+            Description = $"Your ID is {id}";
+        }
     }
 }

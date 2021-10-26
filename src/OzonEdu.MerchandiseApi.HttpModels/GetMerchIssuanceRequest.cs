@@ -2,6 +2,6 @@
 {
     public class GetMerchIssuanceRequest
     {
-        
+        public long Id { get; set; } = 2012;
     }
 }
