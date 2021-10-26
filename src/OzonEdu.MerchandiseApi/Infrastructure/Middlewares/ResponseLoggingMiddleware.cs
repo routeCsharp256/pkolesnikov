@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using OzonEdu.MerchandiseApi.Constants;
+#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 {

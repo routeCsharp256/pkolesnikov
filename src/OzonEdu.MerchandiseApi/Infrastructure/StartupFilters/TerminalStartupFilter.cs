@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using OzonEdu.MerchandiseApi.Infrastructure.Middlewares;
+#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.StartupFilters
 {

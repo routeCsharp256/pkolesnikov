@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OzonEdu.MerchandiseApi.Infrastructure.Filters;
 using OzonEdu.MerchandiseApi.Infrastructure.Middlewares;
+#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi
 {

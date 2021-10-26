@@ -3,6 +3,7 @@ using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Interceptors
 {

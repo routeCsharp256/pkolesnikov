@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 {

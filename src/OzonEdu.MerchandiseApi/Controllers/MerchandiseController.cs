@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using OzonEdu.MerchandiseApi.Constants;
 using OzonEdu.MerchandiseApi.HttpModels;
+#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Controllers
 {
@@ -15,19 +16,20 @@ namespace OzonEdu.MerchandiseApi.Controllers
         /// <summary>
         ///     Запросить мерч.
         /// </summary>
-        /// <param name="token"></param>
+        /// <param name="request">  </param>
+        /// <param name="token">  </param>
         /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<GetMerchResponse>> GetMerch(GetMerchRequest request, CancellationToken token)
         {
-            return Ok(new GetMerchResponse());
+            return await Task.Run(() => Ok(new GetMerchResponse()), token);
         }
         
-        [HttpGet("/issuance")]
+        [HttpGet("issuance")]
         public async Task<ActionResult<GetMerchIssuanceResponse>> GetMerchIssuance(GetMerchIssuanceRequest request, 
             CancellationToken token)
         {
-            return Ok(new GetMerchResponse());
+            return await Task.Run(() => Ok(new GetMerchIssuanceResponse()), token);
         }
     }
 }

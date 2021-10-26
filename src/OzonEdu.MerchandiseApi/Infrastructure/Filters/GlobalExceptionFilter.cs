@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Filters
 {
