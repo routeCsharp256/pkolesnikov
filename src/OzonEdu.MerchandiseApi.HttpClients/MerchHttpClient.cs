@@ -1,9 +1,7 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
 using OzonEdu.MerchandiseApi.HttpModels;
 
 namespace OzonEdu.MerchandiseApi.HttpClients
@@ -12,6 +10,11 @@ namespace OzonEdu.MerchandiseApi.HttpClients
     {
         private readonly HttpClient _httpClient;
 
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
         public MerchHttpClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -19,20 +22,18 @@ namespace OzonEdu.MerchandiseApi.HttpClients
         
         public async Task<GetMerchResponse?> GetMerch(GetMerchRequest request, CancellationToken token)
         {
-            var uri = new UriBuilder("v1/api/merch");
-            var name = nameof(request.Id).ToLower();
-            var value = request.Id.ToString();
-            uri.Query = QueryHelpers.AddQueryString(uri.Query, name, value);
-            using var response = await _httpClient.GetAsync(uri.Query, token);
+            var requestUri = $"v1/api/merch?id={request.Id}";
+            using var response = await _httpClient.GetAsync(requestUri, token);
             var body = await response.Content.ReadAsStringAsync(token);
-            return JsonSerializer.Deserialize<GetMerchResponse>(body);
+            return JsonSerializer.Deserialize<GetMerchResponse>(body, options);
         }
 
         public async Task<GetMerchIssuanceResponse?> GetMerchIssuance(GetMerchIssuanceRequest request, CancellationToken token)
         {
-            using var response = await _httpClient.GetAsync("v1/api/merchandise/issuance?id=23", token);
+            var requestUri = $"v1/api/merch/issuance?id={request.Id}";
+            using var response = await _httpClient.GetAsync(requestUri, token);
             var body = await response.Content.ReadAsStringAsync(token);
-            return JsonSerializer.Deserialize<GetMerchIssuanceResponse>(body);
+            return JsonSerializer.Deserialize<GetMerchIssuanceResponse>(body, options);
         }
     }
 }

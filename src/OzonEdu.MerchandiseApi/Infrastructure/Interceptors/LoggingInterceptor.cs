@@ -1,8 +1,9 @@
+using System.Text.Json;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+
 #pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Interceptors
@@ -20,12 +21,12 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Interceptors
             ServerCallContext context,
             UnaryServerMethod<TRequest, TResponse> continuation)
         {
-            var requestJson = JsonConvert.SerializeObject(request);
+            var requestJson = JsonSerializer.Serialize(request);
             _logger.LogInformation(requestJson);
             
             var response = base.UnaryServerHandler(request, context, continuation);
 
-            var responseJson = JsonConvert.SerializeObject(response);
+            var responseJson = JsonSerializer.Serialize(response);
             _logger.LogInformation(responseJson);
             
             return response;

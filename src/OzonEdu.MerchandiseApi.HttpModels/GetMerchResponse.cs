@@ -8,5 +8,7 @@
         {
             Description = $"Your ID is {id}";
         }
+
+        public GetMerchResponse() { }
     }
 }

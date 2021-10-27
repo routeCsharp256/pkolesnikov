@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
+
 #pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
@@ -17,7 +17,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
             var version = assemblyName.Version?.ToString() ?? "no version";
             var serviceName = assemblyName.Name ?? "no name";
             var result = new { version, serviceName };
-            await context.Response.WriteAsync(  JsonConvert.SerializeObject(result));
+            await context.Response.WriteAsync( JsonSerializer.Serialize(result));
         }
     }
 }

@@ -27,10 +27,10 @@ namespace OzonEdu.MerchandiseApi.Controllers
         }
         
         [HttpGet("issuance")]
-        public async Task<ActionResult<GetMerchIssuanceResponse>> GetMerchIssuance(GetMerchIssuanceRequest request, 
+        public async Task<ActionResult<GetMerchIssuanceResponse>> GetMerchIssuance([FromQuery] GetMerchIssuanceRequest request, 
             CancellationToken token)
         {
-            return await Task.Run(() => Ok(new GetMerchIssuanceResponse()), token);
+            return await Task.Run(() => Ok(new GetMerchIssuanceResponse(request.Id)), token);
         }
     }
 }
