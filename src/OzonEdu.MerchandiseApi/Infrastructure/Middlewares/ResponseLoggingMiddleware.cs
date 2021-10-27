@@ -1,8 +1,11 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using OzonEdu.MerchandiseApi.Constants;
+using OzonEdu.MerchandiseApi.Infrastructure.Extensions;
+
 #pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
@@ -26,24 +29,33 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 
         private async Task LogResponse(HttpResponse response)
         {
-            var path = response.HttpContext
-                .Request
-                .Path
-                .Value;
-
-            if (path is null || !path.StartsWith(RouteConstant.Route))
-                return;
-            
-            await Task.Run(() =>
+            try
             {
+                var request = response
+                    .HttpContext
+                    .Request;
+                
+                var path = request
+                    .Path
+                    .Value;
+                
+                if (path is null || !path.StartsWith(RouteConstant.Route))
+                    return;
+                
                 var stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Response logged");
-                stringBuilder.AppendLine($"Route - {path}");
+                stringBuilder.AppendLine($"Route: {request.GetRoute()}");
                 stringBuilder.AppendLine("Headers:");
-                stringBuilder.AppendLine("Headers:");
-                stringBuilder.AppendLine(response.Headers.ToString());
+                stringBuilder.AppendLine(response.Headers.AsString());
+
+                var body = await response.BodyToString();
+                stringBuilder.Append($"Body: {body}");
                 _logger.LogInformation(stringBuilder.ToString());
-            });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Could not log response");
+            }
         }
     }
 }

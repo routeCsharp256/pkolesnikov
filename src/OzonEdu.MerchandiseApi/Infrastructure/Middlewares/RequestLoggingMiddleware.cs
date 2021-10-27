@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using OzonEdu.MerchandiseApi.Constants;
+using OzonEdu.MerchandiseApi.Infrastructure.Extensions;
+
 #pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
@@ -26,20 +29,27 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 
         private async Task LogRequest(HttpRequest request)
         {
-            var path = request.Path.Value;
-
-            if (path is null || !path.StartsWith(RouteConstant.Route))
-                return;
-            
-            await Task.Run(() =>
+            try
             {
+                var path = request.Path.Value;
+
+                if (path is null || !path.StartsWith(RouteConstant.Route))
+                    return;
+
                 var stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Request logged");
-                stringBuilder.AppendLine($"Route - {path}");
+                stringBuilder.AppendLine($"Route: {request.GetRoute()}");
                 stringBuilder.AppendLine("Headers:");
-                stringBuilder.AppendLine(request.Headers.ToString());
+                stringBuilder.AppendLine(request.Headers.AsString());
+                
+                var body = await request.BodyToString();
+                stringBuilder.Append($"Body: {body}");
                 _logger.LogInformation(stringBuilder.ToString());
-            });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Could not log request");
+            }
         }
     }
 }
