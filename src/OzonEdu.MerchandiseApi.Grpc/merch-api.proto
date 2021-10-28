@@ -10,9 +10,11 @@ service MerchandiseApiGrpc {
 }
 
 message GetMerchRequest {  
+  int32 id = 1;
 }
 
 message GetMerchIssuanceRequest {
+  int32 id = 1;
 }
 
 message GetMerchResponse {

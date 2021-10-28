@@ -9,22 +9,21 @@ namespace OzonEdu.MerchandiseApi.GrpcServices
 {
     public class MerchandiseApiGrpcService : MerchandiseApiGrpc.MerchandiseApiGrpcBase
     {
-        private readonly IMerchandiseService _merchService;
-
-        public MerchandiseApiGrpcService(IMerchandiseService merchService)
+        public MerchandiseApiGrpcService()
         {
-            _merchService = merchService;
         }
 
-        public override Task<GetMerchResponse> GetMerch(GetMerchRequest request, ServerCallContext context)
+        public override async Task<GetMerchResponse> GetMerch(GetMerchRequest request, ServerCallContext context)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() 
+                => new GetMerchResponse{ Description = "Id = " + request.Id}, context.CancellationToken);
         }
 
-        public override Task<GetMerchIssuanceResponse> GetMerchIssuance(GetMerchIssuanceRequest request, 
+        public override async Task<GetMerchIssuanceResponse> GetMerchIssuance(GetMerchIssuanceRequest request, 
             ServerCallContext context)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() 
+                => new GetMerchIssuanceResponse{ Description = "Id = " + request.Id}, context.CancellationToken);
         }
     }
 }
