@@ -24,6 +24,15 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
+            var path = context.Request.Path.Value;
+
+            if (!(path is null || path.StartsWith(RouteConstant.Route)))
+            {
+                await _next(context);
+                return;
+            }
+               
+            
             var originalBody = context.Response.Body;
             await using var newBody = new MemoryStream();
             context.Response.Body = newBody;
