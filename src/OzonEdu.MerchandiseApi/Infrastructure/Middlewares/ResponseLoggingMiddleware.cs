@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -23,38 +24,30 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            await _next(context);
-            await LogResponse(context.Response);
-        }
+            var originalBody = context.Response.Body;
+            await using var newBody = new MemoryStream();
+            context.Response.Body = newBody;
 
-        private async Task LogResponse(HttpResponse response)
-        {
             try
             {
-                var request = response
-                    .HttpContext
-                    .Request;
-                
-                var path = request
-                    .Path
-                    .Value;
-                
-                if (path is null || !path.StartsWith(RouteConstant.Route))
-                    return;
-                
+                await _next(context);
+            }
+            finally
+            {
                 var stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Response logged");
-                stringBuilder.AppendLine($"Route: {request.GetRoute()}");
+                stringBuilder.AppendLine($"Route: {context.Request.GetRoute()}");
                 stringBuilder.AppendLine("Headers:");
-                stringBuilder.AppendLine(response.Headers.AsString());
-
-                var body = await response.BodyToString();
-                stringBuilder.Append($"Body: {body}");
+                stringBuilder.AppendLine(context.Response.Headers.AsString());
+                
+                newBody.Seek(0, SeekOrigin.Begin);
+                var bodyText = await new StreamReader(context.Response.Body).ReadToEndAsync();
+                stringBuilder.Append($"Body: {bodyText}");
+                
                 _logger.LogInformation(stringBuilder.ToString());
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Could not log response");
+                
+                newBody.Seek(0, SeekOrigin.Begin);
+                await newBody.CopyToAsync(originalBody);
             }
         }
     }
