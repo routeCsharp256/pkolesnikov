@@ -2,6 +2,8 @@
 
 WORKDIR /src
 
+COPY ["src/OzonEdu.MerchandiseApi.Grpc/OzonEdu.MerchandiseApi.Grpc.csproj", "src/OzonEdu.MerchandiseApi.Grpc/"]
+COPY ["src/OzonEdu.MerchandiseApi.HttpModels/OzonEdu.MerchandiseApi.HttpModels.csproj", "src/OzonEdu.MerchandiseApi.HttpModels/"]
 COPY ["src/OzonEdu.MerchandiseApi/OzonEdu.MerchandiseApi.csproj", "src/OzonEdu.MerchandiseApi/"]
 
 RUN dotnet restore "src/OzonEdu.MerchandiseApi/OzonEdu.MerchandiseApi.csproj"
