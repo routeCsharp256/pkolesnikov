@@ -5,10 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using OzonEdu.MerchandiseApi.GrpcServices;
 using OzonEdu.MerchandiseApi.Infrastructure.Filters;
 using OzonEdu.MerchandiseApi.Infrastructure.Interceptors;
-using OzonEdu.MerchandiseApi.Infrastructure.Middlewares;
-using OzonEdu.MerchandiseApi.Services.Interfaces;
-
-#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi
 {

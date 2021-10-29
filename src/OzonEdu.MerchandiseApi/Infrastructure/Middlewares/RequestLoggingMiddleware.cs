@@ -6,8 +6,6 @@ using System.Text;
 using OzonEdu.MerchandiseApi.Constants;
 using OzonEdu.MerchandiseApi.Infrastructure.Extensions;
 
-#pragma warning disable 1591
-
 namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 {
     public class RequestLoggingMiddleware

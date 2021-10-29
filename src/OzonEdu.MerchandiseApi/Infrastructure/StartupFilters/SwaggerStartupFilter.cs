@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.StartupFilters
 {

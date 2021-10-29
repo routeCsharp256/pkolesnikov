@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using OzonEdu.MerchandiseApi.Constants;
 using OzonEdu.MerchandiseApi.HttpModels;
-#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.Controllers
 {

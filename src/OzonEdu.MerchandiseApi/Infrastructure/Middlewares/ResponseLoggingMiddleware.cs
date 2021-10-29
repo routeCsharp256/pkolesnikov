@@ -7,8 +7,6 @@ using Microsoft.Extensions.Logging;
 using OzonEdu.MerchandiseApi.Constants;
 using OzonEdu.MerchandiseApi.Infrastructure.Extensions;
 
-#pragma warning disable 1591
-
 namespace OzonEdu.MerchandiseApi.Infrastructure.Middlewares
 {
     public class ResponseLoggingMiddleware

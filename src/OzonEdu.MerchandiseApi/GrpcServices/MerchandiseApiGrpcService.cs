@@ -1,9 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Grpc.Core;
 using OzonEdu.MerchandiseApi.Grpc;
-using OzonEdu.MerchandiseApi.Services.Interfaces;
-#pragma warning disable 1591
 
 namespace OzonEdu.MerchandiseApi.GrpcServices
 {
