@@ -5,8 +5,7 @@ services:
     build: ../.
     hostname: merchandise-api
     ports:
-      - "127.0.0.1:5000:5000"
-      - "127.0.0.1:5001:5001"
+      - "8080:80"
     depends_on: 
       - stock-api
       - emailing-service
