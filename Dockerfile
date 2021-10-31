@@ -2,6 +2,8 @@
 
 WORKDIR /src
 
+COPY ["src/OzonEdu.MerchandiseApi.Grpc/OzonEdu.MerchandiseApi.Grpc.csproj", "src/OzonEdu.MerchandiseApi.Grpc/"]
+COPY ["src/OzonEdu.MerchandiseApi.HttpModels/OzonEdu.MerchandiseApi.HttpModels.csproj", "src/OzonEdu.MerchandiseApi.HttpModels/"]
 COPY ["src/OzonEdu.MerchandiseApi/OzonEdu.MerchandiseApi.csproj", "src/OzonEdu.MerchandiseApi/"]
 
 RUN dotnet restore "src/OzonEdu.MerchandiseApi/OzonEdu.MerchandiseApi.csproj"
@@ -16,7 +18,7 @@ FROM build AS publish
 
 RUN dotnet publish "OzonEdu.MerchandiseApi.csproj" -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
 
 WORKDIR /app
 
