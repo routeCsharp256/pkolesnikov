@@ -28,6 +28,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchandiseApi.Http
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchandiseApi.Grpc", "src\OzonEdu.MerchandiseApi.Grpc\OzonEdu.MerchandiseApi.Grpc.csproj", "{314AC5C2-2149-4F87-BE2C-F41295EA48CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Domain", "src\OzonEdu.MerchandiseApi.Domain\OzonEdu.MerchandiseApi.Domain.csproj", "{50A3A2D7-F043-400F-B47C-F98F1954E490}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Infrastructure", "src\OzonEdu.MerchandiseApi.Infrastructure\OzonEdu.MerchandiseApi.Infrastructure.csproj", "{AFDCED53-4261-4098-B1A5-6267F7610CAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +54,14 @@ Global
 		{314AC5C2-2149-4F87-BE2C-F41295EA48CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{314AC5C2-2149-4F87-BE2C-F41295EA48CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{314AC5C2-2149-4F87-BE2C-F41295EA48CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50A3A2D7-F043-400F-B47C-F98F1954E490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50A3A2D7-F043-400F-B47C-F98F1954E490}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50A3A2D7-F043-400F-B47C-F98F1954E490}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50A3A2D7-F043-400F-B47C-F98F1954E490}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFDCED53-4261-4098-B1A5-6267F7610CAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFDCED53-4261-4098-B1A5-6267F7610CAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFDCED53-4261-4098-B1A5-6267F7610CAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFDCED53-4261-4098-B1A5-6267F7610CAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +71,8 @@ Global
 		{3775855E-A336-4880-A7E9-B883474E6AEF} = {655397D1-F301-4EF4-B437-C6442DD3629D}
 		{3DB81860-05B3-40B9-BC17-865F1A42D0CD} = {655397D1-F301-4EF4-B437-C6442DD3629D}
 		{314AC5C2-2149-4F87-BE2C-F41295EA48CF} = {655397D1-F301-4EF4-B437-C6442DD3629D}
+		{50A3A2D7-F043-400F-B47C-F98F1954E490} = {655397D1-F301-4EF4-B437-C6442DD3629D}
+		{AFDCED53-4261-4098-B1A5-6267F7610CAC} = {655397D1-F301-4EF4-B437-C6442DD3629D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5D0D19CE-33CB-4CCB-A897-12FB6339F07A}
