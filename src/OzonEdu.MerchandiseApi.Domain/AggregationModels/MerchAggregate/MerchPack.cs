@@ -7,12 +7,26 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate
     {
         public MerchPackId MerchPackId { get; }
         
-        public MerchType MerchType { get; }
+        public MerchPackType MerchPackType { get; }
+        
+        public InitiatingEventName? InitiatingEventName { get; private set; }
 
-        public MerchPack(MerchPackId id, MerchType type)
+        public MerchPack(MerchPackId id, MerchPackType packType, InitiatingEventName? eventName)
         {
             MerchPackId = id;
-            MerchType = type;
+            MerchPackType = packType;
+            SetInitiatingEventName(eventName);
+        }
+        
+        public void SetInitiatingEventName(InitiatingEventName? eventName)
+        {
+            if (eventName is null)
+                return;
+
+            if (MerchPackType == MerchPackType.ConferenceListener
+                || MerchPackType == MerchPackType.ConferenceListener
+                || MerchPackType == MerchPackType.ConferenceSpeaker)
+                InitiatingEventName = eventName;
         }
     }
 }
