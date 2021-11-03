@@ -6,7 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="AggregationModels" />
+      <Folder Include="AggregationModels\EmployeeAggregate" />
+      <Folder Include="AggregationModels\ValueObjects" />
       <Folder Include="Contracts" />
       <Folder Include="Events" />
       <Folder Include="Exceptions" />
