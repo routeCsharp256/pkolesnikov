@@ -5,7 +5,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Models
 {
     public class MerchItemIdEnumeration : Enumeration
     {
-        public static List<MerchItemId> MerchItemIds { get; } = new();
+        public List<MerchItemId> MerchItemIds { get; } = new();
         
         public MerchItemIdEnumeration(int id, string name, IEnumerable<MerchItemId> items) : base(id, name)
         {

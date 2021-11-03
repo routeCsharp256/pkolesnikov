@@ -1,5 +1,6 @@
 ﻿using System;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using OzonEdu.MerchandiseApi.Domain.Exceptions.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
@@ -9,7 +10,7 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggrega
     {
         private RequestStatus _requestStatus = RequestStatus.InWork;
         
-        public RequestNumber RequestNumber { get; }
+        public RequestNumber? RequestNumber { get; }
 
         public RequestStatus RequestStatus
         {
@@ -23,10 +24,14 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggrega
 
         public NewStatusDate NewStatusDate { get; private set; } = new(DateTime.UtcNow);
         
-        public 
+        public MerchPackId MerchPackId { get; }
+        
+        public EmployeeId EmployeeId { get; }
 
-        public IssuanceRequest(RequestNumber number)
+        public IssuanceRequest(EmployeeId employeeId, MerchPackId merchPackId, RequestNumber? number = null)
         {
+            EmployeeId = employeeId;
+            MerchPackId = merchPackId;
             RequestNumber = number;
         }
 

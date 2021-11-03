@@ -7,12 +7,15 @@
 
     <ItemGroup>
       <Folder Include="Extensions" />
-      <Folder Include="Handlers" />
       <Folder Include="Stubs" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="MediatR" Version="9.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OzonEdu.MerchandiseApi.Domain\OzonEdu.MerchandiseApi.Domain.csproj" />
     </ItemGroup>
 
 </Project>

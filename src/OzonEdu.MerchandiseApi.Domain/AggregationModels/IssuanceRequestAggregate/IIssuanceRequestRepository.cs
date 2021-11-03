@@ -6,6 +6,7 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggrega
 {
     public interface IIssuanceRequestRepository : IRepository<IssuanceRequest>
     {
-        Task<IssuanceRequest> FindByIdAsync(long id, CancellationToken cancellationToken = default);
+        Task<IssuanceRequest?> FindByEmployeeIdAndMerchPackIdIdAsync(long employeeId, int packId, 
+            CancellationToken cancellationToken = default);
     }
 }
