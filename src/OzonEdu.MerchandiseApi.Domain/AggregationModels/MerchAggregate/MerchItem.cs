@@ -1,4 +1,5 @@
-﻿using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
+﻿using System;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
 namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate
@@ -25,11 +26,9 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate
         }
         
         public void SetClothingSize(ClothingSize? size)
-        {
-            if (MerchType.HasSize && size is not null)
-                ClothingSize = size;
-        }
+            => ClothingSize = size ?? throw new ArgumentNullException(nameof(size));
 
-        public void SetSku(Sku? sku) => Sku = sku;
+        public void SetSku(Sku? sku) 
+            => Sku = sku ?? throw new ArgumentNullException(nameof(sku));
     }
 }

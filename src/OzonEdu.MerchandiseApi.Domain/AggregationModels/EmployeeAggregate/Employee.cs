@@ -1,4 +1,6 @@
-﻿using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
+﻿using System;
+using System.Net.Mail;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
 namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
@@ -25,8 +27,22 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
         {
             if (email is null)
                 return;
-            
+
+            if (!IsValidMail(email.Value))
+                throw new ArgumentException("Not valid email", nameof(email));
+
             EmailAddress = email;
+        }
+
+        private bool IsValidMail(string emailAddress)
+        {
+            try {
+                var mailAddress = new MailAddress(emailAddress);
+                return mailAddress.Address == emailAddress;
+            }
+            catch {
+                return false;
+            }
         }
     }
 }

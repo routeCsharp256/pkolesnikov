@@ -6,10 +6,10 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggrega
     {
         public static RequestStatus WasArrival = new(1, nameof(WasArrival));
         public static RequestStatus Done = new(2, nameof(Done));
-        public static RequestStatus AutoPending = new(1, nameof(AutoPending));
-        
+        public static RequestStatus AutoPending = new(3, nameof(AutoPending));
+        public static RequestStatus InWork = new(4, nameof(InWork));
+
         public RequestStatus(int id, string name) : base(id, name)
-        {
-        }
+        { }
     }
 }

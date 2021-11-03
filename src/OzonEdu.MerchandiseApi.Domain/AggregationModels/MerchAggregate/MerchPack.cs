@@ -21,11 +21,11 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate
         public void SetInitiatingEventName(InitiatingEventName? eventName)
         {
             if (eventName is null)
-                return;
+                throw new ArgumentNullException(nameof(eventName));
 
-            if (MerchPackType == MerchPackType.ConferenceListener
-                || MerchPackType == MerchPackType.ConferenceListener
-                || MerchPackType == MerchPackType.ConferenceSpeaker)
+            if (MerchPackType.Equals(MerchPackType.ConferenceListener)
+                || MerchPackType.Equals(MerchPackType.ConferenceListener)
+                || MerchPackType.Equals(MerchPackType.ConferenceSpeaker))
                 InitiatingEventName = eventName;
         }
     }
