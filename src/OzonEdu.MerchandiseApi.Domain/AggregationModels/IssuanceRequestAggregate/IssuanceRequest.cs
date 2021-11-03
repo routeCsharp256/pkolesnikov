@@ -21,13 +21,13 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggrega
             }
         }
 
-        public NewStatusDate NewStatusDate { get; private set; }
+        public NewStatusDate NewStatusDate { get; private set; } = new(DateTime.UtcNow);
+        
+        public 
 
-        public IssuanceRequest(RequestNumber number, RequestStatus status)
+        public IssuanceRequest(RequestNumber number)
         {
             RequestNumber = number;
-            RequestStatus = status;
-            NewStatusDate = new NewStatusDate(DateTime.UtcNow);
         }
 
         public void SetRequestStatus(RequestStatus newStatus)

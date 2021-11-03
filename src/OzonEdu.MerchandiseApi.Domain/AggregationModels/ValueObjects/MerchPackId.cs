@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
-namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate
+namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects
 {
     public class MerchPackId : ValueObject
     {
