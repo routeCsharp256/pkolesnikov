@@ -13,10 +13,15 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
         public InitiatingEventName? InitiatingEventName { get; private set; }
 
         public MerchPack(MerchPackId id, MerchPackType packType, InitiatingEventName? eventName)
+            : this(id, packType)
+        {
+            SetInitiatingEventName(eventName);
+        }
+        
+        public MerchPack(MerchPackId id, MerchPackType packType)
         {
             MerchPackId = id;
             MerchPackType = packType;
-            SetInitiatingEventName(eventName);
         }
         
         public void SetInitiatingEventName(InitiatingEventName? eventName)

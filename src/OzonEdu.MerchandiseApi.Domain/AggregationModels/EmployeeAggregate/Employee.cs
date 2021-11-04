@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
@@ -44,13 +45,9 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
 
         private bool IsValidMail(string emailAddress)
         {
-            try {
-                var mailAddress = new MailAddress(emailAddress);
-                return mailAddress.Address == emailAddress;
-            }
-            catch {
-                return false;
-            }
+            var regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");  
+            var match = regex.Match(emailAddress);
+            return match.Success;
         }
     }
 }

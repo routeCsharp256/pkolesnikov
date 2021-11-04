@@ -8,9 +8,9 @@ namespace OzonEdu.MerchandiseApi.Domain.
     {
         public long Value { get; }
         
-        public EmployeeId(long sku)
+        public EmployeeId(long id)
         {
-            Value = sku;
+            Value = id;
         }
         
         protected override IEnumerable<object> GetEqualityComponents()
