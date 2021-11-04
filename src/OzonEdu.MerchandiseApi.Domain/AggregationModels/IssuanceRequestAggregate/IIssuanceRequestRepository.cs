@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
 
@@ -8,5 +9,7 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggrega
     {
         Task<IssuanceRequest?> FindByEmployeeIdAndMerchPackIdIdAsync(long employeeId, int packId, 
             CancellationToken cancellationToken = default);
+
+        Task<List<IssuanceRequest>> GetAllByStatusAsync(int statusId, CancellationToken token = default);
     }
 }

@@ -25,17 +25,18 @@ namespace OzonEdu.MerchandiseApi.Controllers
         /// <summary>
         ///     Запросить мерч.
         /// </summary>
-        /// <param name="request">  </param>
+        /// <param name="requestStatus">  </param>
         /// <param name="token">  </param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GiveOutMerch([FromQuery] IssuanceRequestViewModel request, 
+        public async Task<ActionResult> GiveOutMerch([FromQuery] CreateIssuanceRequestViewModel requestStatus, 
             CancellationToken token)
         {
             var command = new GiveOutMerchCommand
             {
-                EmployeeId = request.EmployeeId,
-                MerchPackId = request.MerchPackId
+                EmployeeId = requestStatus.EmployeeId,
+                MerchPackId = requestStatus.MerchPackId,
+                IsManual = true
             };
             try
             {
@@ -49,18 +50,18 @@ namespace OzonEdu.MerchandiseApi.Controllers
         }
         
         [HttpGet("issuance")]
-        public async Task<ActionResult<int>> GetMerchIssuance([FromQuery] IssuanceRequestViewModel request, 
+        public async Task<ActionResult<string>> GetMerchIssuance([FromQuery] GetIssuanceRequestStatusViewModel requestStatus, 
             CancellationToken token)
         {
             var query = new GetIssuanceRequestStatusQuery
             {
-                EmployeeId = request.EmployeeId,
-                MerchPackId = request.MerchPackId
+                EmployeeId = requestStatus.EmployeeId,
+                MerchPackId = requestStatus.MerchPackId
             };
             try
             {
-                var issuanceRequestStatusId = await _mediator.Send(query, token);
-                return Ok(issuanceRequestStatusId);
+                var statusName = await _mediator.Send(query, token);
+                return Ok(statusName);
             }
             catch (Exception ex)
             {

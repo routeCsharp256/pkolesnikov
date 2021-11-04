@@ -20,17 +20,17 @@ namespace OzonEdu.MerchandiseApi.HttpClients
             _httpClient = httpClient;
         }
         
-        public async Task<GetMerchResponse?> GetMerch(IssuanceRequestViewModel request, CancellationToken token)
+        public async Task<GetMerchResponse?> GetMerch(GetIssuanceRequestStatusViewModel requestStatus, CancellationToken token)
         {
-            var requestUri = $"v1/api/merch?id={request.EmployeeId}";
+            var requestUri = $"v1/api/merch?id={requestStatus.EmployeeId}";
             using var response = await _httpClient.GetAsync(requestUri, token);
             var body = await response.Content.ReadAsStringAsync(token);
             return JsonSerializer.Deserialize<GetMerchResponse>(body, options);
         }
 
-        public async Task<GetMerchIssuanceResponse?> GetMerchIssuance(IssuanceRequestViewModel request, CancellationToken token)
+        public async Task<GetMerchIssuanceResponse?> GetMerchIssuance(GetIssuanceRequestStatusViewModel requestStatus, CancellationToken token)
         {
-            var requestUri = $"v1/api/merch/issuance?id={request.EmployeeId}";
+            var requestUri = $"v1/api/merch/issuance?id={requestStatus.EmployeeId}";
             using var response = await _httpClient.GetAsync(requestUri, token);
             var body = await response.Content.ReadAsStringAsync(token);
             return JsonSerializer.Deserialize<GetMerchIssuanceResponse>(body, options);

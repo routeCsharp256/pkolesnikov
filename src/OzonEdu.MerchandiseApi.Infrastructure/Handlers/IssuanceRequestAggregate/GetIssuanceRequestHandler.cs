@@ -6,7 +6,7 @@ using OzonEdu.MerchandiseApi.Infrastructure.Queries.IssuanceRequestAggregate;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregate
 {
-    public class GetIssuanceRequestHandler : IRequestHandler<GetIssuanceRequestStatusQuery, int>
+    public class GetIssuanceRequestHandler : IRequestHandler<GetIssuanceRequestStatusQuery, string>
     {
         private readonly IIssuanceRequestRepository _repository;
 
@@ -15,11 +15,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
             _repository = repository;
         }
 
-        public async Task<int> Handle(GetIssuanceRequestStatusQuery request, CancellationToken token)
+        public async Task<string> Handle(GetIssuanceRequestStatusQuery request, CancellationToken token)
         {
             var result = await _repository
                 .FindByEmployeeIdAndMerchPackIdIdAsync(request.EmployeeId, request.MerchPackId, token);
-            return result.RequestStatus.Id;
+            return result.RequestStatus.Name;
         }
     }
 }
