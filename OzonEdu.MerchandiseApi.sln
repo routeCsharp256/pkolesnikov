@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{E54705
 		.editorconfig = .editorconfig
 		Dockerfile = Dockerfile
 		README.md = README.md
+		Kolesnikov Bounded Context Canvas Template.drawio = Kolesnikov Bounded Context Canvas Template.drawio
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{655397D1-F301-4EF4-B437-C6442DD3629D}"
