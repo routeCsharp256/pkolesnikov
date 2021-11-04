@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using MediatR;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate;
 
 namespace OzonEdu.MerchandiseApi.Domain.Events
 {
     public class ReplenishmentDomainEvent : INotification
     {
-        public IEnumerable<Sku> MerchItemSkuCollection { get; }
+        public IEnumerable<MerchType> MerchTypes { get; }
 
-        public ReplenishmentDomainEvent(IEnumerable<Sku> collection)
+        public ReplenishmentDomainEvent(IEnumerable<MerchType> collection)
         {
-            MerchItemSkuCollection = collection;
+            MerchTypes = collection;
         }
     }
 }

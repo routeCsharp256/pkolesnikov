@@ -6,5 +6,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Commands
     {
         public long EmployeeId { get; set; }
         public int MerchPackId { get; set; }
+
+        public bool IsManual { get; set; } = false;
     }
 }

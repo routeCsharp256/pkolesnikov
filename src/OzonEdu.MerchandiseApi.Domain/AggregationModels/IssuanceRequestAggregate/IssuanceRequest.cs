@@ -1,5 +1,4 @@
 ﻿using System;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using OzonEdu.MerchandiseApi.Domain.Exceptions.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.Domain.Models;

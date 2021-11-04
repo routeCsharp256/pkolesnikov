@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using OzonEdu.MerchandiseApi.Infrastructure.Commands;
 
@@ -13,16 +13,15 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
 {
     public class GiveOutMerchHandler : IRequestHandler<GiveOutMerchCommand>
     {
-        private readonly IMerchItemRepository _merchItemRepository;
         private readonly IIssuanceRequestRepository _issuanceRequestRepository;
         private readonly IMerchPackRepository _merchPackRepository;
+        private readonly IEmployeeRepository _employeeRepository;
 
-        public GiveOutMerchHandler(IMerchItemRepository merchItemRepository,
-            IIssuanceRequestRepository issuanceRequestRepository,
+        public GiveOutMerchHandler(IIssuanceRequestRepository issuanceRequestRepository,
             IEmployeeRepository employeeRepository,
             IMerchPackRepository merchPackRepository)
         {
-            _merchItemRepository = merchItemRepository;
+            _employeeRepository = employeeRepository;
             _issuanceRequestRepository = issuanceRequestRepository;
             _merchPackRepository = merchPackRepository;
         }
@@ -55,26 +54,42 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
             if (merchPackType is null)
                 throw new Exception("Merch pack type not found");
 
-            var isReady = true;
-            foreach (var itemId in  merchPackType.MerchItemIds)
-            {
-                var item = await _merchItemRepository.FindByIdAsync(itemId.Value, token);
-                //TODO Запрос количества токара по item.Sku, выставить флаг isReady=false, если количество равно 0
-            }
+            var employee = await _employeeRepository.FindByIdAsync(request.EmployeeId, token);
             
-            if (issuanceRequest.RequestStatus.Id == GetDoneStatusId())
-                throw new Exception("Merch was issued");
-            
-            //TODO Зарезервировать мерч в stock-api
-            
-            if (issuanceRequest.RequestStatus.Id == GetDoneStatusId())
-                throw new Exception("Merch was issued");
-            
-            issuanceRequest.SetRequestStatus(RequestStatus.Done);
+            if (employee is null)
+                throw new Exception("Employee not found");
 
+            var isReady = true;
+            foreach (var merchType in merchPackType.MerchTypes)
+            {
+                var size = merchType.HasSize
+                    ? employee.ClothingSize
+                    : null;
+                //TODO Запрос количества товара по типу и размеру (если требуется),
+                // выставить флаг isReady=false, если количество равно 0
+            }
+
+            var status = request.IsManual
+                ? RequestStatus.WasArrival
+                : RequestStatus.AutoPending;
+            
+            if (isReady)
+            {
+                if (issuanceRequest.RequestStatus.Id == GetDoneStatusId())
+                    throw new Exception("Merch was issued");
+            
+                //TODO Зарезервировать мерч в stock-api
+            
+                if (issuanceRequest.RequestStatus.Id == GetDoneStatusId())
+                    throw new Exception("Merch was issued");
+                
+                status = RequestStatus.Done;
+            }
+
+            issuanceRequest.SetRequestStatus(status);
             await _issuanceRequestRepository.UpdateAsync(issuanceRequest, token);
             await _issuanceRequestRepository.UnitOfWork.SaveEntitiesAsync(token);
-            
+                
             return Unit.Value;
         }
 

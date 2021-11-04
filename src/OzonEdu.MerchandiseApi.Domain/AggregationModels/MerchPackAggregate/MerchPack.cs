@@ -2,7 +2,7 @@
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
-namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate
+namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
 {
     public class MerchPack : Entity
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
-namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchAggregate
+namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggregate
 {
     public class NewStatusDate : ValueObject
     {
