@@ -5,23 +5,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Commands;
 
-namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregate
+namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.MerchDeliveryAggregate
 {
     public class GiveOutMerchHandler : IRequestHandler<GiveOutMerchCommand>
     {
-        private readonly IMerchPackRepository _merchPackRepository;
+        private readonly IMerchDeliveryRepository _merchDeliveryRepository;
         private readonly IEmployeeRepository _employeeRepository;
 
         public GiveOutMerchHandler(IEmployeeRepository employeeRepository,
-            IMerchPackRepository merchPackRepository)
+            IMerchDeliveryRepository merchDeliveryRepository)
         {
             _employeeRepository = employeeRepository;
-            _merchPackRepository = merchPackRepository;
+            _merchDeliveryRepository = merchDeliveryRepository;
         }
         
         public async Task<Unit> Handle(GiveOutMerchCommand request, CancellationToken token)
@@ -37,12 +35,12 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
                 throw new Exception("employee not found");
             }
 
-            var merchPack = employee
-                .MerchPacks
+            var merchDelivery = employee
+                .MerchDeliveries
                 .FirstOrDefault(mp => mp.Equals(request.MerchPackTypeId));
             
             #region Если мерч даже не пробовали выдавать - создаём заявку
-            if (merchPack is null)
+            if (merchDelivery is null)
             {
                 var merchPackType = MerchPackType
                     .GetAll<MerchPackType>()
@@ -60,19 +58,19 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
                 
                 #endregion
 
-                var merchPackForSave = new MerchPack(MerchPackType.WelcomePack, skuCollection, MerchPackStatus.InWork);
-                merchPack = await _merchPackRepository.CreateAsync(merchPackForSave, token);
-                if (merchPack is null)
+                var merchPackForSave = new MerchDelivery(MerchPackType.WelcomePack, skuCollection, MerchDeliveryStatus.InWork);
+                merchDelivery = await _merchDeliveryRepository.CreateAsync(merchPackForSave, token);
+                if (merchDelivery is null)
                     throw new Exception("create merch pack error");
                 
-                employee.AddMerchPack(merchPack);
+                employee.AddMerchDelivery(merchDelivery);
                 await _employeeRepository.UpdateAsync(employee, token);
             }
 
             #endregion
 
             #region Если мерч уже выдавался - выход
-            if (merchPack.Status == MerchPackStatus.Done)
+            if (merchDelivery.Status == MerchDeliveryStatus.Done)
                 return Unit.Value;
             #endregion
 
@@ -86,10 +84,17 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
 
             if (!canDelivery)
             {
+
+                #region Здесь будет отправка сообщения HR, что закончился мерч с таким-то SKU (для автоматической выдачи)
+
+                
+
+                #endregion
+                
                 var newStatus = request.IsManual
-                    ? MerchPackStatus.EmployeeCame
-                    : MerchPackStatus.Notify;
-                merchPack.SetStatus(newStatus);
+                    ? MerchDeliveryStatus.EmployeeCame
+                    : MerchDeliveryStatus.Notify;
+                merchDelivery.SetStatus(newStatus);
                 await _employeeRepository.UpdateAsync(employee, token);
                 return Unit.Value;
             }
@@ -99,7 +104,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
             #region Отправляем в Stock API запрос на резервирование
             #endregion
             
-            merchPack.SetStatus(MerchPackStatus.Done);
+            merchDelivery.SetStatus(MerchDeliveryStatus.Done);
             await _employeeRepository.UpdateAsync(employee, token);
             return Unit.Value;
         }

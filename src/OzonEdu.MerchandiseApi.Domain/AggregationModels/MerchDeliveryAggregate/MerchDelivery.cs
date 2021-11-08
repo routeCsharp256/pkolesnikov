@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using OzonEdu.MerchandiseApi.Domain.Exceptions.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
-namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
+namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
 {
-    public class MerchPack : Entity
+    public class MerchDelivery : Entity
     {
-        private MerchPackStatus _status = MerchPackStatus.InWork;
+        private MerchDeliveryStatus _status = MerchDeliveryStatus.InWork;
         
-        public MerchPackType Type { get; }
+        public MerchPackType MerchPackType { get; }
 
-        public MerchPackStatus Status
+        public MerchDeliveryStatus Status
         {
             get => _status;
             private set
@@ -33,15 +33,15 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
         //     SetInitiatingEventName(eventName);
         // }
 
-        public MerchPack(int id, MerchPackType type, IEnumerable<Sku> skuCollection, MerchPackStatus status)
+        public MerchDelivery(int id, MerchPackType type, IEnumerable<Sku> skuCollection, MerchDeliveryStatus status)
             : this(type, skuCollection, status)
         {
             Id = id;
         }
         
-        public MerchPack(MerchPackType type, IEnumerable<Sku> skuCollection, MerchPackStatus status)
+        public MerchDelivery(MerchPackType merchPackType, IEnumerable<Sku> skuCollection, MerchDeliveryStatus status)
         {
-            Type = type;
+            MerchPackType = merchPackType;
             SkuCollection = skuCollection;
             SetStatus(status);
         }
@@ -51,15 +51,15 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
             if (eventName is null)
                 throw new ArgumentNullException(nameof(eventName));
 
-            if (Type.Equals(MerchPackType.ConferenceListenerPack)
-                || Type.Equals(MerchPackType.ConferenceListenerPack)
-                || Type.Equals(MerchPackType.ConferenceSpeakerPack))
+            if (MerchPackType.Equals(MerchPackType.ConferenceListenerPack)
+                || MerchPackType.Equals(MerchPackType.ConferenceListenerPack)
+                || MerchPackType.Equals(MerchPackType.ConferenceSpeakerPack))
                 InitiatingEventName = eventName;
         }
         
-        public void SetStatus(MerchPackStatus newStatus)
+        public void SetStatus(MerchDeliveryStatus newStatus)
         { 
-            if (Status.Equals(MerchPackStatus.Done))
+            if (Status.Equals(MerchDeliveryStatus.Done))
                 throw new MerchDeliveryAlreadyDone($"The application (id={Id}) was completed");
             Status = newStatus; 
         }

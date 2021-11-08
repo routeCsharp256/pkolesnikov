@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using OzonEdu.MerchandiseApi.Domain.Models;
 using Enums = CSharpCourse.Core.Lib.Enums;
 
-namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
+namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
 {
     public class MerchPackType : MerchTypeEnumeration
     {

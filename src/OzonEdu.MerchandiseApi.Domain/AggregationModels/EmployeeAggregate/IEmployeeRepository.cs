@@ -8,6 +8,10 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
     {
         Task<Employee?> FindByIdAsync(long id, CancellationToken token = default);
 
+        Task<Employee?> FindByEmailAsync(string email, CancellationToken token = default);
+
+        Task<Employee?> FindByDeliveryId(int deliveryId, CancellationToken token = default);
+        
         Task<Employee?> UpdateAsync(Employee employee, CancellationToken token = default);
     }
 }

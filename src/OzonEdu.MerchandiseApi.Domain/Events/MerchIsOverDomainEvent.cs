@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using MediatR;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 
 namespace OzonEdu.MerchandiseApi.Domain.Events
 {

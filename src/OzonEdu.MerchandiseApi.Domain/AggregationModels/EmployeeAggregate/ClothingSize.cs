@@ -1,6 +1,6 @@
 ﻿using OzonEdu.MerchandiseApi.Domain.Models;
 
-namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects
+namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
 {
     public class ClothingSize : Enumeration
     {

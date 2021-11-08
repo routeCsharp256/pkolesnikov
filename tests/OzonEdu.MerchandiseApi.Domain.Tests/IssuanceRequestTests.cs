@@ -1,6 +1,4 @@
 ﻿using OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using OzonEdu.MerchandiseApi.Domain.Exceptions.IssuanceRequestAggregate;
 using Xunit;
 

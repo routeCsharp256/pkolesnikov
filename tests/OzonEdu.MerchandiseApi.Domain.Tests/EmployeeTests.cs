@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using Xunit;
 
 namespace OzonEdu.MerchandiseApi.Domain.Tests

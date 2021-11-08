@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Events;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
@@ -18,11 +17,10 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
 
         public EmailAddress? HrEmailAddress { get; set; }
 
-        public List<MerchPack> MerchPacks { get; } = new List<MerchPack>();
+        public List<MerchDelivery> MerchDeliveries { get; } = new List<MerchDelivery>();
 
-        public Employee(int id, Name name, EmailAddress email)
+        public Employee(Name name, EmailAddress email)
         {
-            Id = id;
             Name = name;
             SetEmailAddress(email);
         }
@@ -48,9 +46,9 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
             ClothingSize = size;
         }
 
-        public void AddMerchPack(MerchPack merchPack)
+        public void AddMerchDelivery(MerchDelivery merchDelivery)
         {
-            MerchPacks.Add(merchPack);
+            MerchDeliveries.Add(merchDelivery);
         }
 
         private static bool IsValidMail(string emailAddress)
