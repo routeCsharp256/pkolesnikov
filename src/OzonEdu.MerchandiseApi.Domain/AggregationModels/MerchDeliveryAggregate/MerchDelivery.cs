@@ -22,8 +22,6 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
         }
         
         public IEnumerable<Sku> SkuCollection { get; }
-
-        public InitiatingEventName? InitiatingEventName { get; private set; }
         
         public StatusChangeDate StatusChangeDate { get; private set; } = new(DateTime.UtcNow);
 
@@ -44,17 +42,6 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
             MerchPackType = merchPackType;
             SkuCollection = skuCollection;
             SetStatus(status);
-        }
-
-        public void SetInitiatingEventName(InitiatingEventName? eventName)
-        {
-            if (eventName is null)
-                throw new ArgumentNullException(nameof(eventName));
-
-            if (MerchPackType.Equals(MerchPackType.ConferenceListenerPack)
-                || MerchPackType.Equals(MerchPackType.ConferenceListenerPack)
-                || MerchPackType.Equals(MerchPackType.ConferenceSpeakerPack))
-                InitiatingEventName = eventName;
         }
         
         public void SetStatus(MerchDeliveryStatus newStatus)

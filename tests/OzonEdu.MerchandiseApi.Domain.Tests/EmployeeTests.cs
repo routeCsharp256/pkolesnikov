@@ -12,14 +12,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Tests
         {
             var emailAddress = new EmailAddress("ya@ya.ru");
             
-            var employee = new Employee(
-                new EmployeeId(1),
-                new Name("Name"),
-                ClothingSize
-                    .GetAll<ClothingSize>()
-                    .FirstOrDefault(x => x == ClothingSize.L),
-                emailAddress,
-                emailAddress);
+            var employee = new Employee(new Name("Name"), emailAddress);
              
             Assert.Equal(emailAddress, employee.EmailAddress);
         }
@@ -30,12 +23,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Tests
             var emailAddress = new EmailAddress("ya@ya");
             
             Assert.Throws<ArgumentException>(() => new Employee(
-                new EmployeeId(1),
                 new Name("Name"),
-                ClothingSize
-                    .GetAll<ClothingSize>()
-                    .FirstOrDefault(x => x == ClothingSize.L),
-                emailAddress,
                 emailAddress));
         }
     }
