@@ -32,15 +32,20 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
         // {
         //     SetInitiatingEventName(eventName);
         // }
-        
+
         public MerchPack(int id, MerchPackType type, IEnumerable<Sku> skuCollection, MerchPackStatus status)
+            : this(type, skuCollection, status)
         {
             Id = id;
+        }
+        
+        public MerchPack(MerchPackType type, IEnumerable<Sku> skuCollection, MerchPackStatus status)
+        {
             Type = type;
             SkuCollection = skuCollection;
             SetStatus(status);
         }
-        
+
         public void SetInitiatingEventName(InitiatingEventName? eventName)
         {
             if (eventName is null)

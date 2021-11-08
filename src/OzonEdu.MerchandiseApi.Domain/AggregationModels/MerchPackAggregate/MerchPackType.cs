@@ -1,40 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OzonEdu.MerchandiseApi.Domain.Models;
+using Enums = CSharpCourse.Core.Lib.Enums;
 
 namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
 {
     public class MerchPackType : MerchTypeEnumeration
     {
-        public static MerchPackType WelcomePack = new(10, 
-            nameof(WelcomePack), 
-            GetAll<MerchType>().Where(mt => mt.Equals(MerchType.Pen)).ToArray());
+        public static MerchPackType WelcomePack 
+            = new(Enums.MerchType.WelcomePack, new [] { MerchType.Pen });
+
+        public static MerchPackType ProbationPeriodEndingPack 
+            = new(Enums.MerchType.ProbationPeriodEndingPack, new [] { MerchType.Socks });
         
-        public static MerchPackType ProbationPeriodEndingPack = 
-            new(40, 
-                nameof(ProbationPeriodEndingPack), 
-                GetAll<MerchType>().Where(mt => mt.Equals(MerchType.Socks)).ToArray());
+        public static MerchPackType ConferenceListenerPack 
+            = new(Enums.MerchType.ConferenceListenerPack, new [] { MerchType.Notepad });
         
-        public static MerchPackType ConferenceListenerPack = 
-            new(20, 
-                nameof(ConferenceListenerPack), 
-                GetAll<MerchType>().Where(mt => mt.Equals(MerchType.Notepad)).ToArray());
+        public static MerchPackType ConferenceSpeakerPack 
+            = new(Enums.MerchType.ConferenceSpeakerPack, new [] { MerchType.TShirt });
         
-        public static MerchPackType ConferenceSpeakerPack = 
-            new(30, 
-                nameof(ConferenceSpeakerPack), 
-                GetAll<MerchType>()
-                    .Where(mt => mt.Equals(MerchType.TShirt))
-                    .ToArray());
+        public static MerchPackType VeteranPack 
+            = new(Enums.MerchType.VeteranPack, new []{ MerchType.Bag, MerchType.Sweatshirt });
         
-        public static MerchPackType VeteranPack = 
-            new(50, 
-                nameof(VeteranPack), 
-                GetAll<MerchType>()
-                    .Where(mt => mt.Equals(MerchType.Bag) ||  mt.Equals(MerchType.Sweatshirt))
-                    .ToArray());
-        
-        public MerchPackType(int id, string name, IEnumerable<MerchType> merchTypes) : base(id, name, merchTypes)
+        public MerchPackType(Enums.MerchType packType, IEnumerable<MerchType> merchTypes) 
+            : base((int)packType, packType.ToString(), merchTypes)
         { }
     }
 }

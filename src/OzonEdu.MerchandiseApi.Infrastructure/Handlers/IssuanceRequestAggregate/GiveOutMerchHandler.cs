@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,94 +14,102 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
 {
     public class GiveOutMerchHandler : IRequestHandler<GiveOutMerchCommand>
     {
-        private readonly IIssuanceRequestRepository _issuanceRequestRepository;
         private readonly IMerchPackRepository _merchPackRepository;
         private readonly IEmployeeRepository _employeeRepository;
 
-        public GiveOutMerchHandler(IIssuanceRequestRepository issuanceRequestRepository,
-            IEmployeeRepository employeeRepository,
+        public GiveOutMerchHandler(IEmployeeRepository employeeRepository,
             IMerchPackRepository merchPackRepository)
         {
             _employeeRepository = employeeRepository;
-            _issuanceRequestRepository = issuanceRequestRepository;
             _merchPackRepository = merchPackRepository;
         }
         
         public async Task<Unit> Handle(GiveOutMerchCommand request, CancellationToken token)
         {
-            var issuanceRequest = await _issuanceRequestRepository
-                .FindByEmployeeIdAndMerchPackIdIdAsync(request.EmployeeId, request.MerchPackId, token);
-            if (issuanceRequest is null)
-            {
-                var newIssuanceRequest = new IssuanceRequest(
-                    new EmployeeId(request.EmployeeId),
-                    new MerchPackId(request.MerchPackId));
-                issuanceRequest = await _issuanceRequestRepository.CreateAsync(newIssuanceRequest, token);
-                await _issuanceRequestRepository.UnitOfWork.SaveEntitiesAsync(token);
-            }
-
-            if (issuanceRequest.MerchPackStatus.Id == GetDoneStatusId())
-                throw new Exception("Merch was issued");
-
-            var merchPack = await _merchPackRepository.FindByIdAsync(request.MerchPackId, token);
-
-            if (merchPack is null)
-                throw new Exception("Merch pack not found");
-
-            var merchPackType = MerchPackType
-                .GetAll<MerchPackType>()
-                .FirstOrDefault(x => x.Id == merchPack.Type.Id);
-
-            if (merchPackType is null)
-                throw new Exception("Merch pack type not found");
-
-            var employee = await _employeeRepository.FindByIdAsync(request.EmployeeId, token);
+            var merchPackTypeId = request.MerchPackTypeId;
+            if (IsExistsMerchPackType(merchPackTypeId))
+                throw new Exception("Id of merch pack type isn't correct");
             
+            var employeeId = request.EmployeeId;
+            var employee = await _employeeRepository.FindByIdAsync(employeeId, token);
             if (employee is null)
-                throw new Exception("Employee not found");
-
-            var isReady = true;
-            foreach (var merchType in merchPackType.MerchTypes)
             {
-                var size = merchType.HasSize
-                    ? employee.ClothingSize
-                    : null;
-                //TODO Запрос количества товара по типу и размеру (если требуется),
-                // выставить флаг isReady=false, если количество равно 0
+                throw new Exception("employee not found");
             }
 
-            var status = request.IsManual
-                ? RequestStatus.WasArrival
-                : RequestStatus.AutoPending;
+            var merchPack = employee
+                .MerchPacks
+                .FirstOrDefault(mp => mp.Equals(request.MerchPackTypeId));
             
-            if (isReady)
+            #region Если мерч даже не пробовали выдавать - создаём заявку
+            if (merchPack is null)
             {
-                if (issuanceRequest.MerchPackStatus.Id == GetDoneStatusId())
-                    throw new Exception("Merch was issued");
-            
-                //TODO Зарезервировать мерч в stock-api
-            
-                if (issuanceRequest.MerchPackStatus.Id == GetDoneStatusId())
-                    throw new Exception("Merch was issued");
+                var merchPackType = MerchPackType
+                    .GetAll<MerchPackType>()
+                    .First(t => t.Id == merchPackTypeId);
+
+                #region По идентификатору и размеру можно из Stock API получить SKU мерча, входящего в набор
+
+                var merchItemIds = merchPackType
+                    .MerchTypes
+                    .Select(mt => mt.Id)
+                    .ToArray();
+                var size = employee.ClothingSize?.Id;
+
+                var skuCollection = new List<Sku>();
                 
-                status = RequestStatus.Done;
+                #endregion
+
+                var merchPackForSave = new MerchPack(MerchPackType.WelcomePack, skuCollection, MerchPackStatus.InWork);
+                merchPack = await _merchPackRepository.CreateAsync(merchPackForSave, token);
+                if (merchPack is null)
+                    throw new Exception("create merch pack error");
+                
+                employee.AddMerchPack(merchPack);
+                await _employeeRepository.UpdateAsync(employee, token);
             }
 
-            issuanceRequest.SetRequestStatus(status);
-            await _issuanceRequestRepository.UpdateAsync(issuanceRequest, token);
-            await _issuanceRequestRepository.UnitOfWork.SaveEntitiesAsync(token);
+            #endregion
+
+            #region Если мерч уже выдавался - выход
+            if (merchPack.Status == MerchPackStatus.Done)
+                return Unit.Value;
+            #endregion
+
+            #region Проверка каждого SKU, что его можно выдать
+
+            var canDelivery = true;
                 
+            #endregion
+
+            #region Если невозможно выдать мерч, то выставляем соответствующий статус
+
+            if (!canDelivery)
+            {
+                var newStatus = request.IsManual
+                    ? MerchPackStatus.EmployeeCame
+                    : MerchPackStatus.Notify;
+                merchPack.SetStatus(newStatus);
+                await _employeeRepository.UpdateAsync(employee, token);
+                return Unit.Value;
+            }
+
+            #endregion
+
+            #region Отправляем в Stock API запрос на резервирование
+            #endregion
+            
+            merchPack.SetStatus(MerchPackStatus.Done);
+            await _employeeRepository.UpdateAsync(employee, token);
             return Unit.Value;
         }
 
-        private static int GetDoneStatusId()
+        private static bool IsExistsMerchPackType(int id)
         {
-            var doneStatus = RequestStatus
-                .GetAll<RequestStatus>()
-                .FirstOrDefault(x => x.Equals(RequestStatus.Done));
-            if (doneStatus is null)
-                throw new Exception("Unknown status of issuance request");
-            return doneStatus.Id;
+            return MerchPackType
+                .GetAll<MerchPackType>()
+                .Select(t => t.Id)
+                .Contains(id);
         }
     }
 }
