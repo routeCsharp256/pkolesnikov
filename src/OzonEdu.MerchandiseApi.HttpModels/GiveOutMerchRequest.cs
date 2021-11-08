@@ -1,9 +1,10 @@
 ﻿namespace OzonEdu.MerchandiseApi.HttpModels
 {
-    public record CreateIssuanceRequestViewModel
+    public record GiveOutMerchRequest
     {
         public long EmployeeId { get; set; } 
-        public int MerchPackId { get; set; }
+        public int MerchPackTypeId { get; set; }
+        
         public bool IsManual { get; set; } = false;
     }
 }

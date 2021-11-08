@@ -25,17 +25,17 @@ namespace OzonEdu.MerchandiseApi.Controllers
         /// <summary>
         ///     Запросить мерч.
         /// </summary>
-        /// <param name="requestStatus">  </param>
+        /// <param name="request">  </param>
         /// <param name="token">  </param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GiveOutMerch([FromQuery] CreateIssuanceRequestViewModel requestStatus, 
+        public async Task<ActionResult> GiveOutMerch([FromQuery] GiveOutMerchRequest request, 
             CancellationToken token)
         {
             var command = new GiveOutMerchCommand
             {
-                EmployeeId = requestStatus.EmployeeId,
-                MerchPackId = requestStatus.MerchPackId,
+                EmployeeId = request.EmployeeId,
+                MerchPackTypeId = request.MerchPackTypeId,
                 IsManual = true
             };
             try
@@ -49,14 +49,14 @@ namespace OzonEdu.MerchandiseApi.Controllers
             }
         }
         
-        [HttpGet("issuance")]
-        public async Task<ActionResult<string>> GetMerchIssuance([FromQuery] GetIssuanceRequestStatusViewModel requestStatus, 
+        [HttpGet("delivery")]
+        public async Task<ActionResult<string>> GetMerchDelivery([FromQuery] GetMerchDeliveryStatusViewModel requestStatus, 
             CancellationToken token)
         {
-            var query = new GetIssuanceRequestStatusQuery
+            var query = new GetMerchDeliveryStatusQuery
             {
                 EmployeeId = requestStatus.EmployeeId,
-                MerchPackId = requestStatus.MerchPackId
+                MerchPackTypeId = requestStatus.MerchPackTypeId
             };
             try
             {

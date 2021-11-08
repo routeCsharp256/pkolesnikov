@@ -1,8 +1,8 @@
 ﻿namespace OzonEdu.MerchandiseApi.HttpModels
 {
-    public record GetIssuanceRequestStatusViewModel
+    public record GetMerchDeliveryStatusViewModel
     {
         public long EmployeeId { get; set; } 
-        public int MerchPackId { get; set; }
+        public int MerchPackTypeId { get; set; }
     }
 }
