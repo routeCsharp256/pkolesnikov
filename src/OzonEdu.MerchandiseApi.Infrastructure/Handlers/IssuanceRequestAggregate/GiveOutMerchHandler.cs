@@ -39,7 +39,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
                 await _issuanceRequestRepository.UnitOfWork.SaveEntitiesAsync(token);
             }
 
-            if (issuanceRequest.RequestStatus.Id == GetDoneStatusId())
+            if (issuanceRequest.MerchPackStatus.Id == GetDoneStatusId())
                 throw new Exception("Merch was issued");
 
             var merchPack = await _merchPackRepository.FindByIdAsync(request.MerchPackId, token);
@@ -49,7 +49,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
 
             var merchPackType = MerchPackType
                 .GetAll<MerchPackType>()
-                .FirstOrDefault(x => x.Id == merchPack.MerchPackType.Id);
+                .FirstOrDefault(x => x.Id == merchPack.Type.Id);
 
             if (merchPackType is null)
                 throw new Exception("Merch pack type not found");
@@ -75,12 +75,12 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
             
             if (isReady)
             {
-                if (issuanceRequest.RequestStatus.Id == GetDoneStatusId())
+                if (issuanceRequest.MerchPackStatus.Id == GetDoneStatusId())
                     throw new Exception("Merch was issued");
             
                 //TODO Зарезервировать мерч в stock-api
             
-                if (issuanceRequest.RequestStatus.Id == GetDoneStatusId())
+                if (issuanceRequest.MerchPackStatus.Id == GetDoneStatusId())
                     throw new Exception("Merch was issued");
                 
                 status = RequestStatus.Done;

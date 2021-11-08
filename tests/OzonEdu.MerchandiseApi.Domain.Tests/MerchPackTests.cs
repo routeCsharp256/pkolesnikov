@@ -15,7 +15,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Tests
                 new MerchPackId(1),
                 MerchPackType
                     .GetAll<MerchPackType>()
-                    .FirstOrDefault(x => x == MerchPackType.Starter));
+                    .FirstOrDefault(x => x == MerchPackType.ProbationPeriodEndingPack));
 
             Assert.Throws<ArgumentNullException>(() => merchPack.SetInitiatingEventName(null));
         }
@@ -27,7 +27,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Tests
                 new MerchPackId(1),
                 MerchPackType
                     .GetAll<MerchPackType>()
-                    .FirstOrDefault(x => x == MerchPackType.ConferenceListener));
+                    .FirstOrDefault(x => x == MerchPackType.ConferenceListenerPack));
 
             var eventName = new InitiatingEventName("TestName");
 
@@ -43,7 +43,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Tests
                 new MerchPackId(1),
                 MerchPackType
                     .GetAll<MerchPackType>()
-                    .FirstOrDefault(x => x == MerchPackType.Starter));
+                    .FirstOrDefault(x => x == MerchPackType.ProbationPeriodEndingPack));
 
             merchPack.SetInitiatingEventName(new InitiatingEventName("TestName"));
             

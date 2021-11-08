@@ -1,4 +1,5 @@
 ﻿using OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggregate;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.ValueObjects;
 using OzonEdu.MerchandiseApi.Domain.Exceptions.IssuanceRequestAggregate;
 using Xunit;
@@ -17,7 +18,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Tests
             
             request.SetRequestStatus(RequestStatus.InWork);
             
-            Assert.Equal(RequestStatus.InWork, request.RequestStatus);
+            Assert.Equal(RequestStatus.InWork, request.MerchPackStatus);
         }
         
         [Fact]
@@ -29,7 +30,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Tests
                 new RequestNumber(1));
             request.SetRequestStatus(RequestStatus.Done);
             
-            Assert.Throws<AlreadyDoneIssuanceRequest>(() => request.SetRequestStatus(RequestStatus.InWork));
+            Assert.Throws<MerchDeliveryAlreadyDone>(() => request.SetRequestStatus(RequestStatus.InWork));
         }
     }
 }

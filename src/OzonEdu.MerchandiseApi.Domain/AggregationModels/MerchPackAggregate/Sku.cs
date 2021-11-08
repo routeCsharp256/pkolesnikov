@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
-namespace OzonEdu.MerchandiseApi.Domain.
-    AggregationModels.ValueObjects
+namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
 {
-    public class EmployeeId : ValueObject
+    public class Sku : ValueObject
     {
         public long Value { get; }
         
-        public EmployeeId(long id)
+        public Sku(long sku)
         {
-            Value = id;
+            Value = sku;
         }
         
         protected override IEnumerable<object> GetEqualityComponents()

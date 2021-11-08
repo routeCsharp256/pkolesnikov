@@ -19,7 +19,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.IssuanceRequestAggregat
         {
             var result = await _repository
                 .FindByEmployeeIdAndMerchPackIdIdAsync(request.EmployeeId, request.MerchPackId, token);
-            return result.RequestStatus.Name;
+            return result.MerchPackStatus.Name;
         }
     }
 }

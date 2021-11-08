@@ -6,30 +6,30 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
 {
     public class MerchPackType : MerchTypeEnumeration
     {
-        public static MerchPackType Welcome = new(1, 
-            nameof(Welcome), 
+        public static MerchPackType WelcomePack = new(10, 
+            nameof(WelcomePack), 
             GetAll<MerchType>().Where(mt => mt.Equals(MerchType.Pen)).ToArray());
         
-        public static MerchPackType Starter = 
-            new(2, 
-                nameof(Starter), 
+        public static MerchPackType ProbationPeriodEndingPack = 
+            new(40, 
+                nameof(ProbationPeriodEndingPack), 
                 GetAll<MerchType>().Where(mt => mt.Equals(MerchType.Socks)).ToArray());
         
-        public static MerchPackType ConferenceListener = 
-            new(3, 
-                nameof(ConferenceListener), 
+        public static MerchPackType ConferenceListenerPack = 
+            new(20, 
+                nameof(ConferenceListenerPack), 
                 GetAll<MerchType>().Where(mt => mt.Equals(MerchType.Notepad)).ToArray());
         
-        public static MerchPackType ConferenceSpeaker = 
-            new(4, 
-                nameof(ConferenceSpeaker), 
+        public static MerchPackType ConferenceSpeakerPack = 
+            new(30, 
+                nameof(ConferenceSpeakerPack), 
                 GetAll<MerchType>()
                     .Where(mt => mt.Equals(MerchType.TShirt))
                     .ToArray());
         
-        public static MerchPackType Veteran = 
-            new(5, 
-                nameof(Veteran), 
+        public static MerchPackType VeteranPack = 
+            new(50, 
+                nameof(VeteranPack), 
                 GetAll<MerchType>()
                     .Where(mt => mt.Equals(MerchType.Bag) ||  mt.Equals(MerchType.Sweatshirt))
                     .ToArray());

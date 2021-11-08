@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
-namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.IssuanceRequestAggregate
+namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchPackAggregate
 {
-    public class NewStatusDate : ValueObject
+    public class StatusChangeDate : ValueObject
     {
         public DateTime Value { get; }
 
-        public NewStatusDate(DateTime date)
+        public StatusChangeDate(DateTime date)
         {
             Value = date;
         }

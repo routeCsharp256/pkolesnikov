@@ -46,7 +46,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.DomainEvent
                 .Select(r => new
                 {
                     RequestId = r.RequestNumber,
-                    RequestStatus = r.RequestStatus,
+                    RequestStatus = r.MerchPackStatus,
                     EmployeeId = r.EmployeeId,
                     MerchPackId = merchPacks
                         .First(p => p.MerchPackId.Equals(r.MerchPackId))
