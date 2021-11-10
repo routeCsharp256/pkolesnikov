@@ -24,7 +24,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Handlers.DomainEvent
             IMediator mediator)
         {
             _employeeRepository = employeeRepository;
-            _merchDeliveryRepository = merchDeliveryRepository; 
+            _merchDeliveryRepository = merchDeliveryRepository;
+            _mediator = mediator;
         }
         
         /// <summary>

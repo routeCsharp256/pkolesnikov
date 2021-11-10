@@ -13,21 +13,21 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
         
         public ClothingSize? ClothingSize { get; set; }
         
-        public EmailAddress EmailAddress { get; set; }
+        public EmailAddress? EmailAddress { get; set; }
 
         public EmailAddress? HrEmailAddress { get; set; }
 
         public List<MerchDelivery> MerchDeliveries { get; } = new List<MerchDelivery>();
 
-        public Employee(Name name, EmailAddress email)
+        public Employee(Name name, EmailAddress? email)
         {
             Name = name;
             SetEmailAddress(email);
         }
 
-        public void SetEmailAddress(EmailAddress email)
+        public void SetEmailAddress(EmailAddress? email)
         {
-            if (!IsValidMail(email.Value))
+            if (email is null || !IsValidMail(email.Value))
                 throw new ArgumentException("Not valid email", nameof(email));
 
             EmailAddress = email;
