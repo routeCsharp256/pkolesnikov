@@ -34,7 +34,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.DomainEvent
                 throw new Exception("Notification event payload isn't merch delivery");
 
             var merchType = merchDeliveryEventPayload.MerchType;
-            if (!isTypeForReaction(merchType))
+            if (!IsTypeForReaction(merchType))
                 throw new Exception("Notification event without reaction");
 
             var employee = await _employeeService.GetByEmailAsync(notificationEvent.EmployeeEmail, token) 
@@ -59,7 +59,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.DomainEvent
             await _mediator.Send(command, token);
         }
 
-        private static bool isTypeForReaction(MerchType merchType)
+        private static bool IsTypeForReaction(MerchType merchType)
         {
             return merchType is MerchType.WelcomePack 
                 or MerchType.ConferenceListenerPack 

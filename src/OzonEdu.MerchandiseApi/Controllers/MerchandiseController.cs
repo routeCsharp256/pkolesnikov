@@ -38,15 +38,9 @@ namespace OzonEdu.MerchandiseApi.Controllers
                 MerchPackTypeId = request.MerchPackTypeId,
                 IsManual = true
             };
-            try
-            {
-                await _mediator.Send(command, token);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            
+            await _mediator.Send(command, token);
+            return Ok();
         }
         
         [HttpGet("delivery")]
@@ -58,15 +52,9 @@ namespace OzonEdu.MerchandiseApi.Controllers
                 EmployeeId = requestStatus.EmployeeId,
                 MerchPackTypeId = requestStatus.MerchPackTypeId
             };
-            try
-            {
-                var statusName = await _mediator.Send(query, token);
-                return Ok(statusName);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            
+            var statusName = await _mediator.Send(query, token);
+            return Ok(statusName);
         }
     }
 }
