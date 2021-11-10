@@ -10,5 +10,7 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
         Task<MerchDelivery?> FindByIdAsync(int id, CancellationToken token = default);
 
         Task<List<MerchDelivery>> GetAll(CancellationToken token = default);
+
+        Task<List<MerchDelivery>> GetByStatus(int statusId, CancellationToken token = default);
     }
 }

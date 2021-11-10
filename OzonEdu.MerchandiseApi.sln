@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchandiseApi.Grpc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Domain", "src\OzonEdu.MerchandiseApi.Domain\OzonEdu.MerchandiseApi.Domain.csproj", "{50A3A2D7-F043-400F-B47C-F98F1954E490}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Infrastructure", "src\OzonEdu.MerchandiseApi.Infrastructure\OzonEdu.MerchandiseApi.Infrastructure.csproj", "{AFDCED53-4261-4098-B1A5-6267F7610CAC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Domain.Services", "src\OzonEdu.MerchandiseApi.Domain.Services\OzonEdu.MerchandiseApi.Domain.Services.csproj", "{AFDCED53-4261-4098-B1A5-6267F7610CAC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Domain.Tests", "tests\OzonEdu.MerchandiseApi.Domain.Tests\OzonEdu.MerchandiseApi.Domain.Tests.csproj", "{8990ADCD-03E9-4E2E-B89D-036C9C6BB368}"
 EndProject

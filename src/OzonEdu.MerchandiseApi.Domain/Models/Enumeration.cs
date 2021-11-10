@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace OzonEdu.MerchandiseApi.Domain.Models
 {
-    public abstract class Enumeration : IComparable
+    public abstract class Enumeration
     {
         public string Name { get; }
 
@@ -34,6 +34,14 @@ namespace OzonEdu.MerchandiseApi.Domain.Models
             return typeMatches && valueMatches;
         }
 
-        public int CompareTo(object? other) => Id.CompareTo(((Enumeration)other).Id);
+        protected bool Equals(Enumeration other)
+        {
+            return Name == other.Name && Id == other.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, Id);
+        }
     }
 }

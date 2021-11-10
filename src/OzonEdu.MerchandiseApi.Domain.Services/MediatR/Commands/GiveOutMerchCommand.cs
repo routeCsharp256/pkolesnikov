@@ -1,10 +1,10 @@
 ﻿using MediatR;
 
-namespace OzonEdu.MerchandiseApi.Infrastructure.Commands
+namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands
 {
     public class GiveOutMerchCommand : IRequest
     {
-        public long EmployeeId { get; set; }
+        public int EmployeeId { get; set; }
         public int MerchPackTypeId { get; set; }
 
         /// <summary>

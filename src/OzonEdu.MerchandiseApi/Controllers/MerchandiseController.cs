@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OzonEdu.MerchandiseApi.Constants;
+using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Queries.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.HttpModels;
-using OzonEdu.MerchandiseApi.Infrastructure.Commands;
-using OzonEdu.MerchandiseApi.Infrastructure.Queries.IssuanceRequestAggregate;
 
 namespace OzonEdu.MerchandiseApi.Controllers
 {
@@ -50,7 +50,7 @@ namespace OzonEdu.MerchandiseApi.Controllers
         }
         
         [HttpGet("delivery")]
-        public async Task<ActionResult<string>> GetMerchDelivery([FromQuery] GetMerchDeliveryStatusViewModel requestStatus, 
+        public async Task<ActionResult<string>> GetMerchDelivery([FromQuery] GetMerchDeliveryStatusRequest requestStatus, 
             CancellationToken token)
         {
             var query = new GetMerchDeliveryStatusQuery

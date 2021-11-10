@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using OzonEdu.MerchandiseApi.Domain.Exceptions;
 using OzonEdu.MerchandiseApi.Domain.Exceptions.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
@@ -20,16 +22,10 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
                 StatusChangeDate = new StatusChangeDate(DateTime.UtcNow);
             }
         }
-        
-        public IEnumerable<Sku> SkuCollection { get; }
+
+        public ICollection<Sku> SkuCollection { get; } = new List<Sku>();
         
         public StatusChangeDate StatusChangeDate { get; private set; } = new(DateTime.UtcNow);
-
-        // public MerchPack(MerchPackId id, MerchPackType type, MerchPackName name, InitiatingEventName? eventName)
-        //     : this(id, type)
-        // {
-        //     SetInitiatingEventName(eventName);
-        // }
 
         public MerchDelivery(int id, MerchPackType type, IEnumerable<Sku> skuCollection, MerchDeliveryStatus status)
             : this(type, skuCollection, status)
@@ -40,7 +36,7 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
         public MerchDelivery(MerchPackType merchPackType, IEnumerable<Sku> skuCollection, MerchDeliveryStatus status)
         {
             MerchPackType = merchPackType;
-            SkuCollection = skuCollection;
+            SetSkuCollection(skuCollection);
             SetStatus(status);
         }
         
@@ -49,6 +45,23 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
             if (Status.Equals(MerchDeliveryStatus.Done))
                 throw new MerchDeliveryAlreadyDone($"The application (id={Id}) was completed");
             Status = newStatus; 
+        }
+
+        public void SetSkuCollection(IEnumerable<Sku> skuCollection)
+        {
+            var hasElements = false;
+            
+            foreach (var sku in skuCollection)
+            {
+                if (sku.Value < 0)
+                    throw new NegativeValueException("sku value is less zero");
+                SkuCollection
+                    .Add(sku);
+                hasElements = true;
+            }
+
+            if (!hasElements)
+                throw new EmptyCollectionException("Sku collection is empty");
         }
     }
 }
