@@ -29,7 +29,7 @@ namespace OzonEdu.MerchandiseApi.Controllers
         /// <param name="token">  </param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GiveOutMerch([FromQuery] GiveOutMerchRequest request, 
+        public async Task<ActionResult> GiveOutMerch([FromBody] GiveOutMerchRequest request, 
             CancellationToken token)
         {
             var command = new GiveOutMerchCommand
@@ -44,7 +44,8 @@ namespace OzonEdu.MerchandiseApi.Controllers
         }
         
         [HttpGet("delivery")]
-        public async Task<ActionResult<string>> GetMerchDelivery([FromQuery] GetMerchDeliveryStatusRequest requestStatus, 
+        public async Task<ActionResult<string>> GetMerchDeliveryStatus(
+            [FromQuery] GetMerchDeliveryStatusRequest requestStatus, 
             CancellationToken token)
         {
             var query = new GetMerchDeliveryStatusQuery
