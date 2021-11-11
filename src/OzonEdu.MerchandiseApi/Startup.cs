@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OzonEdu.MerchandiseApi.Domain.Extensions;
+using OzonEdu.MerchandiseApi.Domain.Services.Extensions;
 using OzonEdu.MerchandiseApi.GrpcServices;
 using OzonEdu.MerchandiseApi.Infrastructure.Filters;
 using OzonEdu.MerchandiseApi.Infrastructure.Interceptors;
@@ -21,20 +23,18 @@ namespace OzonEdu.MerchandiseApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDomainRepositories();
+            services.AddDomainServices();
             services.AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
-            services.AddGrpc(options => options.Interceptors.Add<LoggingInterceptor>());
+            services.AddGrpc(options =>
+            {
+                options.Interceptors.Add<LoggingInterceptor>();
+                options.Interceptors.Add<ExceptionInterceptor>();
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseExceptionHandler(c => c.Run(async context =>
-            {
-                var exception = context.Features
-                    .Get<IExceptionHandlerPathFeature>()
-                    .Error;
-                var response = new { error = exception.Message };
-                await context.Response.WriteAsJsonAsync(response);
-            }));
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
