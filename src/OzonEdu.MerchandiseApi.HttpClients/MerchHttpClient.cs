@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,9 +9,10 @@ namespace OzonEdu.MerchandiseApi.HttpClients
 {
     public class MerchHttpClient : IMerchHttpClient
     {
+        private const string BaseRoute = "v1/api/merch";
         private readonly HttpClient _httpClient;
 
-        private readonly JsonSerializerOptions options = new JsonSerializerOptions
+        private readonly JsonSerializerOptions options = new()
         {
             PropertyNameCaseInsensitive = true
         };
@@ -19,21 +21,22 @@ namespace OzonEdu.MerchandiseApi.HttpClients
         {
             _httpClient = httpClient;
         }
-        
-        public async Task<GetMerchResponse?> GetMerch(GetMerchRequest request, CancellationToken token)
+
+        public async Task GiveOutMerch(GiveOutMerchRequest request, CancellationToken token)
         {
-            var requestUri = $"v1/api/merch?id={request.Id}";
-            using var response = await _httpClient.GetAsync(requestUri, token);
-            var body = await response.Content.ReadAsStringAsync(token);
-            return JsonSerializer.Deserialize<GetMerchResponse>(body, options);
+            var json = JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+            using var response = await _httpClient.PostAsync(BaseRoute, stringContent, token);
         }
 
-        public async Task<GetMerchIssuanceResponse?> GetMerchIssuance(GetMerchIssuanceRequest request, CancellationToken token)
+        public async Task<GetMerchDeliveryStatusResponse?> GetMerchDeliveryStatusRequest(
+            GetMerchDeliveryStatusRequest request, CancellationToken token)
         {
-            var requestUri = $"v1/api/merch/issuance?id={request.Id}";
+            var requestUri = BaseRoute 
+                             + $"/delivery?employeeId={request.EmployeeId}&merchPackTypeId={request.MerchPackTypeId}";
             using var response = await _httpClient.GetAsync(requestUri, token);
             var body = await response.Content.ReadAsStringAsync(token);
-            return JsonSerializer.Deserialize<GetMerchIssuanceResponse>(body, options);
+            return JsonSerializer.Deserialize<GetMerchDeliveryStatusResponse>(body, options);
         }
     }
 }

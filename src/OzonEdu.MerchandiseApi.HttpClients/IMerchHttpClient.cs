@@ -6,7 +6,9 @@ namespace OzonEdu.MerchandiseApi.HttpClients
 {
     public interface IMerchHttpClient
     {
-        Task<GetMerchResponse?> GetMerch(GetMerchRequest request, CancellationToken token);
-        Task<GetMerchIssuanceResponse?> GetMerchIssuance(GetMerchIssuanceRequest request, CancellationToken token);
+        Task GiveOutMerch(GiveOutMerchRequest request, CancellationToken token);
+        
+        Task<GetMerchDeliveryStatusResponse?> GetMerchDeliveryStatusRequest(
+            GetMerchDeliveryStatusRequest request, CancellationToken token);
     }
 }
