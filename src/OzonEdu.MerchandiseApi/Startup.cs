@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OzonEdu.MerchandiseApi.Domain.Extensions;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Services.Extensions;
 using OzonEdu.MerchandiseApi.GrpcServices;
 using OzonEdu.MerchandiseApi.Infrastructure.Filters;
 using OzonEdu.MerchandiseApi.Infrastructure.Interceptors;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation;
 
 namespace OzonEdu.MerchandiseApi
 {
@@ -23,7 +23,6 @@ namespace OzonEdu.MerchandiseApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDomainRepositories();
             services.AddDomainServices();
             services.AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
             services.AddGrpc(options =>
@@ -41,6 +40,12 @@ namespace OzonEdu.MerchandiseApi
                 endpoints.MapGrpcService<MerchandiseApiGrpcService>();
                 endpoints.MapControllers();
             });
+        }
+
+        private static void AddRepositories(IServiceCollection services)
+        {
+            services.AddSingleton<IEmployeeRepository, EmployeeRepository>();
+            services.AddSingleton<IMerchDeliveryRepository, MerchDeliveryRepository>();
         }
     }
 }

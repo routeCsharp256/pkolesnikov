@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
+
 #pragma warning disable 1998
 
-namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
+namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 {
     public class MerchDeliveryRepository : IMerchDeliveryRepository
     {

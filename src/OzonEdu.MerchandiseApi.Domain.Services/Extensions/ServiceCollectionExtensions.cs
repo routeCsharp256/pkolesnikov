@@ -8,12 +8,11 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddDomainServices(this IServiceCollection services)
+        public static void AddDomainServices(this IServiceCollection services)
         {
             services.AddMediatR(typeof(EmployeeNotificationDomainEventHandler).Assembly);
             services.AddSingleton<IEmployeeService, EmployeeService>();
             services.AddSingleton<IMerchService, MerchService>();
-            return services;
         }
     }
 }
