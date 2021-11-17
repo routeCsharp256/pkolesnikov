@@ -32,6 +32,7 @@
       <ProjectReference Include="..\OzonEdu.MerchandiseApi.HttpModels\OzonEdu.MerchandiseApi.HttpModels.csproj" />
       <ProjectReference Include="..\OzonEdu.MerchandiseApi.Domain.Services\OzonEdu.MerchandiseApi.Domain.Services.csproj" />
       <ProjectReference Include="..\OzonEdu.MerchandiseApi.Infrastructure\OzonEdu.MerchandiseApi.Infrastructure.csproj" />
+      <ProjectReference Include="..\OzonEdu.MerchandiseApi.Migrator\OzonEdu.MerchandiseApi.Migrator.csproj" />
     </ItemGroup>
 
 </Project>

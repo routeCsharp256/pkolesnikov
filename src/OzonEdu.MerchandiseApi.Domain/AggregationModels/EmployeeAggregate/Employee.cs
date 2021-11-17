@@ -7,7 +7,7 @@ using OzonEdu.MerchandiseApi.Domain.Models;
 
 namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
 {
-    public class Employee : Entity
+    public class  Employee : Entity
     {
         public Name Name { get; }
         
@@ -17,7 +17,7 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
 
         public EmailAddress? HrEmailAddress { get; set; }
 
-        public List<MerchDelivery> MerchDeliveries { get; } = new List<MerchDelivery>();
+        public List<MerchDelivery> MerchDeliveries { get; } = new();
 
         public Employee(Name name, EmailAddress? email)
         {

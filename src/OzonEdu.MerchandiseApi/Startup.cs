@@ -1,14 +1,21 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
-using OzonEdu.MerchandiseApi.Domain.Services.Extensions;
+using OzonEdu.MerchandiseApi.Domain.Contracts;
+using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation;
+using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
 using OzonEdu.MerchandiseApi.GrpcServices;
+using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.Filters;
 using OzonEdu.MerchandiseApi.Infrastructure.Interceptors;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
 
 namespace OzonEdu.MerchandiseApi
 {
@@ -23,7 +30,11 @@ namespace OzonEdu.MerchandiseApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDomainServices();
+            services.AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions));
+            AddDatabaseComponents(services);
+            AddRepositories(services);
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IMerchService, MerchService>();
             services.AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
             services.AddGrpc(options =>
             {
@@ -41,11 +52,20 @@ namespace OzonEdu.MerchandiseApi
                 endpoints.MapControllers();
             });
         }
+        
+        private void AddDatabaseComponents(IServiceCollection services)
+        {
+            services.Configure<DatabaseConnectionOptions>(Configuration
+                .GetSection(nameof(DatabaseConnectionOptions)));
+            services.AddScoped<IDbConnectionFactory<NpgsqlConnection>, NpgsqlConnectionFactory>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IChangeTracker, ChangeTracker>();
+        }
 
         private static void AddRepositories(IServiceCollection services)
         {
-            services.AddSingleton<IEmployeeRepository, EmployeeRepository>();
-            services.AddSingleton<IMerchDeliveryRepository, MerchDeliveryRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IMerchDeliveryRepository, MerchDeliveryRepository>();
         }
     }
 }

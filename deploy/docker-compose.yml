@@ -5,7 +5,8 @@ services:
     build: ../.
     hostname: merchandise-api
     ports:
-      - "8080:80"
+      - "5000:5000"
+      - "5001:5001"
     depends_on: 
       - merch-api-postgres
       - stock-api
