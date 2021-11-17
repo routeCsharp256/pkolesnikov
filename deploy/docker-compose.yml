@@ -7,10 +7,21 @@ services:
     ports:
       - "8080:80"
     depends_on: 
+      - merch-api-postgres
       - stock-api
       - emailing-service
       - supply-service
       - employees-service
+    
+  merch-api-postgres:
+    image: postgres:latest
+    ports: 
+      - "5424:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: merch-pass
+      POSTGRES_DB: merch-api
+    command: "-c log_statement=all"
     
   supply-service:
     image: ghcr.io/ozon-edu-csharp-2021/supply-service:main
