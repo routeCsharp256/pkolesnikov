@@ -1,4 +1,4 @@
-﻿using FluentMigrator;
+using FluentMigrator;
 
 namespace OzonEdu.MerchandiseApi.Migrator.Temp
 {
@@ -12,7 +12,7 @@ namespace OzonEdu.MerchandiseApi.Migrator.Temp
             Create
                 .Table(TableName)
                 .WithColumn("id").AsInt32().Identity().PrimaryKey()
-                .WithColumn("alias").AsString().NotNullable();
+                .WithColumn("name").AsString().NotNullable();
         }
 
         public override void Down()
