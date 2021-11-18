@@ -15,7 +15,7 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
         
         public EmailAddress? EmailAddress { get; set; }
 
-        public EmailAddress? HrEmailAddress { get; set; }
+        public EmailAddress? ManagerEmailAddress { get; set; }
 
         public List<MerchDelivery> MerchDeliveries { get; } = new();
 
@@ -38,7 +38,7 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
             if (!IsValidMail(email.Value))
                 throw new ArgumentException("Not valid email", nameof(email));
 
-            HrEmailAddress = email;
+            ManagerEmailAddress = email;
         }
 
         public void SetClothingSize(ClothingSize size)

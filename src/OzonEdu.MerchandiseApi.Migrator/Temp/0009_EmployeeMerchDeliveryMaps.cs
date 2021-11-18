@@ -2,17 +2,17 @@
 
 namespace OzonEdu.MerchandiseApi.Migrator.Temp
 {
-    [Migration(3)]
-    public class MerchPackTypes : Migration
+    [Migration(9)]
+    public class EmployeeMerchDeliveryMaps : Migration
     {
-        private const string TableName = "merch_pack_types";
+        private const string TableName = "employee_merch_delivery_maps";
         
         public override void Up()
         {
             Create
                 .Table(TableName)
-                .WithColumn("id").AsInt32().PrimaryKey()
-                .WithColumn("name").AsString().NotNullable();
+                .WithColumn("employee_id").AsInt32().NotNullable()
+                .WithColumn("merch_delivery_id").AsInt32().NotNullable();
         }
 
         public override void Down()

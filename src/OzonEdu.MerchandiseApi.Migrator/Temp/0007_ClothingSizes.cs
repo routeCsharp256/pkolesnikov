@@ -1,23 +1,21 @@
-﻿using FluentMigrator;
+using FluentMigrator;
 
 namespace OzonEdu.MerchandiseApi.Migrator.Temp
 {
-    [Migration(3)]
-    public class MerchPackTypes : Migration
+    [Migration(7)]
+    public class ClothingSizes: Migration
     {
-        private const string TableName = "merch_pack_types";
-        
         public override void Up()
         {
             Create
-                .Table(TableName)
+                .Table("clothing_sizes")
                 .WithColumn("id").AsInt32().PrimaryKey()
                 .WithColumn("name").AsString().NotNullable();
         }
 
         public override void Down()
         {
-            Delete.Table(TableName);
+            Delete.Table("clothing_sizes");
         }
     }
 }
