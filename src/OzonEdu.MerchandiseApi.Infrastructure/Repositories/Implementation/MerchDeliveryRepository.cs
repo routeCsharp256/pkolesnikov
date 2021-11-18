@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models;
 
 #pragma warning disable 1998
 

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Exceptions;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
-using OzonEdu.StockApi.Infrastructure.Repositories.Infrastructure.Exceptions;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure
 {
