@@ -34,9 +34,14 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
         }
         
         public MerchDelivery(MerchPackType merchPackType, IEnumerable<Sku> skuCollection, MerchDeliveryStatus status)
+        : this(merchPackType, status)
+        {
+            SetSkuCollection(skuCollection);
+        }
+        
+        public MerchDelivery(MerchPackType merchPackType, MerchDeliveryStatus status)
         {
             MerchPackType = merchPackType;
-            SetSkuCollection(skuCollection);
             SetStatus(status);
         }
         

@@ -1,11 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models;
+using ClothingSize = OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate.ClothingSize;
+using Employee = OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate.Employee;
+using MerchDelivery = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDelivery;
+using MerchDeliveryStatus = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDeliveryStatus;
+using MerchPackType = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchPackType;
 
 #pragma warning disable 1998
 
@@ -80,18 +87,13 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             return itemToUpdate;
         }
 
-        public async Task<Employee?> FindByIdAsync(long id, CancellationToken token = default)
+        public async Task<Employee?> FindByIdAsync(int id, CancellationToken token = default)
         {
-            const string sql = @"
+           var sql = @"
                 SELECT e.id, e.name, e.clothing_size_id, e.email_address, e.manager_email_address,
-                       cs.id, cs.name, md.id, md.merch_pack_type_id, md.merch_delivery_status_id, 
-                       md.status_change_date, mpt.id, mpt.name, mds.id, mds.name
+                       cs.id, cs.name
                 FROM employees e
-                LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id
-                LEFT JOIN employee_merch_delivery_maps emdm ON e.id = emdm.employee_id
-                LEFT JOIN merch_deliveries md ON emdm.merch_delivery_id = md.id
-                LEFT JOIN merch_pack_types mpt ON md.merch_pack_type_id = mpt.id
-                LEFT JOIN merch_delivery_statuses mds ON md.merch_delivery_status_id = mds.id
+                LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id                
                 WHERE e.id = @Id";
 
             var parameters = new
@@ -106,9 +108,45 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 cancellationToken: token);
             
             var connection = await _dbConnectionFactory.CreateConnection(token);
-            var employees = await connection.QueryAsync<Models.Employee, Models.ClothingSize, 
-                Models.MerchDelivery, Models.MerchPackType, Models.MerchDeliveryStatus, Employee>(commandDefinition,
-                ())
+            var employees = await connection.QueryAsync<Models.Employee, Models.ClothingSize, Employee>(
+                commandDefinition,
+                (employee, size) => new Employee(
+                    new Name(employee.Name),
+                    new EmailAddress(employee.EmailAddress),
+                    new EmailAddress(employee.ManagerEmailAddress),
+                    size is null ? null : new ClothingSize(size.Id.Value, size.Name)));
+
+            var employee = employees.FirstOrDefault();
+
+            if (employee is null)
+                return employee;
+
+            sql = @"
+                SELECT md.id, md.merch_pack_type_id, md.merch_delivery_status_id, md.status_change_date,
+                    mpt.id, mpt.name
+                FROM merch_deliveries md
+                INNER JOIN employee_merch_delivery_maps emdm on md.id = emdm.merch_delivery_id
+                LEFT JOIN merch_pack_types mpt ON md.merch_pack_type_id = mpt.id
+                LEFT JOIN merch_delivery_statuses mds ON md.merch_delivery_status_id = mds.id
+                WHERE emdm.employee_id = @Id
+            ";
+            
+            commandDefinition = new CommandDefinition(
+                sql,
+                parameters,
+                commandTimeout: Timeout,
+                cancellationToken: token);
+
+            var merchDeliveries = await connection.QueryAsync<Models.MerchPackType, 
+                Models.MerchDeliveryStatus, MerchDelivery>(
+                    commandDefinition,
+                (type, status) => new MerchDelivery(new MerchPackType(type.Id.Value, type.Name),
+                    new MerchDeliveryStatus(status.Id.Value, status.Name)));
+
+            foreach (var delivery in merchDeliveries)
+                employee.AddMerchDelivery(delivery);
+
+            return employee;
         }
 
         public async Task<Employee?> FindByEmailAsync(string email, CancellationToken token = default)

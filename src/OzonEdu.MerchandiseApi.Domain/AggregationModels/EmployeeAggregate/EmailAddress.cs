@@ -7,9 +7,9 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
     {
         public string Value { get; }
         
-        public EmailAddress(string name)
+        public EmailAddress(string email)
         {
-            Value = name;
+            Value = email;
         }
         
         protected override IEnumerable<object> GetEqualityComponents()

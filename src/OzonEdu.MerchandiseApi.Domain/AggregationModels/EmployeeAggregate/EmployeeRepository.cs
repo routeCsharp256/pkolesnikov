@@ -23,8 +23,8 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
         {
             throw new System.NotImplementedException();
         }
-
-        public async Task<Employee?> FindByIdAsync(long id, CancellationToken token = default)
+        
+        public async Task<Employee?> FindByIdAsync(int id, CancellationToken token = default)
         {
             throw new System.NotImplementedException();
         }
