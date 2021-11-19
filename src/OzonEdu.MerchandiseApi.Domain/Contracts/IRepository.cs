@@ -13,9 +13,9 @@ namespace OzonEdu.MerchandiseApi.Domain.Contracts
         /// Создать новую сущность
         /// </summary>
         /// <param name="itemToCreate">Объект для создания</param>
-        /// <param name="cancellationToken">Токен для отмены операции. <see cref="CancellationToken"/></param>
+        /// <param name="token">Токен для отмены операции. <see cref="CancellationToken"/></param>
         /// <returns>Созданная сущность</returns>
-        Task<TAggregationRoot?> CreateAsync(TAggregationRoot itemToCreate, CancellationToken cancellationToken = default);
+        Task<TAggregationRoot?> CreateAsync(TAggregationRoot itemToCreate, CancellationToken token = default);
 
         /// <summary>
         /// Обновить существующую сущность
