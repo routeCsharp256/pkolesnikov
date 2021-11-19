@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
 
 namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
@@ -10,9 +11,9 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
         Task<Employee?> FindByIdAsync(int id, CancellationToken token = default);
 
         Task<Employee?> FindByEmailAsync(string email, CancellationToken token = default);
-
-        Task<Employee?> FindByDeliveryId(int deliveryId, CancellationToken token = default);
         
-        Task<IEnumerable<Employee>> GetByMerchDeliveryStatus(int statusId, CancellationToken token = default);
+        Task<IEnumerable<Employee>> GetByMerchDeliveryStatusAndSkuCollection(int statusId, 
+            IEnumerable<long> skuIdCollection,
+            CancellationToken token = default);
     }
 }

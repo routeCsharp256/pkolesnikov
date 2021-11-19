@@ -65,18 +65,8 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
             if (statusId is null)
                 throw new Exception("Status not exists");
             
-            var employees = await _employeeRepository
-                .GetByMerchDeliveryStatus(statusId.Value, token);
-
-            return employees
-                .Where(e => e
-                    .MerchDeliveries
-                    .First(md => md.Status.Equals(status))
-                    .SkuCollection
-                    .Select(s => s.Value)
-                    .Intersect(suppliedSkuCollection)
-                    .Any())
-                .ToArray();
+            return await _employeeRepository
+                .GetByMerchDeliveryStatusAndSkuCollection(statusId.Value, suppliedSkuCollection, token);
         }
     }
 }

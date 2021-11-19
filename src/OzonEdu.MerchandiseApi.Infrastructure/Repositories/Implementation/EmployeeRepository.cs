@@ -151,17 +151,107 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<Employee?> FindByEmailAsync(string email, CancellationToken token = default)
         {
-            throw new System.NotImplementedException();
+            var sql = @"
+                SELECT e.id, e.name, e.clothing_size_id, e.email_address, e.manager_email_address,
+                       cs.id, cs.name
+                FROM employees e
+                LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id                
+                WHERE e.email_address = @Email";
+
+            var parameters = new
+            {
+                Email = email
+            };
+            
+            var commandDefinition = new CommandDefinition(
+                sql,
+                parameters,
+                commandTimeout: Timeout,
+                cancellationToken: token);
+            
+            var connection = await _dbConnectionFactory.CreateConnection(token);
+            var employees = await connection.QueryAsync<Models.Employee, Models.ClothingSize, Employee>(
+                commandDefinition,
+                (employee, size) => new Employee(
+                    new Name(employee.Name),
+                    new EmailAddress(employee.EmailAddress),
+                    new EmailAddress(employee.ManagerEmailAddress),
+                    size is null ? null : new ClothingSize(size.Id.Value, size.Name)));
+
+            var employee = employees.FirstOrDefault();
+
+            if (employee is null)
+                return employee;
+
+            var id = employee.Id;
+
+            var idParameters = new { Id = id };
+
+            sql = @"
+                SELECT md.id, md.merch_pack_type_id, md.merch_delivery_status_id, md.status_change_date,
+                    mpt.id, mpt.name
+                FROM merch_deliveries md
+                INNER JOIN employee_merch_delivery_maps emdm on md.id = emdm.merch_delivery_id
+                LEFT JOIN merch_pack_types mpt ON md.merch_pack_type_id = mpt.id
+                LEFT JOIN merch_delivery_statuses mds ON md.merch_delivery_status_id = mds.id
+                WHERE emdm.employee_id = @Id
+            ";
+            
+            commandDefinition = new CommandDefinition(
+                sql,
+                idParameters,
+                commandTimeout: Timeout,
+                cancellationToken: token);
+
+            var merchDeliveries = await connection.QueryAsync<Models.MerchPackType, 
+                Models.MerchDeliveryStatus, MerchDelivery>(
+                    commandDefinition,
+                (type, status) => new MerchDelivery(new MerchPackType(type.Id.Value, type.Name),
+                    new MerchDeliveryStatus(status.Id.Value, status.Name)));
+
+            foreach (var delivery in merchDeliveries)
+                employee.AddMerchDelivery(delivery);
+
+            return employee;
         }
 
-        public async Task<Employee?> FindByDeliveryId(int deliveryId, CancellationToken token = default)
+        public async Task<IEnumerable<Employee>> GetByMerchDeliveryStatusAndSkuCollection(int statusId, 
+            IEnumerable<long> skuIdCollection,
+            CancellationToken token = default)
         {
-            throw new System.NotImplementedException();
-        }
+            var sql = @"
+                SELECT e.id, e.name, e.clothing_size_id, e.email_address, e.manager_email_address,
+                       cs.id, cs.name
+                FROM employees e
+                INNER JOIN employee_merch_delivery_maps emdm ON e.id = emdm.employee_id
+                INNER JOIN merch_deliveries md ON emdm.merch_delivery_id = md.id
+                INNER JOIN merch_delivery_sku_maps mdsm ON md.id = mdsm.merch_delivery_id
+                LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id                
+                WHERE md.merch_delivery_status_id = @StatusId
+                AND mdsm.sku_id = ANY(@SkuIds);";
 
-        public async Task<IEnumerable<Employee>> GetByMerchDeliveryStatus(int statusId, CancellationToken token = default)
-        {
-            throw new System.NotImplementedException();
+            var parameters = new
+            {
+                StatusId = statusId,
+                SkuIds = skuIdCollection.ToArray()
+            };
+            
+            var commandDefinition = new CommandDefinition(
+                sql,
+                parameters,
+                commandTimeout: Timeout,
+                cancellationToken: token);
+            
+            var connection = await _dbConnectionFactory.CreateConnection(token);
+            var employees = await connection.QueryAsync<Models.Employee, Models.ClothingSize, Employee>(
+                commandDefinition,
+                (employee, size) => new Employee(
+                    new Name(employee.Name),
+                    new EmailAddress(employee.EmailAddress),
+                    new EmailAddress(employee.ManagerEmailAddress),
+                    size is null ? null : new ClothingSize(size.Id.Value, size.Name)));
+
+            return employees;
         }
     }
 }
