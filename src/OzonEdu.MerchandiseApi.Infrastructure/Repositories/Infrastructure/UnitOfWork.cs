@@ -13,9 +13,9 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private NpgsqlTransaction _npgsqlTransaction;
+        private NpgsqlTransaction? _npgsqlTransaction;
         
-        private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory = null;
+        private readonly IDbConnectionFactory<NpgsqlConnection>? _dbConnectionFactory;
         private readonly IPublisher _publisher;
         private readonly IChangeTracker _changeTracker;
 
@@ -31,10 +31,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure
 
         public async ValueTask StartTransaction(CancellationToken token)
         {
-            if (_npgsqlTransaction is not null)
-            {
+            if (!(_npgsqlTransaction is null && _dbConnectionFactory is not null))
                 return;
-            }
             var connection = await _dbConnectionFactory.CreateConnection(token);
             _npgsqlTransaction = await connection.BeginTransactionAsync(token);
         }

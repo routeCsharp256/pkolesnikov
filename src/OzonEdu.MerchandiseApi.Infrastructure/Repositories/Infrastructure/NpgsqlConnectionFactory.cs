@@ -11,7 +11,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure
     public class NpgsqlConnectionFactory : IDbConnectionFactory<NpgsqlConnection>
     {
         private readonly DatabaseConnectionOptions _options;
-        private  NpgsqlConnection _connection;
+        private  NpgsqlConnection? _connection;
         public NpgsqlConnectionFactory(IOptions<DatabaseConnectionOptions> options)
         {
             _options = options.Value;
@@ -20,19 +20,15 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure
 
         public async Task<NpgsqlConnection> CreateConnection(CancellationToken token)
         {
-            if (_connection != null)
-            {
+            if (_connection is not null)
                 return _connection;
-            }
 
             _connection = new NpgsqlConnection(_options.ConnectionString);
             await _connection.OpenAsync(token);
-            _connection.StateChange += (o, e) =>
+            _connection.StateChange += (_, e) =>
             {
                 if (e.CurrentState == ConnectionState.Closed)
-                {
                     _connection = null;
-                }
             };
             return _connection;
         }

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
-using OzonEdu.MerchandiseApi.Domain.Contracts;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
-using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models;
 using MerchDelivery = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDelivery;
 using MerchDeliveryStatus = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDeliveryStatus;
 using MerchPackType = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchPackType;
@@ -125,18 +122,24 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             return await connection
                 .QueryAsync<Models.MerchDelivery, Models.MerchPackType, Models.MerchDeliveryStatus, MerchDelivery>(
                     commandDefinition,
-                (delivery, type, status) => new MerchDelivery(
-                        delivery.Id.Value,
-                        new MerchPackType(type.Id.Value, 
-                            type.Name, 
-                            type
-                                .MerchTypeIds
-                                .Select(id => merchTypes[id])),
-                        delivery
-                            .SkuCollection
-                            .Select(s => new Sku(s))
-                            .ToArray(),
-                        new MerchDeliveryStatus(status.Id.Value, status.Name)));
+                (delivery, type, status) =>
+                {
+                    if (delivery is null || type is null || status is null)
+                        return null;
+
+                    return new MerchDelivery(
+                            delivery.Id,
+                            new MerchPackType(type.Id,
+                                type.Name,
+                                type
+                                    .MerchTypeIds
+                                    .Select(id => merchTypes[id])),
+                            delivery
+                                .SkuCollection
+                                .Select(s => new Sku(s))
+                                .ToArray(),
+                            new MerchDeliveryStatus(status.Id.Value, status.Name));
+                });
         }
 
         private async Task<Dictionary<int, MerchType>> GetMerchTypes(CancellationToken token)
@@ -157,16 +160,5 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 .Select(t => new MerchType(t.Id.Value, t.Name))
                 .ToDictionary(k => k.Id, v => v);
         }
-        
-        //
-        // public async Task<List<MerchDelivery>> GetAll(CancellationToken token = default)
-        // {
-        //     throw new System.NotImplementedException();
-        // }
-        //
-        // public async Task<List<MerchDelivery>> GetByStatus(int statusId, CancellationToken token = default)
-        // {
-        //     throw new System.NotImplementedException();
-        // }
     }
 }

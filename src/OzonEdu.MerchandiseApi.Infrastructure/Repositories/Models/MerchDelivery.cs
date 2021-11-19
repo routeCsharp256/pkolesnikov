@@ -6,8 +6,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
 {
     public class MerchDelivery : Entity
     {
-        public int? Id { get; set; }
-        
         public int? MerchPackTypeId { get; set; }
 
         public int? MerchDeliveryStatusId { get; set; }
