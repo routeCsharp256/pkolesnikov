@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,9 +8,8 @@ using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
-using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models;
 using ClothingSize = OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate.ClothingSize;
-using Employee = OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate.Employee;
+using Domain = OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate.Employee;
 using MerchDelivery = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDelivery;
 using MerchDeliveryStatus = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDeliveryStatus;
 using MerchPackType = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchPackType;
@@ -24,12 +24,15 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
         
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
         private readonly IChangeTracker _changeTracker;
+        private readonly IMerchDeliveryRepository _merchDeliveryRepository;
 
         public EmployeeRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory,
-            IChangeTracker changeTracker)
+            IChangeTracker changeTracker,
+            IMerchDeliveryRepository merchDeliveryRepository)
         {
             _dbConnectionFactory = dbConnectionFactory;
             _changeTracker = changeTracker;
+            _merchDeliveryRepository = merchDeliveryRepository;
         }
 
         public async Task<Employee?> CreateAsync(Employee itemToCreate, CancellationToken token)
@@ -112,37 +115,27 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 commandDefinition,
                 (employee, size) => new Employee(
                     new Name(employee.Name),
-                    new EmailAddress(employee.EmailAddress),
-                    new EmailAddress(employee.ManagerEmailAddress),
-                    size is null ? null : new ClothingSize(size.Id.Value, size.Name)));
+                    employee.EmailAddress is null 
+                        ? null 
+                        : new EmailAddress(employee.EmailAddress),
+                    employee.ManagerEmailAddress is null 
+                        ? null 
+                        : new EmailAddress(employee.ManagerEmailAddress),
+                    size?.Id is null 
+                        ? null 
+                        : new ClothingSize(size.Id.Value, size.Name ?? string.Empty)));
 
             var employee = employees.FirstOrDefault();
 
             if (employee is null)
                 return employee;
 
-            sql = @"
-                SELECT md.id, md.merch_pack_type_id, md.merch_delivery_status_id, md.status_change_date,
-                    mpt.id, mpt.name
-                FROM merch_deliveries md
-                INNER JOIN employee_merch_delivery_maps emdm on md.id = emdm.merch_delivery_id
-                LEFT JOIN merch_pack_types mpt ON md.merch_pack_type_id = mpt.id
-                LEFT JOIN merch_delivery_statuses mds ON md.merch_delivery_status_id = mds.id
-                WHERE emdm.employee_id = @Id
-            ";
+            var merchDeliveries = await _merchDeliveryRepository
+                .GetByEmployeeIdAsync(employee.Id, token);
+
+            if (merchDeliveries is null)
+                return employee;
             
-            commandDefinition = new CommandDefinition(
-                sql,
-                parameters,
-                commandTimeout: Timeout,
-                cancellationToken: token);
-
-            var merchDeliveries = await connection.QueryAsync<Models.MerchPackType, 
-                Models.MerchDeliveryStatus, MerchDelivery>(
-                    commandDefinition,
-                (type, status) => new MerchDelivery(new MerchPackType(type.Id.Value, type.Name),
-                    new MerchDeliveryStatus(status.Id.Value, status.Name)));
-
             foreach (var delivery in merchDeliveries)
                 employee.AddMerchDelivery(delivery);
 
@@ -174,8 +167,12 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 commandDefinition,
                 (employee, size) => new Employee(
                     new Name(employee.Name),
-                    new EmailAddress(employee.EmailAddress),
-                    new EmailAddress(employee.ManagerEmailAddress),
+                    employee.EmailAddress is null 
+                        ? null 
+                        : new EmailAddress(employee.EmailAddress),
+                    employee.ManagerEmailAddress is null
+                        ? null 
+                        : new EmailAddress(employee.ManagerEmailAddress),
                     size is null ? null : new ClothingSize(size.Id.Value, size.Name)));
 
             var employee = employees.FirstOrDefault();
@@ -183,32 +180,12 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             if (employee is null)
                 return employee;
 
-            var id = employee.Id;
+            var merchDeliveries = await _merchDeliveryRepository
+                .GetByEmployeeIdAsync(employee.Id, token);
 
-            var idParameters = new { Id = id };
-
-            sql = @"
-                SELECT md.id, md.merch_pack_type_id, md.merch_delivery_status_id, md.status_change_date,
-                    mpt.id, mpt.name
-                FROM merch_deliveries md
-                INNER JOIN employee_merch_delivery_maps emdm on md.id = emdm.merch_delivery_id
-                LEFT JOIN merch_pack_types mpt ON md.merch_pack_type_id = mpt.id
-                LEFT JOIN merch_delivery_statuses mds ON md.merch_delivery_status_id = mds.id
-                WHERE emdm.employee_id = @Id
-            ";
+            if (merchDeliveries is null)
+                return employee;
             
-            commandDefinition = new CommandDefinition(
-                sql,
-                idParameters,
-                commandTimeout: Timeout,
-                cancellationToken: token);
-
-            var merchDeliveries = await connection.QueryAsync<Models.MerchPackType, 
-                Models.MerchDeliveryStatus, MerchDelivery>(
-                    commandDefinition,
-                (type, status) => new MerchDelivery(new MerchPackType(type.Id.Value, type.Name),
-                    new MerchDeliveryStatus(status.Id.Value, status.Name)));
-
             foreach (var delivery in merchDeliveries)
                 employee.AddMerchDelivery(delivery);
 
@@ -247,8 +224,12 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 commandDefinition,
                 (employee, size) => new Employee(
                     new Name(employee.Name),
-                    new EmailAddress(employee.EmailAddress),
-                    new EmailAddress(employee.ManagerEmailAddress),
+                    employee.EmailAddress is null 
+                        ? null 
+                        : new EmailAddress(employee.EmailAddress),
+                    employee.ManagerEmailAddress is null
+                        ? null 
+                        : new EmailAddress(employee.ManagerEmailAddress),
                     size is null ? null : new ClothingSize(size.Id.Value, size.Name)));
 
             return employees;

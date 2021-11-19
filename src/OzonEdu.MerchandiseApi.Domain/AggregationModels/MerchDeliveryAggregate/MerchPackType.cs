@@ -26,6 +26,10 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
             : base((int)packType, packType.ToString(), merchTypes)
         { }
         
+        public MerchPackType(int id, string name, IEnumerable<MerchType> merchTypes) 
+            : base(id, name, merchTypes)
+        { }
+        
         public MerchPackType(int id, string name) 
             : base(id, name, Array.Empty<MerchType>())
         { }

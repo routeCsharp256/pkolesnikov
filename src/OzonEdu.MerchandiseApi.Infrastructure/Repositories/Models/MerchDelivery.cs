@@ -14,6 +14,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
         
         public DateTime? StatusChangeDate { get; set; }
         
-        public List<Employee> Employees { get; set; }
+        public long[]? SkuCollection { get; set; }
     }
 }

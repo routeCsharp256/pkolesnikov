@@ -12,7 +12,8 @@ namespace OzonEdu.MerchandiseApi.Migrator.Temp
             Create
                 .Table(TableName)
                 .WithColumn("id").AsInt32().PrimaryKey()
-                .WithColumn("name").AsString().NotNullable();
+                .WithColumn("name").AsString().NotNullable()
+                .WithColumn("merch_type_ids").AsCustom("int[]").NotNullable();
         }
 
         public override void Down()

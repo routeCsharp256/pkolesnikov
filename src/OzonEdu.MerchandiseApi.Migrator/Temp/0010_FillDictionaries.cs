@@ -42,13 +42,13 @@ namespace OzonEdu.MerchandiseApi.Migrator.Temp
             ");
             
             Execute.Sql(@"
-                INSERT INTO merch_pack_types (id, name)
+                INSERT INTO merch_pack_types (id, name, merch_type_ids)
                 VALUES 
-                    (10, 'WelcomePack'),
-                    (20, 'ProbationPeriodEndingPack'),
-                    (30, 'ConferenceListenerPack'),
-                    (40, 'ConferenceSpeakerPack'),
-                    (50, 'VeteranPack')
+                    (10, 'WelcomePack', '{ 5 }'),
+                    (20, 'ProbationPeriodEndingPack', '{ 6 }'),
+                    (30, 'ConferenceListenerPack', '{ 3 }'),
+                    (40, 'ConferenceSpeakerPack', '{ 1 }'),
+                    (50, 'VeteranPack', '{ 2,4 }')
                 ON CONFLICT DO NOTHING
             ");
         }
