@@ -8,6 +8,7 @@ using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Queries;
 using ClothingSize = OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate.ClothingSize;
 using Domain = OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate.Employee;
 using MerchDelivery = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDelivery;
@@ -37,10 +38,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<Employee?> CreateAsync(Employee itemToCreate, CancellationToken token)
         {
-            const string sql = @"
-                INSERT INTO employees (name, clothing_size_id, email_address, manager_email_address)
-                VALUES (@Name, @ClothingSizeId, @EmailAddress, @ManagerEmailAddress);";
-
             var parameters = new
             {
                 Name = itemToCreate.Name.Value,
@@ -50,7 +47,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             };
 
             var commandDefinition = new CommandDefinition(
-                sql,
+                EmployeeQuery.Insert,
                 parameters,
                 commandTimeout: Timeout,
                 cancellationToken: token);
@@ -63,12 +60,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<Employee?> UpdateAsync(Employee itemToUpdate, CancellationToken cancellationToken = default)
         {
-            const string sql = @"
-                UPDATE employees
-                SET name = @Name, clothing_size_id = @ClothingSizeId, 
-                    email_address = @EmailAddress, manager_email_address = @ManagerEmailAddress
-                WHERE id = @EmployeeId;";
-
             var parameters = new
             {
                 EmployeeId = itemToUpdate.Id,
@@ -79,7 +70,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             };
             
             var commandDefinition = new CommandDefinition(
-                sql,
+                EmployeeQuery.Update,
                 parameters,
                 commandTimeout: Timeout,
                 cancellationToken: cancellationToken);
@@ -92,20 +83,13 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<Employee?> FindAsync(int id, CancellationToken token = default)
         {
-           var sql = @"
-                SELECT e.id, e.name, e.clothing_size_id, e.email_address, e.manager_email_address,
-                       cs.id, cs.name
-                FROM employees e
-                LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id                
-                WHERE e.id = @Id";
-
             var parameters = new
             {
                 Id = id
             };
             
             var commandDefinition = new CommandDefinition(
-                sql,
+                EmployeeQuery.FilterById,
                 parameters,
                 commandTimeout: Timeout,
                 cancellationToken: token);
@@ -144,20 +128,13 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<Employee?> FindAsync(string email, CancellationToken token = default)
         {
-            var sql = @"
-                SELECT e.id, e.name, e.clothing_size_id, e.email_address, e.manager_email_address,
-                       cs.id, cs.name
-                FROM employees e
-                LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id                
-                WHERE e.email_address = @Email";
-
             var parameters = new
             {
                 Email = email
             };
             
             var commandDefinition = new CommandDefinition(
-                sql,
+                EmployeeQuery.FilterByEmail,
                 parameters,
                 commandTimeout: Timeout,
                 cancellationToken: token);
@@ -196,17 +173,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             IEnumerable<long> skuIdCollection,
             CancellationToken token = default)
         {
-            var sql = @"
-                SELECT e.id, e.name, e.clothing_size_id, e.email_address, e.manager_email_address,
-                       cs.id, cs.name
-                FROM employees e
-                INNER JOIN employee_merch_delivery_maps emdm ON e.id = emdm.employee_id
-                INNER JOIN merch_deliveries md ON emdm.merch_delivery_id = md.id
-                INNER JOIN merch_delivery_sku_maps mdsm ON md.id = mdsm.merch_delivery_id
-                LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id                
-                WHERE md.merch_delivery_status_id = @StatusId
-                AND mdsm.sku_id = ANY(@SkuIds);";
-
             var parameters = new
             {
                 StatusId = statusId,
@@ -214,7 +180,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             };
             
             var commandDefinition = new CommandDefinition(
-                sql,
+                EmployeeQuery.FilterByMerchDeliveryStatusAndSkuCollection,
                 parameters,
                 commandTimeout: Timeout,
                 cancellationToken: token);

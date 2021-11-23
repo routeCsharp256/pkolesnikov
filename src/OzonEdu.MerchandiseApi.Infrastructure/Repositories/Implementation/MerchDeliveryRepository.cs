@@ -6,6 +6,7 @@ using Dapper;
 using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Queries;
 using MerchDelivery = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDelivery;
 using MerchDeliveryStatus = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDeliveryStatus;
 using MerchPackType = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchPackType;
@@ -31,10 +32,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<MerchDelivery?> CreateAsync(MerchDelivery itemToCreate, CancellationToken token)
         {
-            const string sql = @"
-                INSERT INTO merch_deliveries (merch_delivery_status_id, merch_pack_type_id, status_change_date, sku_ids)
-                VALUES (@MerchDeliveryStatusId, @MerchPackTypeId, @StatusChangeDate, @SkuIds);";
-
             var parameters = new
             {
                 MerchDeliveryStatusId = itemToCreate.Status.Id,
@@ -47,7 +44,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             };
 
             var commandDefinition = new CommandDefinition(
-                sql,
+                MerchDeliveryQuery.Insert,
                 parameters,
                 commandTimeout: Timeout,
                 cancellationToken: token);
@@ -60,14 +57,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<MerchDelivery?> UpdateAsync(MerchDelivery itemToUpdate, CancellationToken cancellationToken = default)
         {
-            const string sql = @"
-                UPDATE merch_deliveries (merch_delivery_status_id, merch_pack_type_id, status_change_date, sku_ids)
-                SET merch_delivery_status_id = @MerchDeliveryStatusId, 
-                    merch_pack_type_id = @MerchPackTypeId, 
-                    status_change_date = @StatusChangeDate
-                    sku_ids = @SkuIds
-                WHERE id = @MerchDeliveryId;";
-
             var parameters = new
             {
                 MerchDeliveryId = itemToUpdate.Id,
@@ -81,7 +70,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             };
             
             var commandDefinition = new CommandDefinition(
-                sql,
+                MerchDeliveryQuery.Update,
                 parameters,
                 commandTimeout: Timeout,
                 cancellationToken: cancellationToken);
@@ -95,23 +84,13 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
         public async Task<IEnumerable<MerchDelivery>?> GetAsync(int employeeId, 
             CancellationToken token = default)
         {
-            const string sql = @"
-                SELECT md.id, md.merch_pack_type_id, md.merch_delivery_status_id, md.status_change_date, md.sku_ids,
-                    mpt.id, mpt.name
-                FROM merch_deliveries md
-                INNER JOIN employee_merch_delivery_maps emdm on md.id = emdm.merch_delivery_id
-                LEFT JOIN merch_pack_types mpt ON md.merch_pack_type_id = mpt.id
-                LEFT JOIN merch_delivery_statuses mds ON md.merch_delivery_status_id = mds.id
-                WHERE emdm.employee_id = @EmployeeId
-            ";
-
             var parameters = new
             {
                 EmployeeId = employeeId
             };
             
             var commandDefinition = new CommandDefinition(
-                sql,
+                MerchDeliveryQuery.FilterByEmployeeId,
                 parameters,
                 commandTimeout: Timeout,
                 cancellationToken: token);
@@ -119,38 +98,34 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var merchTypes = await GetMerchTypes(token);
 
             var connection = await _dbConnectionFactory.CreateConnection(token);
+            
             return await connection
                 .QueryAsync<Models.MerchDelivery, Models.MerchPackType, Models.MerchDeliveryStatus, MerchDelivery>(
                     commandDefinition,
                 (delivery, type, status) =>
-                {
-                    if (delivery is null || type is null || status is null)
-                        return null;
+                    {
+                        if (delivery is null || type is null || status is null)
+                            return null;
 
-                    return new MerchDelivery(
-                            delivery.Id,
-                            new MerchPackType(type.Id,
-                                type.Name,
-                                type
-                                    .MerchTypeIds
-                                    .Select(id => merchTypes[id])),
-                            delivery
-                                .SkuCollection
-                                .Select(s => new Sku(s))
-                                .ToArray(),
-                            new MerchDeliveryStatus(status.Id.Value, status.Name));
-                });
+                        return new MerchDelivery(
+                                delivery.Id,
+                                new MerchPackType(type.Id,
+                                    type.Name,
+                                    type
+                                        .MerchTypeIds
+                                        .Select(id => merchTypes[id])),
+                                delivery
+                                    .SkuCollection
+                                    .Select(s => new Sku(s))
+                                    .ToArray(),
+                                new MerchDeliveryStatus(status.Id.Value, status.Name));
+                    });
         }
 
         private async Task<Dictionary<int, MerchType>> GetMerchTypes(CancellationToken token)
         {
-            const string sql = @"
-                SELECT mt.id, mt.name
-                FROM merch_types mt;
-            ";
-            
             var commandDefinition = new CommandDefinition(
-                sql,
+                MerchDeliveryQuery.GetMerchTypes,
                 commandTimeout: Timeout,
                 cancellationToken: token);
 
