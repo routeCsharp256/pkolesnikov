@@ -20,6 +20,8 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.EmployeeAggreg
         public async Task<MerchDeliveryStatus?> Handle(GetMerchDeliveryStatusQuery request, CancellationToken token)
         {
             var employee = await _employeeService.FindAsync(request.EmployeeId, token);
+            if (employee is null)
+                return null;
             return employee?.MerchDeliveries
                 .FirstOrDefault(d => d.MerchPackType.Id.Equals(request.MerchPackTypeId))?
                 .Status;

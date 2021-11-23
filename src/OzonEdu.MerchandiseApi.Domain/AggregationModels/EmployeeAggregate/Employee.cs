@@ -21,6 +21,12 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
             Name = name;
             SetEmailAddress(email);
         }
+        
+        public Employee(int id, Name name, EmailAddress? email, EmailAddress? managerEmail, ClothingSize? clothingSize)
+        : this(name, email, managerEmail, clothingSize)
+        {
+            Id = id;
+        }
 
         public Employee(Name name, EmailAddress? email, EmailAddress? managerEmail, ClothingSize? clothingSize)
         {

@@ -16,7 +16,7 @@
             SELECT e.id, e.name, e.clothing_size_id, e.email_address, e.manager_email_address,
                    cs.id, cs.name
             FROM employees e
-            LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id                
+            LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.id                
             WHERE e.id = @Id";
         
         internal const string FilterByEmail = @"

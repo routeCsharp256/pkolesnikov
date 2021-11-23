@@ -9,6 +9,10 @@ using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
 using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation;
 using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
+using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.EmployeeAggregate;
+using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryAggregate;
+using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Queries.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.GrpcServices;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.Filters;
@@ -31,6 +35,10 @@ namespace OzonEdu.MerchandiseApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions));
+            services.AddScoped<IRequestHandler<GiveOutMerchCommand, Unit>, GiveOutMerchHandler>();
+            services.AddScoped<
+                IRequestHandler<GetMerchDeliveryStatusQuery, MerchDeliveryStatus?>,
+                GetMerchDeliveryStatusQueryHandler>();
             AddDatabaseComponents(services);
             AddRepositories(services);
             services.AddScoped<IEmployeeService, EmployeeService>();
@@ -64,6 +72,7 @@ namespace OzonEdu.MerchandiseApi
 
         private static void AddRepositories(IServiceCollection services)
         {
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IMerchDeliveryRepository, MerchDeliveryRepository>();
         }
