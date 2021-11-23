@@ -1,11 +1,11 @@
 ﻿namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
 {
-    public class MerchPackType
+    public record MerchPackType
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
         
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; init; }
         
-        public int[]? MerchTypeIds { get; set; }
+        public int[]? MerchTypeIds { get; init; }
     }
 }

@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
-
-namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
+﻿namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
 {
-    public class Employee 
+    public record Employee 
     {
-        public int Id { get; set; }
-        
-        public string? Name { get; set; }
-        
-        public string? EmailAddress { get; set; }
-
-        public string? ManagerEmailAddress { get; set; }
+        public int Id { get; init; }
+        public string? Name { get; init; }
+        public string? EmailAddress { get; init; }
+        public string? ManagerEmailAddress { get; init; }
     }
 }

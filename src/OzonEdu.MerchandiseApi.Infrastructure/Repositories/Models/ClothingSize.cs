@@ -1,8 +1,8 @@
 ﻿namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
 {
-    public class ClothingSize
+    public record ClothingSize
     {
-        public int? Id { get; set; }
-        public string? Name { get; set; }
+        public int? Id { get; init; }
+        public string? Name { get; init; }
     }
 }

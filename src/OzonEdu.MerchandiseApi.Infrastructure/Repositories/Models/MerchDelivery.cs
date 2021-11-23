@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using OzonEdu.MerchandiseApi.Domain.Models;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
 {
-    public class MerchDelivery : Entity
+    public record MerchDelivery
     {
-        public int? MerchPackTypeId { get; set; }
-
-        public int? MerchDeliveryStatusId { get; set; }
-        
-        public DateTime? StatusChangeDate { get; set; }
-        
-        public long[]? SkuCollection { get; set; }
+        public int Id { get; init; }
+        public int? MerchPackTypeId { get; init; }
+        public int? MerchDeliveryStatusId { get; init; }
+        public DateTime? StatusChangeDate { get; init; }
+        public long[]? SkuCollection { get; init; }
     }
 }
