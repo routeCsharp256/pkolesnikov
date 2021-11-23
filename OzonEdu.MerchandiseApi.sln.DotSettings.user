@@ -10,5 +10,7 @@
     &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.MerchDeliveryTests.SetSkuCollection_NegativeSkuId_NegativeValueException&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.MerchDeliveryTests.SetSkuCollection_CorrectSkuCollection_Success&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.MerchDeliveryTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.EmailAddressTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.NameTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using OzonEdu.MerchandiseApi.Domain.Exceptions;
 using OzonEdu.MerchandiseApi.Domain.Exceptions.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.Domain.Models;
