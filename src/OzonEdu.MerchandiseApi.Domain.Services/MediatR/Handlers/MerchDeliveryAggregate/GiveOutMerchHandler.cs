@@ -30,7 +30,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryA
             if (IsExistsMerchPackType(merchPackTypeId))
                 throw new Exception("Id of merch pack type isn't correct");
 
-            var employee = await _employeeService.GetByIdAsync(request.EmployeeId, token);
+            var employee = await _employeeService.FindAsync(request.EmployeeId, token);
             
             var merchDelivery = employee
                                     .MerchDeliveries

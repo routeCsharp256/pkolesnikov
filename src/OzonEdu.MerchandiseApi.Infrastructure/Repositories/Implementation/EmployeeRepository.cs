@@ -109,21 +109,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                         ? null 
                         : new ClothingSize(size.Id.Value, size.Name ?? string.Empty)));
 
-            var employee = employees.FirstOrDefault();
-
-            if (employee is null)
-                return employee;
-
-            var merchDeliveries = await _merchDeliveryRepository
-                .GetAsync(employee.Id, token);
-
-            if (merchDeliveries is null)
-                return employee;
-            
-            foreach (var delivery in merchDeliveries)
-                employee.AddMerchDelivery(delivery);
-
-            return employee;
+            return employees.FirstOrDefault();
         }
 
         public async Task<Employee?> FindAsync(string email, CancellationToken token = default)
@@ -152,21 +138,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                         : new EmailAddress(employee.ManagerEmailAddress),
                     size is null ? null : new ClothingSize(size.Id.Value, size.Name)));
 
-            var employee = employees.FirstOrDefault();
-
-            if (employee is null)
-                return employee;
-
-            var merchDeliveries = await _merchDeliveryRepository
-                .GetAsync(employee.Id, token);
-
-            if (merchDeliveries is null)
-                return employee;
-            
-            foreach (var delivery in merchDeliveries)
-                employee.AddMerchDelivery(delivery);
-
-            return employee;
+            return employees.FirstOrDefault();
         }
 
         public async Task<IEnumerable<Employee>> GetByMerchDeliveryStatusAndSkuCollection(int statusId, 

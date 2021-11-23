@@ -48,7 +48,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.DomainEvent
                 throw new Exception("\"Employee came\" status not found");
 
             var employeesForNotify = await _employeeService
-                .GetByMerchDeliveryStatusAsync(employeeCameStatus, suppliedSkuCollection, token);
+                .GetAsync(employeeCameStatus, suppliedSkuCollection, token);
 
             foreach (var employee in employeesForNotify)
             {
@@ -79,7 +79,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.DomainEvent
                 throw new Exception("\"Notify\" status not found");
 
             var employeesForNotify = await _employeeService
-                .GetByMerchDeliveryStatusAsync(MerchDeliveryStatus.Notify, suppliedSkuCollection, token);
+                .GetAsync(MerchDeliveryStatus.Notify, suppliedSkuCollection, token);
 
             foreach (var employee in employeesForNotify)
             {
