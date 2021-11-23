@@ -92,7 +92,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             return itemToUpdate;
         }
 
-        public async Task<IEnumerable<MerchDelivery>?> GetByEmployeeIdAsync(int employeeId, 
+        public async Task<IEnumerable<MerchDelivery>?> GetAsync(int employeeId, 
             CancellationToken token = default)
         {
             const string sql = @"

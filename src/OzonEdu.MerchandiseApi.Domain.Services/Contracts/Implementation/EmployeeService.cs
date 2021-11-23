@@ -20,7 +20,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
 
         public async Task<Employee> GetByIdAsync(int id, CancellationToken token = default)
         {
-            var employee = await _employeeRepository.FindByIdAsync(id, token);
+            var employee = await _employeeRepository.FindAsync(id, token);
             if (employee is null)
                 throw new Exception("employee not found");
             return employee;
@@ -28,7 +28,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
 
         public async Task<Employee?> GetByEmailAsync(string email, CancellationToken token)
         {
-            var employee = await _employeeRepository.FindByEmailAsync(email, token);
+            var employee = await _employeeRepository.FindAsync(email, token);
             return employee;
         }
 

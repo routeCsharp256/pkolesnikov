@@ -90,7 +90,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             return itemToUpdate;
         }
 
-        public async Task<Employee?> FindByIdAsync(int id, CancellationToken token = default)
+        public async Task<Employee?> FindAsync(int id, CancellationToken token = default)
         {
            var sql = @"
                 SELECT e.id, e.name, e.clothing_size_id, e.email_address, e.manager_email_address,
@@ -131,7 +131,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 return employee;
 
             var merchDeliveries = await _merchDeliveryRepository
-                .GetByEmployeeIdAsync(employee.Id, token);
+                .GetAsync(employee.Id, token);
 
             if (merchDeliveries is null)
                 return employee;
@@ -142,7 +142,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             return employee;
         }
 
-        public async Task<Employee?> FindByEmailAsync(string email, CancellationToken token = default)
+        public async Task<Employee?> FindAsync(string email, CancellationToken token = default)
         {
             var sql = @"
                 SELECT e.id, e.name, e.clothing_size_id, e.email_address, e.manager_email_address,
@@ -181,7 +181,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 return employee;
 
             var merchDeliveries = await _merchDeliveryRepository
-                .GetByEmployeeIdAsync(employee.Id, token);
+                .GetAsync(employee.Id, token);
 
             if (merchDeliveries is null)
                 return employee;

@@ -8,9 +8,9 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
 {
     public interface IEmployeeRepository : IRepository<Employee>
     {
-        Task<Employee?> FindByIdAsync(int id, CancellationToken token = default);
+        Task<Employee?> FindAsync(int id, CancellationToken token = default);
 
-        Task<Employee?> FindByEmailAsync(string email, CancellationToken token = default);
+        Task<Employee?> FindAsync(string email, CancellationToken token = default);
         
         Task<IEnumerable<Employee>> GetByMerchDeliveryStatusAndSkuCollection(int statusId, 
             IEnumerable<long> skuIdCollection,
