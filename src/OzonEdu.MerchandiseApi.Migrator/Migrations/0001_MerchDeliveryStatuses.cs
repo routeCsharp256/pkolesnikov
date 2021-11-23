@@ -1,11 +1,11 @@
-﻿using FluentMigrator;
+using FluentMigrator;
 
-namespace OzonEdu.MerchandiseApi.Migrator.Temp
+namespace OzonEdu.MerchandiseApi.Migrator.Migrations
 {
-    [Migration(2)]
-    public class MerchTypes : Migration
+    [Migration(1)]
+    public class MerchDeliveryStatuses : Migration
     {
-        private const string TableName = "merch_types";
+        private const string TableName = "merch_delivery_statuses";
         
         public override void Up()
         {

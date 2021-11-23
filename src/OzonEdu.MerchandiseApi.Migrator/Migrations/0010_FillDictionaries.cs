@@ -1,9 +1,9 @@
 using FluentMigrator;
 
-namespace OzonEdu.MerchandiseApi.Migrator.Temp
+namespace OzonEdu.MerchandiseApi.Migrator.Migrations
 {
     [Migration(10)]
-    public class FillDictionaries:ForwardOnlyMigration
+    public class FillDictionaries : ForwardOnlyMigration
     {
         public override void Up()
         {

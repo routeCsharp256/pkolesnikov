@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace OzonEdu.MerchandiseApi.Migrator.Temp
+namespace OzonEdu.MerchandiseApi.Migrator.Migrations
 {
     [Migration(9)]
     public class EmployeeMerchDeliveryMaps : Migration
