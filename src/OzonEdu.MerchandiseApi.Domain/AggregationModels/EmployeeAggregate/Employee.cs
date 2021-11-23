@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
-using OzonEdu.MerchandiseApi.Domain.Events;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
 namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
@@ -11,13 +8,13 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
     {
         public Name Name { get; }
         
-        public ClothingSize? ClothingSize { get; set; }
+        public ClothingSize? ClothingSize { get; private set; }
         
-        public EmailAddress? EmailAddress { get; set; }
+        public EmailAddress? EmailAddress { get; private set; }
 
-        public EmailAddress? ManagerEmailAddress { get; set; }
+        public EmailAddress? ManagerEmailAddress { get; private set; }
 
-        public List<MerchDelivery> MerchDeliveries { get; } = new List<MerchDelivery>();
+        public List<MerchDelivery> MerchDeliveries { get; } = new();
 
         public Employee(Name name, EmailAddress? email)
         {
@@ -37,10 +34,6 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
         {
             if (email is null)
                 return;
-            
-            if (!IsValidMail(email.Value))
-                throw new ArgumentException("Not valid email", nameof(email));
-
             EmailAddress = email;
         }
         
@@ -48,28 +41,19 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
         {
             if (email is null)
                 return;
-            
-            if (!IsValidMail(email.Value))
-                throw new ArgumentException("Not valid email", nameof(email));
-
             ManagerEmailAddress = email;
         }
 
         public void SetClothingSize(ClothingSize? size)
         {
+            if (size is null)
+                return;
             ClothingSize = size;
         }
 
         public void AddMerchDelivery(MerchDelivery merchDelivery)
         {
             MerchDeliveries.Add(merchDelivery);
-        }
-
-        private static bool IsValidMail(string emailAddress)
-        {
-            var regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");  
-            var match = regex.Match(emailAddress);
-            return match.Success;
         }
     }
 }

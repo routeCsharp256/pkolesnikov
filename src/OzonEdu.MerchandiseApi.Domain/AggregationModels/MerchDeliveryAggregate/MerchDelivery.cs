@@ -59,9 +59,9 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
             foreach (var sku in skuCollection)
             {
                 if (sku.Value < 0)
-                    throw new NegativeValueException("sku value is less zero");
-                SkuCollection
-                    .Add(sku);
+                    throw new NegativeValueException("Sku value is less zero");
+                
+                SkuCollection.Add(sku);
                 hasElements = true;
             }
 
