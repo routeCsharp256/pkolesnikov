@@ -22,7 +22,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.EmployeeAggreg
             var employee = await _employeeService.FindAsync(request.EmployeeId, token);
             if (employee is null)
                 return null;
-            return employee?.MerchDeliveries
+            return employee.MerchDeliveries
                 .FirstOrDefault(d => d.MerchPackType.Id.Equals(request.MerchPackTypeId))?
                 .Status;
         }

@@ -108,7 +108,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                             return null;
 
                         return new MerchDelivery(
-                                delivery.Id,
+                                delivery.MerchDeliveryId,
                                 new MerchPackType(type.Id,
                                     type.Name,
                                     type

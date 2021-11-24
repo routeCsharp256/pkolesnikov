@@ -11,7 +11,7 @@ namespace OzonEdu.MerchandiseApi.Migrator.Migrations
         {
             Create
                 .Table(TableName)
-                .WithColumn("id").AsInt32().Identity().PrimaryKey()
+                .WithColumn("merch_delivery_id").AsInt32().Identity().PrimaryKey()
                 .WithColumn("merch_delivery_status_id").AsInt32().NotNullable()
                 .WithColumn("merch_pack_type_id").AsInt32().NotNullable()
                 .WithColumn("status_change_date").AsDate().NotNullable()

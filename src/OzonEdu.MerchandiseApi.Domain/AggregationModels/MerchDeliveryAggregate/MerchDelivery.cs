@@ -53,19 +53,13 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
 
         public void SetSkuCollection(IEnumerable<Sku> skuCollection)
         {
-            var hasElements = false;
-            
             foreach (var sku in skuCollection)
             {
                 if (sku.Value < 0)
                     throw new NegativeValueException("Sku value is less zero");
                 
                 SkuCollection.Add(sku);
-                hasElements = true;
             }
-
-            if (!hasElements)
-                throw new EmptyCollectionException("Sku collection is empty");
         }
     }
 }

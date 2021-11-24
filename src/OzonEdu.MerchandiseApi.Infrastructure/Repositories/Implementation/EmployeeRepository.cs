@@ -98,7 +98,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var employees = await connection.QueryAsync<Models.Employee, Models.ClothingSize, Employee>(
                 commandDefinition,
                 (employee, size) => new Employee(
-                    employee.Id,
+                    employee.EmployeeId,
                     new Name(employee.Name),
                     employee.EmailAddress is null 
                         ? null 

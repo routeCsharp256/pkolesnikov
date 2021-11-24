@@ -2,7 +2,7 @@
 {
     public record Employee 
     {
-        public int Id { get; init; }
+        public int EmployeeId { get; init; }
         public string? Name { get; init; }
         public string? EmailAddress { get; init; }
         public string? ManagerEmailAddress { get; init; }
