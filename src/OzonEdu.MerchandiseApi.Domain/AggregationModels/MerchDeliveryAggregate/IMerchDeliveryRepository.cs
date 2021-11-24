@@ -7,6 +7,7 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
 {
     public interface IMerchDeliveryRepository : IRepository<MerchDelivery>
     {
-        Task<IEnumerable<MerchDelivery>?> GetAsync(int employeeId, CancellationToken token = default);
+        Task<IEnumerable<MerchDelivery>?> GetAsync(int employeeId, CancellationToken token);
+        Task<MerchDeliveryStatus?> FindStatus(int employeeId, int merchPackTypeId, CancellationToken token);
     }
 }

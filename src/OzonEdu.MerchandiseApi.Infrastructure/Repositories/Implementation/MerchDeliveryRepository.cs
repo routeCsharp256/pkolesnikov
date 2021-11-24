@@ -122,6 +122,29 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                     });
         }
 
+        public async Task<MerchDeliveryStatus?> FindStatus(int employeeId, int merchPackTypeId, CancellationToken token)
+        {
+            var parameters = new
+            {
+                EmployeeId = employeeId,
+                MerchPackTypeId = merchPackTypeId
+            };
+            
+            var commandDefinition = new CommandDefinition(
+                MerchDeliveryQuery.FindMerchDeliveryStatusByEmployeeIdAndMerchPackTypeId,
+                parameters,
+                commandTimeout: Timeout,
+                cancellationToken: token);
+
+            var connection = await _dbConnectionFactory.CreateConnection(token);
+            
+            var dbResult = await connection
+                .QueryFirstAsync<Models.MerchDeliveryStatus>(commandDefinition);
+            return dbResult is null
+                ? null
+                : new MerchDeliveryStatus(dbResult.Id.Value, dbResult.Name);
+        }
+
         private async Task<Dictionary<int, MerchType>> GetMerchTypes(CancellationToken token)
         {
             var commandDefinition = new CommandDefinition(

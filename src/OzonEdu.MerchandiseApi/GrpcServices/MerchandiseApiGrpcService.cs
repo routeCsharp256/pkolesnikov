@@ -47,8 +47,7 @@ namespace OzonEdu.MerchandiseApi.GrpcServices
             
             return new GetMerchDeliveryStatusResponse
             {
-                Id = result.Id,
-                Name = result.Name
+                Name = result
             };
         }
     }

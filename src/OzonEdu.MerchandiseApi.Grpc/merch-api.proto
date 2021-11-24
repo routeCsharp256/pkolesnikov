@@ -19,7 +19,6 @@ message GetMerchDeliveryStatusRequest {
   int32 merchPackTypeId = 2;
 }
 
-message GetMerchDeliveryStatusResponse {
-  int32 id = 1;
-  string name = 2;
+message GetMerchDeliveryStatusResponse {  
+  string name = 1;
 }

@@ -44,7 +44,7 @@ namespace OzonEdu.MerchandiseApi.Controllers
         }
         
         [HttpGet("delivery")]
-        public async Task<ActionResult<MerchDeliveryStatus>> GetMerchDeliveryStatus(
+        public async Task<ActionResult<string?>> GetMerchDeliveryStatus(
             [FromQuery] GetMerchDeliveryStatusRequest requestStatus, 
             CancellationToken token)
         {
@@ -54,8 +54,8 @@ namespace OzonEdu.MerchandiseApi.Controllers
                 MerchPackTypeId = requestStatus.MerchPackTypeId
             };
             
-            var status = await _mediator.Send(query, token);
-            return Ok(status);
+            var statusName = await _mediator.Send(query, token);
+            return Ok(statusName);
         }
     }
 }

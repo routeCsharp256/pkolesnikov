@@ -1,30 +1,25 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
 using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Queries.IssuanceRequestAggregate;
 
 namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.EmployeeAggregate
 {
-    public class GetMerchDeliveryStatusQueryHandler : IRequestHandler<GetMerchDeliveryStatusQuery, MerchDeliveryStatus?>
+    public class GetMerchDeliveryStatusQueryHandler : IRequestHandler<GetMerchDeliveryStatusQuery, string?>
     {
-        private readonly IEmployeeService _employeeService;
+        private readonly IMerchService _merchService;
 
-        public GetMerchDeliveryStatusQueryHandler(IEmployeeService employeeService)
+        public GetMerchDeliveryStatusQueryHandler(IMerchService merchService)
         {
-            _employeeService = employeeService;
+            _merchService = merchService;
         }
         
-        public async Task<MerchDeliveryStatus?> Handle(GetMerchDeliveryStatusQuery request, CancellationToken token)
+        public async Task<string?> Handle(GetMerchDeliveryStatusQuery request, CancellationToken token)
         {
-            var employee = await _employeeService.FindAsync(request.EmployeeId, token);
-            if (employee is null)
-                return null;
-            return employee.MerchDeliveries
-                .FirstOrDefault(d => d.MerchPackType.Id.Equals(request.MerchPackTypeId))?
-                .Status;
+            var status = await _merchService
+                .FindStatus(request.EmployeeId, request.MerchPackTypeId, token);
+            return status?.Name;
         }
     }
 }

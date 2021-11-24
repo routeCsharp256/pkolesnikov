@@ -45,5 +45,10 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
                 throw new Exception("Merch delivery wasn't created");
             return merchDelivery;
         }
+
+        public async Task<MerchDeliveryStatus?> FindStatus(int employeeId, int merchPackTypeId, CancellationToken token)
+        {
+            return await _merchDeliveryRepository.FindStatus(employeeId, merchPackTypeId, token);
+        }
     }
 }

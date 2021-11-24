@@ -27,5 +27,14 @@
         internal const string GetMerchTypes = @"
             SELECT mt.id, mt.name
             FROM merch_types mt;";
+        
+        internal const string FindMerchDeliveryStatusByEmployeeIdAndMerchPackTypeId = @"
+            SELECT mds.id, mds.name
+            FROM merch_deliveries md
+            INNER JOIN employee_merch_delivery_maps emdm ON md.merch_delivery_id = emdm.merch_delivery_id
+            LEFT JOIN merch_pack_types mpt ON md.merch_pack_type_id = mpt.id
+            LEFT JOIN merch_delivery_statuses mds ON md.merch_delivery_status_id = mds.id
+            WHERE emdm.employee_id = @EmployeeId
+            AND mpt.id = @MerchPackTypeId";
     }
 }
