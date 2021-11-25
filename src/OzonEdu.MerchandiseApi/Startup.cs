@@ -1,3 +1,4 @@
+using Dapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -72,7 +73,7 @@ namespace OzonEdu.MerchandiseApi
 
         private static void AddRepositories(IServiceCollection services)
         {
-            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            DefaultTypeMap.MatchNamesWithUnderscores = true;
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IMerchDeliveryRepository, MerchDeliveryRepository>();
         }

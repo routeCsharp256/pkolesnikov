@@ -16,7 +16,7 @@
         
         internal const string FilterByEmployeeId = @"
             SELECT md.merch_delivery_id, md.merch_pack_type_id, md.merch_delivery_status_id, md.status_change_date, md.sku_ids,
-                mpt.id, mpt.name, mds.id, mds.name
+                mpt.id, mpt.name, mpt.merch_type_ids, mds.id, mds.name
             FROM merch_deliveries md
             INNER JOIN employee_merch_delivery_maps emdm ON md.merch_delivery_id = emdm.merch_delivery_id
             LEFT JOIN merch_pack_types mpt ON md.merch_pack_type_id = mpt.id

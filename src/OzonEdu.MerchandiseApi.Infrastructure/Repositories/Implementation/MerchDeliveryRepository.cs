@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +37,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             {
                 MerchDeliveryStatusId = itemToCreate.Status.Id,
                 MerchPackTypeId = itemToCreate.MerchPackType.Id,
-                StatusChangeDate = itemToCreate.StatusChangeDate.Value,
+                StatusChangeDate = itemToCreate.StatusChangeDate?.Value 
+                    ?? DateTime.Now,
                 SkuIds = itemToCreate
                     .SkuCollection
                     .Select(s => s.Value)
@@ -62,7 +64,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 MerchDeliveryId = itemToUpdate.Id,
                 MerchDeliveryStatusId = itemToUpdate.Status.Id,
                 MerchPackTypeId = itemToUpdate.MerchPackType.Id,
-                StatusChangeDate = itemToUpdate.StatusChangeDate.Value,
+                StatusChangeDate = itemToUpdate.StatusChangeDate?.Value
+                    ?? DateTime.Now,
                 SkuIds = itemToUpdate
                     .SkuCollection
                     .Select(s => s.Value)
@@ -115,10 +118,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                                         .MerchTypeIds
                                         .Select(id => merchTypes[id])),
                                 delivery
-                                    .SkuCollection
+                                    .SkuCollection?
                                     .Select(s => new Sku(s))
                                     .ToArray(),
-                                new MerchDeliveryStatus(status.Id.Value, status.Name));
+                                new MerchDeliveryStatus(status.Id.Value, status.Name),
+                                new StatusChangeDate(delivery.StatusChangeDate.Value));
                     });
         }
 

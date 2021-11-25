@@ -7,6 +7,7 @@ using MediatR;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
+using OzonEdu.MerchandiseApi.Domain.Services.Exceptions;
 using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
@@ -26,22 +27,25 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryA
         
         public async Task<Unit> Handle(GiveOutMerchCommand request, CancellationToken token)
         {
-            var merchPackTypeId = request.MerchPackTypeId;
-            if (IsExistsMerchPackType(merchPackTypeId))
-                throw new Exception("Id of merch pack type isn't correct");
-
             var employee = await _employeeService.FindAsync(request.EmployeeId, token);
-
             if (employee is null)
-                throw new ArgumentNullException(nameof(employee));
-            
+                throw new NotExistsException($"Employee with id={request.EmployeeId} does not exists");
+
+            var merchPackType = await _merchService.FindMerchPackType(request.MerchPackTypeId, token);
+            if (merchPackType is null)
+            {
+                throw new NotExistsException(
+                    $"Merch pack type with id={request.MerchPackTypeId} does not exists");
+            }
+
+
             var merchDelivery = employee
                                     .MerchDeliveries
-                                    .FirstOrDefault(d => d.MerchPackType.Id == merchPackTypeId);
+                                    .FirstOrDefault(d => d.MerchPackType.Id == merchPackType.Id);
 
             if (merchDelivery is null)
             {
-                merchDelivery = await _merchService.CreateMerchDeliveryAsync((MerchType)merchPackTypeId, 
+                merchDelivery = await _merchService.CreateMerchDeliveryAsync((MerchType)merchPackType.Id, 
                     employee.ClothingSize, 
                     token);
                 
@@ -72,14 +76,6 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryA
             merchDelivery.SetStatus(MerchDeliveryStatus.Done);
             await _employeeService.UpdateAsync(employee, token);
             return Unit.Value;
-        }
-
-        private static bool IsExistsMerchPackType(int id)
-        {
-            return MerchPackType
-                .GetAll<MerchPackType>()
-                .Select(t => t.Id)
-                .Contains(id);
         }
     }
 }

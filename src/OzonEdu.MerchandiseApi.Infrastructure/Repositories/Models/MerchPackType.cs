@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
+﻿namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
 {
     public record MerchPackType
     {
@@ -8,6 +6,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Models
         
         public string? Name { get; init; }
 
-        public List<int> MerchTypeIds { get; } = new();
+        public int[]? MerchTypeIds { get; init; }
     }
 }

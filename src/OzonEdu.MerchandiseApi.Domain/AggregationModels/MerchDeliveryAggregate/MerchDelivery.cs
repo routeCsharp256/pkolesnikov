@@ -8,36 +8,41 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
 {
     public class MerchDelivery : Entity
     {
-        private MerchDeliveryStatus _status = MerchDeliveryStatus.InWork;
-        
+
         public MerchPackType MerchPackType { get; }
 
-        public MerchDeliveryStatus Status
-        {
-            get => _status;
-            private set
-            {
-                _status = value;
-                StatusChangeDate = new StatusChangeDate(DateTime.UtcNow);
-            }
-        }
-
+        public MerchDeliveryStatus Status { get; set; } = MerchDeliveryStatus.NotIssued;
+        
         public ICollection<Sku> SkuCollection { get; } = new List<Sku>();
         
-        public StatusChangeDate StatusChangeDate { get; private set; } = new(DateTime.UtcNow);
+        public StatusChangeDate? StatusChangeDate { get; }
 
-        public MerchDelivery(int id, MerchPackType type, IEnumerable<Sku> skuCollection, MerchDeliveryStatus status)
-            : this(type, skuCollection, status)
+        public MerchDelivery(int id, 
+            MerchPackType type, 
+            IEnumerable<Sku> skuCollection, 
+            MerchDeliveryStatus status,
+            StatusChangeDate statusChangeDate)
+            : this(type, skuCollection, status, statusChangeDate)
         {
             Id = id;
         }
         
-        public MerchDelivery(MerchPackType merchPackType, IEnumerable<Sku> skuCollection, MerchDeliveryStatus status)
-        : this(merchPackType, status)
+        public MerchDelivery(MerchPackType merchPackType, 
+            IEnumerable<Sku> skuCollection, 
+            MerchDeliveryStatus status,
+            StatusChangeDate statusChangeDate)
+            : this(merchPackType, status)
+        {
+            SetSkuCollection(skuCollection);
+            StatusChangeDate = statusChangeDate;
+        }
+        
+        public MerchDelivery(MerchPackType merchPackType, IEnumerable<Sku>? skuCollection, MerchDeliveryStatus status)
+            : this(merchPackType, status)
         {
             SetSkuCollection(skuCollection);
         }
-        
+
         public MerchDelivery(MerchPackType merchPackType, MerchDeliveryStatus status)
         {
             MerchPackType = merchPackType;
@@ -51,8 +56,11 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
             Status = newStatus; 
         }
 
-        public void SetSkuCollection(IEnumerable<Sku> skuCollection)
+        public void SetSkuCollection(IEnumerable<Sku>? skuCollection)
         {
+            if (skuCollection is null)
+                return;
+            
             foreach (var sku in skuCollection)
             {
                 if (sku.Value < 0)
