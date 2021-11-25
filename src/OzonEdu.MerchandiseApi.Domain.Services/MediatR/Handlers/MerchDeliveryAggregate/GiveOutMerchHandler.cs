@@ -50,7 +50,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryA
                     token);
                 
                 employee.AddMerchDelivery(merchDelivery);
-                await _employeeService.UpdateAsync(employee, token);
+                await _employeeService.AddMerchDelivery(employee.Id, merchDelivery.Id, token);
             }
             
             if (merchDelivery.Status.Equals(MerchDeliveryStatus.Done))
@@ -74,7 +74,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryA
             // TODO Отправка в Stock API запрос на резервирование
 
             merchDelivery.SetStatus(MerchDeliveryStatus.Done);
-            await _employeeService.UpdateAsync(employee, token);
+            await _merchService.UpdateAsync(merchDelivery, token);
             return Unit.Value;
         }
     }

@@ -4,13 +4,14 @@
     {
         internal const string Insert = @"
             INSERT INTO merch_deliveries (merch_delivery_status_id, merch_pack_type_id, status_change_date, sku_ids)
-            VALUES (@MerchDeliveryStatusId, @MerchPackTypeId, @StatusChangeDate, @SkuIds);";
+            VALUES (@MerchDeliveryStatusId, @MerchPackTypeId, @StatusChangeDate, @SkuIds)
+            RETURNING merch_delivery_id;";
         
         internal const string Update = @"
-            UPDATE merch_deliveries (merch_delivery_status_id, merch_pack_type_id, status_change_date, sku_ids)
+            UPDATE merch_deliveries 
             SET merch_delivery_status_id = @MerchDeliveryStatusId, 
                 merch_pack_type_id = @MerchPackTypeId, 
-                status_change_date = @StatusChangeDate
+                status_change_date = @StatusChangeDate,
                 sku_ids = @SkuIds
             WHERE merch_delivery_id = @MerchDeliveryId;";
         

@@ -52,9 +52,14 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 cancellationToken: token);
 
             var connection = await _dbConnectionFactory.CreateConnection(token);
-            await connection.ExecuteAsync(commandDefinition);
+            var id = await connection.ExecuteScalarAsync<int>(commandDefinition);
             _changeTracker.Track(itemToCreate);
-            return itemToCreate;
+            var delivery = new MerchDelivery(id,
+                itemToCreate.MerchPackType,
+                itemToCreate.SkuCollection,
+                itemToCreate.Status,
+                itemToCreate.StatusChangeDate);
+            return delivery;
         }
 
         public async Task<MerchDelivery?> UpdateAsync(MerchDelivery itemToUpdate, CancellationToken cancellationToken = default)

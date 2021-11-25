@@ -46,6 +46,11 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
             return merchDelivery;
         }
 
+        public async Task<MerchDelivery?> UpdateAsync(MerchDelivery delivery, CancellationToken token)
+        {
+            return await _merchDeliveryRepository.UpdateAsync(delivery, token);
+        }
+
         public async Task<MerchDeliveryStatus?> FindStatus(int employeeId, int merchPackTypeId, CancellationToken token)
         {
             return await _merchDeliveryRepository.FindStatus(employeeId, merchPackTypeId, token);

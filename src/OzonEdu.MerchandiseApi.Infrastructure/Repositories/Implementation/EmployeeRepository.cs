@@ -53,9 +53,14 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                 cancellationToken: token);
 
             var connection = await _dbConnectionFactory.CreateConnection(token);
-            await connection.ExecuteAsync(commandDefinition);
+            var id =  await connection.ExecuteScalarAsync<int>(commandDefinition);
             _changeTracker.Track(itemToCreate);
-            return itemToCreate;
+            var employee = new Employee(id,
+                itemToCreate.Name,
+                itemToCreate.EmailAddress,
+                itemToCreate.ManagerEmailAddress,
+                itemToCreate.ClothingSize);
+            return employee;
         }
 
         public async Task<Employee?> UpdateAsync(Employee itemToUpdate, CancellationToken cancellationToken = default)
@@ -79,6 +84,24 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             await connection.ExecuteAsync(commandDefinition);
             _changeTracker.Track(itemToUpdate);
             return itemToUpdate;
+        }
+
+        public async Task AddMerchDelivery(int employeeId, int merchDeliveryId, CancellationToken token)
+        {
+            var parameters = new
+            {
+                EmployeeId = employeeId,
+                MerchDeliveryId = merchDeliveryId
+            };
+            
+            var commandDefinition = new CommandDefinition(
+                EmployeeQuery.AddMerchDelivery,
+                parameters,
+                commandTimeout: Timeout,
+                cancellationToken: token);
+            
+            var connection = await _dbConnectionFactory.CreateConnection(token);
+            await connection.ExecuteAsync(commandDefinition);
         }
 
         public async Task<Employee?> FindAsync(int id, CancellationToken token = default)

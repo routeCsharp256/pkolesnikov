@@ -11,6 +11,8 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces
         Task<Employee?> FindAsync(int id, CancellationToken token = default);
         
         Task<Employee?> FindAsync(string email, CancellationToken token = default);
+
+        Task AddMerchDelivery(int employeeId, int merchDeliveryId, CancellationToken token);
         
         Task<Employee> CreateAsync(string name, string email, CancellationToken token = default);
         

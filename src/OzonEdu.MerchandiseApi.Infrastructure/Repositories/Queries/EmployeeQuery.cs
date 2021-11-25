@@ -4,7 +4,8 @@
     {
         internal const string Insert = @"
             INSERT INTO employees (name, clothing_size_id, email_address, manager_email_address)
-            VALUES (@Name, @ClothingSizeId, @EmailAddress, @ManagerEmailAddress);";
+            VALUES (@Name, @ClothingSizeId, @EmailAddress, @ManagerEmailAddress)
+            RETURNING employee_id;";
         
         internal const string Update = @"
             UPDATE employees
@@ -36,5 +37,10 @@
             LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id                
             WHERE md.merch_delivery_status_id = @StatusId
             AND mdsm.sku_id = ANY(@SkuIds);";
+
+        internal const string AddMerchDelivery = @"
+            INSERT INTO employee_merch_delivery_maps(employee_id, merch_delivery_id)
+            VALUES (@EmployeeId, @MerchDeliveryId)
+        ";
     }
 }

@@ -11,6 +11,8 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate
         Task<Employee?> FindAsync(int id, CancellationToken token = default);
 
         Task<Employee?> FindAsync(string email, CancellationToken token = default);
+
+        Task AddMerchDelivery(int employeeId, int merchDeliveryId, CancellationToken token);
         
         Task<IEnumerable<Employee>> GetByMerchDeliveryStatusAndSkuCollection(int statusId, 
             IEnumerable<long> skuIdCollection,

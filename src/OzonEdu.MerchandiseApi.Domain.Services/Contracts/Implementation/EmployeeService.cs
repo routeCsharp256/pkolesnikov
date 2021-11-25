@@ -80,6 +80,11 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
             return updatedEmployee;
         }
 
+        public async Task AddMerchDelivery(int employeeId, int merchDeliveryId, CancellationToken token)
+        {
+            await _employeeRepository.AddMerchDelivery(employeeId, merchDeliveryId, token);
+        }
+
         public async Task<IEnumerable<Employee>> GetAsync(MerchDeliveryStatus status, 
             IEnumerable<long> suppliedSkuCollection, 
             CancellationToken token = default)
