@@ -50,5 +50,10 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
         {
             return await _merchDeliveryRepository.FindStatus(employeeId, merchPackTypeId, token);
         }
+
+        public async Task<MerchPackType?> FindMerchPackType(int typeId, CancellationToken token)
+        {
+            return await _merchDeliveryRepository.FindMerchPackType(typeId, token);
+        }
     }
 }

@@ -25,7 +25,8 @@ namespace OzonEdu.MerchandiseApi.Migrator.Migrations
                     ('EmployeeCame'),
                     ('Done'),
                     ('Notify'),
-                    ('InWork')
+                    ('InWork'),
+                    ('NotIssued')
                 ON CONFLICT DO NOTHING
             ");
             

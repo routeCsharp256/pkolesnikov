@@ -37,7 +37,7 @@ namespace OzonEdu.MerchandiseApi
             services.AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions));
             services.AddScoped<IRequestHandler<GiveOutMerchCommand, Unit>, GiveOutMerchHandler>();
             services.AddScoped<
-                IRequestHandler<GetMerchDeliveryStatusQuery, string?>,
+                IRequestHandler<GetMerchDeliveryStatusQuery, string>,
                 GetMerchDeliveryStatusQueryHandler>();
             AddDatabaseComponents(services);
             AddRepositories(services);

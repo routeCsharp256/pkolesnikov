@@ -36,5 +36,10 @@
             LEFT JOIN merch_delivery_statuses mds ON md.merch_delivery_status_id = mds.id
             WHERE emdm.employee_id = @EmployeeId
             AND mpt.id = @MerchPackTypeId";
+        
+        internal const string FindMerchPackType = @"
+            SELECT mpt.id, mpt.name
+            FROM merch_pack_types mpt             
+            WHERE mpt.id = @MerchPackTypeId";
     }
 }

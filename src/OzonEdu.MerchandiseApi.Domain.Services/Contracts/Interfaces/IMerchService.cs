@@ -10,5 +10,6 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces
     {
         Task<MerchDelivery> CreateMerchDeliveryAsync(MerchType merchType, ClothingSize? size, CancellationToken token);
         Task<MerchDeliveryStatus?> FindStatus(int employeeId, int merchPackTypeId, CancellationToken token);
+        Task<MerchPackType?> FindMerchPackType(int typeId, CancellationToken token);
     }
 }

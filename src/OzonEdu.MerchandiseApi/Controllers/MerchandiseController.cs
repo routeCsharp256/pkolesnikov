@@ -48,13 +48,20 @@ namespace OzonEdu.MerchandiseApi.Controllers
             [FromQuery] GetMerchDeliveryStatusRequest requestStatus, 
             CancellationToken token)
         {
+            if (requestStatus.EmployeeId is null)
+                return BadRequest("You must specify the employee ID for issue a merch");
+            
+            if (requestStatus.MerchPackTypeId is null)
+                return BadRequest("You must specify the merch pack type ID");
+            
             var query = new GetMerchDeliveryStatusQuery
             {
-                EmployeeId = requestStatus.EmployeeId,
-                MerchPackTypeId = requestStatus.MerchPackTypeId
+                EmployeeId = requestStatus.EmployeeId.Value,
+                MerchPackTypeId = requestStatus.MerchPackTypeId.Value
             };
             
             var statusName = await _mediator.Send(query, token);
+
             return Ok(statusName);
         }
     }

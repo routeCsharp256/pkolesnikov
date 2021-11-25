@@ -122,6 +122,28 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
                     });
         }
 
+        public async Task<MerchPackType?> FindMerchPackType(int typeId, CancellationToken token)
+        {
+            var parameters = new
+            {
+                MerchPackTypeId = typeId
+            };
+            
+            var commandDefinition = new CommandDefinition(
+                MerchDeliveryQuery.FindMerchPackType,
+                parameters,
+                commandTimeout: Timeout,
+                cancellationToken: token);
+
+            var connection = await _dbConnectionFactory.CreateConnection(token);
+            
+            var dbResult = await connection
+                .QueryFirstOrDefaultAsync<Models.MerchPackType>(commandDefinition);
+            return dbResult is null
+                ? null
+                : new MerchPackType(dbResult.Id, dbResult.Name);
+        }
+
         public async Task<MerchDeliveryStatus?> FindStatus(int employeeId, int merchPackTypeId, CancellationToken token)
         {
             var parameters = new
@@ -139,10 +161,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var connection = await _dbConnectionFactory.CreateConnection(token);
             
             var dbResult = await connection
-                .QueryFirstAsync<Models.MerchDeliveryStatus>(commandDefinition);
-            return dbResult is null
+                .QueryFirstOrDefaultAsync<Models.MerchDeliveryStatus>(commandDefinition);
+            var status = dbResult is null
                 ? null
                 : new MerchDeliveryStatus(dbResult.Id.Value, dbResult.Name);
+            return status;
         }
 
         private async Task<Dictionary<int, MerchType>> GetMerchTypes(CancellationToken token)
