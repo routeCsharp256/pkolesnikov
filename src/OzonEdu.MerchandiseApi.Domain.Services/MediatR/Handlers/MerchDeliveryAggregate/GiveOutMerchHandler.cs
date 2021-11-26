@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
 using OzonEdu.MerchandiseApi.Domain.Services.Exceptions;
@@ -38,7 +36,6 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryA
                     $"Merch pack type with id={request.MerchPackTypeId} does not exists");
             }
 
-
             var merchDelivery = employee
                                     .MerchDeliveries
                                     .FirstOrDefault(d => d.MerchPackType.Id == merchPackType.Id);
@@ -49,33 +46,35 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryA
                     employee.ClothingSize, 
                     token);
                 
-                employee.AddMerchDelivery(merchDelivery);
                 await _employeeService.AddMerchDelivery(employee.Id, merchDelivery.Id, token);
             }
             
             if (merchDelivery.Status.Equals(MerchDeliveryStatus.Done))
                 return Unit.Value;
 
-            // TODO Проверка каждого SKU, что его можно выдать
-            var canDelivery = true;
+            var newStatus = MerchDeliveryStatus.Done;
 
-            if (!canDelivery)
+            if (await CanDelivery(merchDelivery.SkuCollection))
+            {
+                // TODO Отправка в Stock API запрос на резервирование
+            }
+            else
             {
                 // TODO Здесь будет отправка сообщения HR, что закончился мерч с таким-то SKU (для автоматической выдачи)
-                
-                var newStatus = request.IsManual
+                newStatus = request.IsManual
                     ? MerchDeliveryStatus.EmployeeCame
                     : MerchDeliveryStatus.Notify;
-                merchDelivery.SetStatus(newStatus);
-                await _employeeService.UpdateAsync(employee, token);
-                return Unit.Value;
             }
-
-            // TODO Отправка в Stock API запрос на резервирование
-
-            merchDelivery.SetStatus(MerchDeliveryStatus.Done);
+            
+            merchDelivery.SetStatus(newStatus);
             await _merchService.UpdateAsync(merchDelivery, token);
             return Unit.Value;
+        }
+
+        private async Task<bool> CanDelivery(ICollection<Sku> skuCollection)
+        {
+            // TODO Проверка каждого SKU, что его можно выдать
+            return await Task.FromResult(true);
         }
     }
 }
