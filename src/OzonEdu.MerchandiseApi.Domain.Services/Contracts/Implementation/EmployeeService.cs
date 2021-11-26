@@ -28,34 +28,20 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
             if (employee is null)
                 return employee;
             
-            var merchDeliveries = await _merchDeliveryRepository
-                .GetAsync(employee.Id, token);
-
-            if (merchDeliveries is null)
-                return employee;
+            await AttachMerchDeliveries(employee, token);
             
-            foreach (var delivery in merchDeliveries)
-                employee.AddMerchDelivery(delivery);
-
             return employee;
         }
 
         public async Task<Employee?> FindAsync(string email, CancellationToken token)
         {
             var employee = await _employeeRepository.FindAsync(email, token);
-
+            
             if (employee is null)
                 return employee;
             
-            var merchDeliveries = await _merchDeliveryRepository
-                .GetAsync(employee.Id, token);
-
-            if (merchDeliveries is null)
-                return employee;
+            await AttachMerchDeliveries(employee, token);
             
-            foreach (var delivery in merchDeliveries)
-                employee.AddMerchDelivery(delivery);
-
             return employee;
         }
 
@@ -99,6 +85,18 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
             
             return await _employeeRepository
                 .GetByMerchDeliveryStatusAndSkuCollection(statusId.Value, suppliedSkuCollection, token);
+        }
+
+        private async Task AttachMerchDeliveries(Employee employee, CancellationToken token)
+        {
+            var merchDeliveries = await _merchDeliveryRepository
+                .GetAsync(employee.Id, token);
+
+            if (merchDeliveries is null)
+                return;
+            
+            foreach (var delivery in merchDeliveries)
+                employee.AddMerchDelivery(delivery);
         }
     }
 }

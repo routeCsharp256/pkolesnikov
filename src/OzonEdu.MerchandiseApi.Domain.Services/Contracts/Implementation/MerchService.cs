@@ -41,8 +41,10 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
                 MerchDeliveryStatus.InWork);
             
             var merchDelivery = await _merchDeliveryRepository.CreateAsync(deliveryData, token);
+            
             if (merchDelivery is null)
                 throw new Exception("Merch delivery wasn't created");
+            
             return merchDelivery;
         }
 
