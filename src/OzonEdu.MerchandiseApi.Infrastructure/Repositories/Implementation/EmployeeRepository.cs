@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
-using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Constants;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Maps;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Queries;
-using ClothingSize = OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate.ClothingSize;
-using Domain = OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate.Employee;
-using MerchDelivery = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDelivery;
-using MerchDeliveryStatus = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDeliveryStatus;
-using MerchPackType = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchPackType;
 
 #pragma warning disable 1998
 
@@ -21,19 +16,14 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        private const int Timeout = 5;
-        
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
         private readonly IChangeTracker _changeTracker;
-        private readonly IMerchDeliveryRepository _merchDeliveryRepository;
 
         public EmployeeRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory,
-            IChangeTracker changeTracker,
-            IMerchDeliveryRepository merchDeliveryRepository)
+            IChangeTracker changeTracker)
         {
             _dbConnectionFactory = dbConnectionFactory;
             _changeTracker = changeTracker;
-            _merchDeliveryRepository = merchDeliveryRepository;
         }
 
         public async Task<Employee?> CreateAsync(Employee itemToCreate, CancellationToken token)
@@ -49,18 +39,17 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var commandDefinition = new CommandDefinition(
                 EmployeeQuery.Insert,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
 
             var connection = await _dbConnectionFactory.CreateConnection(token);
             var id =  await connection.ExecuteScalarAsync<int>(commandDefinition);
             _changeTracker.Track(itemToCreate);
-            var employee = new Employee(id,
+            return new Employee(id,
                 itemToCreate.Name,
                 itemToCreate.EmailAddress,
                 itemToCreate.ManagerEmailAddress,
                 itemToCreate.ClothingSize);
-            return employee;
         }
 
         public async Task<Employee?> UpdateAsync(Employee itemToUpdate, CancellationToken cancellationToken = default)
@@ -77,7 +66,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var commandDefinition = new CommandDefinition(
                 EmployeeQuery.Update,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: cancellationToken);
             
             var connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
@@ -97,7 +86,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var commandDefinition = new CommandDefinition(
                 EmployeeQuery.AddMerchDelivery,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
             
             var connection = await _dbConnectionFactory.CreateConnection(token);
@@ -106,61 +95,36 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<Employee?> FindAsync(int id, CancellationToken token = default)
         {
-            var parameters = new
-            {
-                Id = id
-            };
+            var parameters = new { Id = id };
             
             var commandDefinition = new CommandDefinition(
                 EmployeeQuery.FilterById,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
             
             var connection = await _dbConnectionFactory.CreateConnection(token);
-            var employees = await connection.QueryAsync<Models.Employee, Models.ClothingSize, Employee>(
-                commandDefinition,
-                (employee, size) => new Employee(
-                    employee.EmployeeId,
-                    new Name(employee.Name),
-                    employee.EmailAddress is null 
-                        ? null 
-                        : new EmailAddress(employee.EmailAddress),
-                    employee.ManagerEmailAddress is null 
-                        ? null 
-                        : new EmailAddress(employee.ManagerEmailAddress),
-                    size?.Id is null 
-                        ? null 
-                        : new ClothingSize(size.Id.Value, size.Name ?? string.Empty)));
+            var employees = await connection
+                .QueryAsync<Models.Employee, Models.ClothingSize, Employee>(commandDefinition, 
+                    EmployeeMap.CreateEmployee);
 
             return employees.FirstOrDefault();
         }
 
         public async Task<Employee?> FindAsync(string email, CancellationToken token = default)
         {
-            var parameters = new
-            {
-                Email = email
-            };
+            var parameters = new { Email = email };
             
             var commandDefinition = new CommandDefinition(
                 EmployeeQuery.FilterByEmail,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
             
             var connection = await _dbConnectionFactory.CreateConnection(token);
-            var employees = await connection.QueryAsync<Models.Employee, Models.ClothingSize, Employee>(
-                commandDefinition,
-                (employee, size) => new Employee(
-                    new Name(employee.Name),
-                    employee.EmailAddress is null 
-                        ? null 
-                        : new EmailAddress(employee.EmailAddress),
-                    employee.ManagerEmailAddress is null
-                        ? null 
-                        : new EmailAddress(employee.ManagerEmailAddress),
-                    size is null ? null : new ClothingSize(size.Id.Value, size.Name)));
+            var employees = await connection
+                .QueryAsync<Models.Employee, Models.ClothingSize, Employee>(commandDefinition, 
+                    EmployeeMap.CreateEmployee);
 
             return employees.FirstOrDefault();
         }
@@ -178,21 +142,13 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var commandDefinition = new CommandDefinition(
                 EmployeeQuery.FilterByMerchDeliveryStatusAndSkuCollection,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
             
             var connection = await _dbConnectionFactory.CreateConnection(token);
-            var employees = await connection.QueryAsync<Models.Employee, Models.ClothingSize, Employee>(
-                commandDefinition,
-                (employee, size) => new Employee(
-                    new Name(employee.Name),
-                    employee.EmailAddress is null 
-                        ? null 
-                        : new EmailAddress(employee.EmailAddress),
-                    employee.ManagerEmailAddress is null
-                        ? null 
-                        : new EmailAddress(employee.ManagerEmailAddress),
-                    size is null ? null : new ClothingSize(size.Id.Value, size.Name)));
+            var employees = await connection
+                .QueryAsync<Models.Employee, Models.ClothingSize, Employee>(commandDefinition, 
+                    EmployeeMap.CreateEmployee);
 
             return employees;
         }

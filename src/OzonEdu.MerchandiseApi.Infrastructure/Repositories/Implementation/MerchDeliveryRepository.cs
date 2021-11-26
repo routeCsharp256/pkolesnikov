@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Constants;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Maps;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Queries;
 using MerchDelivery = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDelivery;
 using MerchDeliveryStatus = OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate.MerchDeliveryStatus;
@@ -19,8 +21,6 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 {
     public class MerchDeliveryRepository : IMerchDeliveryRepository
     {
-        private const int Timeout = 5;
-        
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
         private readonly IChangeTracker _changeTracker;
         
@@ -48,18 +48,18 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var commandDefinition = new CommandDefinition(
                 MerchDeliveryQuery.Insert,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
 
             var connection = await _dbConnectionFactory.CreateConnection(token);
             var id = await connection.ExecuteScalarAsync<int>(commandDefinition);
             _changeTracker.Track(itemToCreate);
-            var delivery = new MerchDelivery(id,
+            
+            return new MerchDelivery(id,
                 itemToCreate.MerchPackType,
                 itemToCreate.SkuCollection,
                 itemToCreate.Status,
                 itemToCreate.StatusChangeDate);
-            return delivery;
         }
 
         public async Task<MerchDelivery?> UpdateAsync(MerchDelivery itemToUpdate, CancellationToken cancellationToken = default)
@@ -80,7 +80,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var commandDefinition = new CommandDefinition(
                 MerchDeliveryQuery.Update,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: cancellationToken);
             
             var connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
@@ -92,17 +92,15 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
         public async Task<IEnumerable<MerchDelivery>?> GetAsync(int employeeId, 
             CancellationToken token = default)
         {
-            var parameters = new
-            {
-                EmployeeId = employeeId
-            };
+            var parameters = new { EmployeeId = employeeId };
             
             var commandDefinition = new CommandDefinition(
                 MerchDeliveryQuery.FilterByEmployeeId,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
 
+            // TODO Нужен один запрос вместо двух
             var merchTypes = await GetMerchTypes(token);
 
             var connection = await _dbConnectionFactory.CreateConnection(token);
@@ -110,25 +108,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             return await connection
                 .QueryAsync<Models.MerchDelivery, Models.MerchPackType, Models.MerchDeliveryStatus, MerchDelivery>(
                     commandDefinition,
-                (delivery, type, status) =>
-                    {
-                        if (delivery is null || type is null || status is null)
-                            return null;
-
-                        return new MerchDelivery(
-                                delivery.MerchDeliveryId,
-                                new MerchPackType(type.Id,
-                                    type.Name,
-                                    type
-                                        .MerchTypeIds
-                                        .Select(id => merchTypes[id])),
-                                delivery
-                                    .SkuCollection?
-                                    .Select(s => new Sku(s))
-                                    .ToArray(),
-                                new MerchDeliveryStatus(status.Id.Value, status.Name),
-                                new StatusChangeDate(delivery.StatusChangeDate.Value));
-                    });
+                (delivery, type, status) => 
+                        MerchDeliveryMap.CreateMerchDelivery(delivery, type, status, merchTypes));
         }
 
         public async Task<MerchPackType?> FindMerchPackType(int typeId, CancellationToken token)
@@ -141,13 +122,14 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var commandDefinition = new CommandDefinition(
                 MerchDeliveryQuery.FindMerchPackType,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
 
             var connection = await _dbConnectionFactory.CreateConnection(token);
             
             var dbResult = await connection
                 .QueryFirstOrDefaultAsync<Models.MerchPackType>(commandDefinition);
+            
             return dbResult is null
                 ? null
                 : new MerchPackType(dbResult.Id, dbResult.Name);
@@ -164,24 +146,24 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             var commandDefinition = new CommandDefinition(
                 MerchDeliveryQuery.FindMerchDeliveryStatusByEmployeeIdAndMerchPackTypeId,
                 parameters,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
 
             var connection = await _dbConnectionFactory.CreateConnection(token);
             
             var dbResult = await connection
                 .QueryFirstOrDefaultAsync<Models.MerchDeliveryStatus>(commandDefinition);
-            var status = dbResult is null
+            
+            return dbResult is null
                 ? null
                 : new MerchDeliveryStatus(dbResult.Id.Value, dbResult.Name);
-            return status;
         }
 
         private async Task<Dictionary<int, MerchType>> GetMerchTypes(CancellationToken token)
         {
             var commandDefinition = new CommandDefinition(
                 MerchDeliveryQuery.GetMerchTypes,
-                commandTimeout: Timeout,
+                commandTimeout: Connection.Timeout,
                 cancellationToken: token);
 
             var connection = await _dbConnectionFactory.CreateConnection(token);
