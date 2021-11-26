@@ -48,7 +48,7 @@ namespace OzonEdu.MerchandiseApi.Controllers
             return Ok();
         }
         
-        [HttpGet("delivery")]
+        [HttpGet("status")]
         public async Task<ActionResult<string?>> GetMerchDeliveryStatus(
             [FromQuery] GetMerchDeliveryStatusRequest request, 
             CancellationToken token)
