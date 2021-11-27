@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using OzonEdu.MerchandiseApi.Domain.Services.Exceptions;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Filters
 {
@@ -10,13 +11,18 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Filters
         {
             var resultObject = new
             {
-                ExceptionType = context.Exception.GetType().FullName,
-                StackTrace = context.Exception.StackTrace
+                ExceptionMessage = context.Exception.Message
             };
+
+            var statusCode = StatusCodes.Status500InternalServerError;
+
+            var exception = context.Exception;
+            if (exception is NotExistsException)
+                statusCode = StatusCodes.Status400BadRequest;
 
             var jsonResult = new JsonResult(resultObject)
             {
-                StatusCode = StatusCodes.Status500InternalServerError
+                StatusCode = statusCode
             };
             
             context.Result = jsonResult;

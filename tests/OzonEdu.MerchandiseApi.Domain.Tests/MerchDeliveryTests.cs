@@ -9,15 +9,6 @@ namespace OzonEdu.MerchandiseApi.Domain.Tests
     public class MerchDeliveryTests
     {
         [Fact]
-        public void SetSkuCollection_EmptyCollection_EmptyCollectionException()
-        {
-            var skuCollection = Array.Empty<Sku>();
-
-            Assert.Throws<EmptyCollectionException>(()
-                => new MerchDelivery(MerchPackType.WelcomePack, skuCollection, MerchDeliveryStatus.Notify));
-        }
-        
-        [Fact]
         public void SetSkuCollection_NegativeSkuId_NegativeValueException()
         {
             var skuCollection = new Sku[]{new (-1)};

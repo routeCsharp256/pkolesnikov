@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using OzonEdu.MerchandiseApi.Domain.Models;
 using Enums = CSharpCourse.Core.Lib.Enums;
 
@@ -23,6 +24,14 @@ namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate
         
         public MerchPackType(Enums.MerchType packType, IEnumerable<MerchType> merchTypes) 
             : base((int)packType, packType.ToString(), merchTypes)
+        { }
+        
+        public MerchPackType(int id, string name, IEnumerable<MerchType> merchTypes) 
+            : base(id, name, merchTypes)
+        { }
+        
+        public MerchPackType(int id, string name) 
+            : base(id, name, Array.Empty<MerchType>())
         { }
     }
 }

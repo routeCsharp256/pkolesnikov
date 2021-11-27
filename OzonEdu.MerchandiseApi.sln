@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{E54705
 		Dockerfile = Dockerfile
 		README.md = README.md
 		Kolesnikov Bounded Context Canvas Template.drawio = Kolesnikov Bounded Context Canvas Template.drawio
+		entrypoint.sh = entrypoint.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{655397D1-F301-4EF4-B437-C6442DD3629D}"
@@ -34,6 +35,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Domain.Services", "src\OzonEdu.MerchandiseApi.Domain.Services\OzonEdu.MerchandiseApi.Domain.Services.csproj", "{AFDCED53-4261-4098-B1A5-6267F7610CAC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Domain.Tests", "tests\OzonEdu.MerchandiseApi.Domain.Tests\OzonEdu.MerchandiseApi.Domain.Tests.csproj", "{8990ADCD-03E9-4E2E-B89D-036C9C6BB368}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Infrastructure", "src\OzonEdu.MerchandiseApi.Infrastructure\OzonEdu.MerchandiseApi.Infrastructure.csproj", "{DC4EEFA2-DB80-44C2-B5DA-9777D37ED084}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchandiseApi.Migrator", "src\OzonEdu.MerchandiseApi.Migrator\OzonEdu.MerchandiseApi.Migrator.csproj", "{F204F2C6-8C01-49D8-9C30-705DB8E8B714}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +74,14 @@ Global
 		{8990ADCD-03E9-4E2E-B89D-036C9C6BB368}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8990ADCD-03E9-4E2E-B89D-036C9C6BB368}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8990ADCD-03E9-4E2E-B89D-036C9C6BB368}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC4EEFA2-DB80-44C2-B5DA-9777D37ED084}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC4EEFA2-DB80-44C2-B5DA-9777D37ED084}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC4EEFA2-DB80-44C2-B5DA-9777D37ED084}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC4EEFA2-DB80-44C2-B5DA-9777D37ED084}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F204F2C6-8C01-49D8-9C30-705DB8E8B714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F204F2C6-8C01-49D8-9C30-705DB8E8B714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F204F2C6-8C01-49D8-9C30-705DB8E8B714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F204F2C6-8C01-49D8-9C30-705DB8E8B714}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +94,8 @@ Global
 		{50A3A2D7-F043-400F-B47C-F98F1954E490} = {655397D1-F301-4EF4-B437-C6442DD3629D}
 		{AFDCED53-4261-4098-B1A5-6267F7610CAC} = {655397D1-F301-4EF4-B437-C6442DD3629D}
 		{8990ADCD-03E9-4E2E-B89D-036C9C6BB368} = {838A86C8-C927-4F21-BA40-C57EABD3D9DD}
+		{DC4EEFA2-DB80-44C2-B5DA-9777D37ED084} = {655397D1-F301-4EF4-B437-C6442DD3629D}
+		{F204F2C6-8C01-49D8-9C30-705DB8E8B714} = {655397D1-F301-4EF4-B437-C6442DD3629D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5D0D19CE-33CB-4CCB-A897-12FB6339F07A}

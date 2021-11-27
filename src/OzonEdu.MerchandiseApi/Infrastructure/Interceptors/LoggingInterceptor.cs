@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Grpc.Core;
@@ -24,10 +25,14 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Interceptors
             
             var response = base.UnaryServerHandler(request, context, continuation);
 
-            var responseJson = JsonSerializer.Serialize(response);
-            _logger.LogInformation(responseJson);
+            if (response.IsCompleted)
+                _logger.LogInformation(JsonSerializer.Serialize(response));
             
+            if (response.IsFaulted)
+                _logger.LogError(response.Exception?.Message ?? "service error");
+
             return response;
+
         }
     }
 }

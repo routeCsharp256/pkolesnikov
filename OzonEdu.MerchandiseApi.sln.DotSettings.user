@@ -1,4 +1,8 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
+  &lt;Assembly Path="C:\Users\Strelok\.nuget\packages\microsoft.extensions.logging\2.0.1\lib\netstandard2.0\Microsoft.Extensions.Logging.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\p.kolesnikov\.nuget\packages\microsoft.extensions.configuration\5.0.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll" /&gt;&#xD;
+&lt;/AssemblyExplorer&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ce496978_002D2397_002D4727_002D9f0f_002D351410352060/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SetInitiatingEventName_NullEventName_NoChanges" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.EmployeeTests&lt;/TestId&gt;&#xD;
@@ -6,5 +10,7 @@
     &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.MerchDeliveryTests.SetSkuCollection_NegativeSkuId_NegativeValueException&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.MerchDeliveryTests.SetSkuCollection_CorrectSkuCollection_Success&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.MerchDeliveryTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.EmailAddressTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8990ADCD-03E9-4E2E-B89D-036C9C6BB368::net5.0::OzonEdu.MerchandiseApi.Domain.Tests.NameTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

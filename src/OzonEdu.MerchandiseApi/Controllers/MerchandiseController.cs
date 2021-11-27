@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -32,10 +31,16 @@ namespace OzonEdu.MerchandiseApi.Controllers
         public async Task<ActionResult> GiveOutMerch([FromBody] GiveOutMerchRequest request, 
             CancellationToken token)
         {
+            if (request.EmployeeId is null)
+                return BadRequest("You must specify the employee ID for issue a merch");
+            
+            if (request.MerchPackTypeId is null)
+                return BadRequest("You must specify the merch pack type ID");
+            
             var command = new GiveOutMerchCommand
             {
-                EmployeeId = request.EmployeeId,
-                MerchPackTypeId = request.MerchPackTypeId,
+                EmployeeId = request.EmployeeId.Value,
+                MerchPackTypeId = request.MerchPackTypeId.Value,
                 IsManual = true
             };
             
@@ -43,18 +48,25 @@ namespace OzonEdu.MerchandiseApi.Controllers
             return Ok();
         }
         
-        [HttpGet("delivery")]
-        public async Task<ActionResult<string>> GetMerchDeliveryStatus(
-            [FromQuery] GetMerchDeliveryStatusRequest requestStatus, 
+        [HttpGet("status")]
+        public async Task<ActionResult<string?>> GetMerchDeliveryStatus(
+            [FromQuery] GetMerchDeliveryStatusRequest request, 
             CancellationToken token)
         {
+            if (request.EmployeeId is null)
+                return BadRequest("You must specify the employee ID for issue a merch");
+            
+            if (request.MerchPackTypeId is null)
+                return BadRequest("You must specify the merch pack type ID");
+            
             var query = new GetMerchDeliveryStatusQuery
             {
-                EmployeeId = requestStatus.EmployeeId,
-                MerchPackTypeId = requestStatus.MerchPackTypeId
+                EmployeeId = request.EmployeeId.Value,
+                MerchPackTypeId = request.MerchPackTypeId.Value
             };
             
             var statusName = await _mediator.Send(query, token);
+
             return Ok(statusName);
         }
     }

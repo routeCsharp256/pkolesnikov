@@ -12,23 +12,36 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IMerchDeliveryRepository _merchDeliveryRepository;
 
-        public EmployeeService(IEmployeeRepository employeeRepository)
+        public EmployeeService(IEmployeeRepository employeeRepository, 
+            IMerchDeliveryRepository merchDeliveryRepository)
         {
             _employeeRepository = employeeRepository;
+            _merchDeliveryRepository = merchDeliveryRepository;
         }
 
-        public async Task<Employee> GetByIdAsync(int id, CancellationToken token = default)
+        public async Task<Employee?> FindAsync(int id, CancellationToken token = default)
         {
-            var employee = await _employeeRepository.FindByIdAsync(id, token);
+            var employee = await _employeeRepository.FindAsync(id, token);
+
             if (employee is null)
-                throw new Exception("employee not found");
+                return employee;
+            
+            await AttachMerchDeliveries(employee, token);
+            
             return employee;
         }
 
-        public async Task<Employee?> GetByEmailAsync(string email, CancellationToken token)
+        public async Task<Employee?> FindAsync(string email, CancellationToken token)
         {
-            var employee = await _employeeRepository.FindByEmailAsync(email, token);
+            var employee = await _employeeRepository.FindAsync(email, token);
+            
+            if (employee is null)
+                return employee;
+            
+            await AttachMerchDeliveries(employee, token);
+            
             return employee;
         }
 
@@ -53,7 +66,12 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
             return updatedEmployee;
         }
 
-        public async Task<IEnumerable<Employee>> GetByMerchDeliveryStatusAsync(MerchDeliveryStatus status, 
+        public async Task AddMerchDelivery(int employeeId, int merchDeliveryId, CancellationToken token)
+        {
+            await _employeeRepository.AddMerchDelivery(employeeId, merchDeliveryId, token);
+        }
+
+        public async Task<IEnumerable<Employee>> GetAsync(MerchDeliveryStatus status, 
             IEnumerable<long> suppliedSkuCollection, 
             CancellationToken token = default)
         {
@@ -65,18 +83,20 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
             if (statusId is null)
                 throw new Exception("Status not exists");
             
-            var employees = await _employeeRepository
-                .GetByMerchDeliveryStatus(statusId.Value, token);
+            return await _employeeRepository
+                .GetByMerchDeliveryStatusAndSkuCollection(statusId.Value, suppliedSkuCollection, token);
+        }
 
-            return employees
-                .Where(e => e
-                    .MerchDeliveries
-                    .First(md => md.Status.Equals(status))
-                    .SkuCollection
-                    .Select(s => s.Value)
-                    .Intersect(suppliedSkuCollection)
-                    .Any())
-                .ToArray();
+        private async Task AttachMerchDeliveries(Employee employee, CancellationToken token)
+        {
+            var merchDeliveries = await _merchDeliveryRepository
+                .GetAsync(employee.Id, token);
+
+            if (merchDeliveries is null)
+                return;
+            
+            foreach (var delivery in merchDeliveries)
+                employee.AddMerchDelivery(delivery);
         }
     }
 }

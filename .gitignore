@@ -17,3 +17,4 @@ bld/
 
 src/OzonEdu.MerchandiseApi/Properties/launchSettings.json
 .vs/
+deploy/db/

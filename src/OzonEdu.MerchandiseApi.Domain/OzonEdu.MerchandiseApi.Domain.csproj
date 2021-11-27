@@ -10,8 +10,4 @@
       <PackageReference Include="MediatR" Version="9.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Exceptions\MerchDeliveryAggregate" />
-    </ItemGroup>
 </Project>

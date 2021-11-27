@@ -20,6 +20,12 @@ namespace OzonEdu.MerchandiseApi.GrpcServices
 
         public override async Task<Empty> GiveOutMerch(GiveOutMerchRequest request, ServerCallContext context)
         {
+            if (request.EmployeeId == default)
+                throw new ArgumentException("You must specify the employee ID for issue a merch");
+            
+            if (request.MerchPackTypeId == default)
+                throw new ArgumentException("You must specify the merch pack type ID");
+            
             var command = new GiveOutMerchCommand
             {
                 EmployeeId = request.EmployeeId,
@@ -34,6 +40,12 @@ namespace OzonEdu.MerchandiseApi.GrpcServices
         public override async Task<GetMerchDeliveryStatusResponse> GetMerchDeliveryStatus(
             GetMerchDeliveryStatusRequest request, ServerCallContext context)
         {
+            if (request.EmployeeId == default)
+                throw new ArgumentException("You must specify the employee ID for issue a merch");
+            
+            if (request.MerchPackTypeId == default)
+                throw new ArgumentException("You must specify the merch pack type ID");
+            
             var query = new GetMerchDeliveryStatusQuery
             {
                 EmployeeId = request.EmployeeId,
@@ -47,8 +59,7 @@ namespace OzonEdu.MerchandiseApi.GrpcServices
             
             return new GetMerchDeliveryStatusResponse
             {
-                Id = result.Id,
-                Name = result.Name
+                Name = result
             };
         }
     }

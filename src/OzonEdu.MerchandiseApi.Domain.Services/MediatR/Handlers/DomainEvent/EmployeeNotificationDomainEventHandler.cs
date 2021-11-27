@@ -37,7 +37,7 @@ namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.DomainEvent
             if (!IsTypeForReaction(merchType))
                 throw new Exception("Notification event without reaction");
 
-            var employee = await _employeeService.GetByEmailAsync(notificationEvent.EmployeeEmail, token) 
+            var employee = await _employeeService.FindAsync(notificationEvent.EmployeeEmail, token) 
                            ?? await _employeeService.CreateAsync(notificationEvent.EmployeeName, 
                                notificationEvent.EmployeeEmail, 
                                token);
