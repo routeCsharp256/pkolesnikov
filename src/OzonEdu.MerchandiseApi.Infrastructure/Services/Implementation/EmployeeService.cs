@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
-using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 
-namespace OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation
+namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
 {
     public class EmployeeService : IEmployeeService
     {

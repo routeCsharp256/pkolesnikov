@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OzonEdu.MerchandiseApi.Domain.Services.Exceptions
+namespace OzonEdu.MerchandiseApi.Infrastructure.Exceptions
 {
     public class NotExistsException : NullReferenceException
     {

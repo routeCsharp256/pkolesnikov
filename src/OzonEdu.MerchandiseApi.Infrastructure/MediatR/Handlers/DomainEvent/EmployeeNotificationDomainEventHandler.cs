@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using CSharpCourse.Core.Lib.Events;
 using MediatR;
 using OzonEdu.MerchandiseApi.Domain.Events;
-using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
-namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.DomainEvent
+namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
 {
     public class EmployeeNotificationDomainEventHandler : INotificationHandler<EmployeeNotificationDomainEvent>
     {

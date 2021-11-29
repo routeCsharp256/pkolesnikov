@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands
+namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands
 {
     public class GiveOutMerchCommand : IRequest
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using OzonEdu.MerchandiseApi.Domain.Exceptions;
-using OzonEdu.MerchandiseApi.Domain.Exceptions.IssuanceRequestAggregate;
+using OzonEdu.MerchandiseApi.Domain.Exceptions.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Models;
 
 namespace OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate

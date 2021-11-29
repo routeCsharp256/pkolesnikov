@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Queries.IssuanceRequestAggregate
+namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries.IssuanceRequestAggregate
 {
     public class GetMerchDeliveryStatusQuery : IRequest<string>
     {

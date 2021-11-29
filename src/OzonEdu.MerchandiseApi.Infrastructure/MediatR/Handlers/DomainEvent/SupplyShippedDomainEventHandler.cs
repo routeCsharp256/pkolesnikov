@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using MediatR;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Events;
-using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 
-namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.DomainEvent
+namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
 {
     public class SupplyShippedDomainEventHandler : INotificationHandler<SupplyShippedDomainEvent>
     {

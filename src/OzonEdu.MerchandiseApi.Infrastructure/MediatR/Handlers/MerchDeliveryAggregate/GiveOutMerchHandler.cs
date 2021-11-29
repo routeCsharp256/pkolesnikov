@@ -4,12 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
-using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
-using OzonEdu.MerchandiseApi.Domain.Services.Exceptions;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
-namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryAggregate
+namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAggregate
 {
     public class GiveOutMerchHandler : IRequestHandler<GiveOutMerchCommand>
     {

@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using MediatR;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
-using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
-using OzonEdu.MerchandiseApi.Domain.Services.Exceptions;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Queries.IssuanceRequestAggregate;
+using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries.IssuanceRequestAggregate;
+using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 
-namespace OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.EmployeeAggregate
+namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.EmployeeAggregate
 {
     public class GetMerchDeliveryStatusQueryHandler : IRequestHandler<GetMerchDeliveryStatusQuery, string>
     {

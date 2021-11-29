@@ -8,19 +8,19 @@ using Npgsql;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
-using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Implementation;
-using OzonEdu.MerchandiseApi.Domain.Services.Contracts.Interfaces;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.EmployeeAggregate;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Handlers.MerchDeliveryAggregate;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Queries.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.GrpcServices;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.Filters;
 using OzonEdu.MerchandiseApi.Infrastructure.Interceptors;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.EmployeeAggregate;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAggregate;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation;
+using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 
 namespace OzonEdu.MerchandiseApi
 {
