@@ -7,9 +7,9 @@ using Npgsql;
 
 namespace OzonEdu.MerchandiseApi.Migrator
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -34,13 +34,9 @@ namespace OzonEdu.MerchandiseApi.Migrator
             {
                 var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
                 if (args.Contains("--dryrun"))
-                {
                     runner.ListMigrations();
-                }
                 else
-                {
                     runner.MigrateUp();
-                }
 
                 using var connection = new NpgsqlConnection(connectionString);
                 connection.Open();
