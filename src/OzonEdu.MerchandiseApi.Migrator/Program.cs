@@ -11,28 +11,17 @@ namespace OzonEdu.MerchandiseApi.Migrator
     {
         private static void Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
-            
-            var connectionString = configuration.GetSection("DatabaseConnectionOptions:ConnectionString").Get<string>();
-            var services = new ServiceCollection()
-                .AddFluentMigratorCore()
-                .ConfigureRunner(
-                    rb => rb
-                        .AddPostgres()
-                        .WithGlobalConnectionString(connectionString)
-                        .ScanIn(typeof(Program).Assembly)
-                        .For.Migrations())
-                .AddLogging(lb => lb.AddFluentMigratorConsole());
-            
+            var connectionString = GetConfiguration()
+                .GetSection("DatabaseConnectionOptions:ConnectionString")
+                .Get<string>();
+
+            var services = GetFilledServices(connectionString);
             var serviceProvider = services.BuildServiceProvider(false);
 
             using (serviceProvider.CreateScope())
             {
                 var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+                
                 if (args.Contains("--dryrun"))
                     runner.ListMigrations();
                 else
@@ -42,6 +31,28 @@ namespace OzonEdu.MerchandiseApi.Migrator
                 connection.Open();
                 connection.ReloadTypes();
             }
+        }
+
+        private static IConfigurationRoot GetConfiguration()
+        {
+            return new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
+        }
+
+        private static IServiceCollection GetFilledServices(string connectionString)
+        {
+            return new ServiceCollection()
+                .AddFluentMigratorCore()
+                .ConfigureRunner(
+                    rb => rb
+                        .AddPostgres()
+                        .WithGlobalConnectionString(connectionString)
+                        .ScanIn(typeof(Program).Assembly)
+                        .For.Migrations())
+                .AddLogging(lb => lb.AddFluentMigratorConsole());
         }
     }
 }
