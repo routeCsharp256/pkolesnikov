@@ -28,6 +28,8 @@ namespace OzonEdu.MerchandiseApi
                 .AddDatabaseComponents(Configuration)
                 .AddRepositories()
                 .AddDomainServices()
+                .AddOpenTracing()
+                .AddJaegerTracer()
                 .AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
             
             services.AddGrpc(options =>
