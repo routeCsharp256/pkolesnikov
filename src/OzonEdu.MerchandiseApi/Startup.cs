@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTracing.Contrib.NetCore.Configuration;
 using OzonEdu.MerchandiseApi.GrpcServices;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.Extensions;
@@ -30,6 +31,11 @@ namespace OzonEdu.MerchandiseApi
                 .AddDomainServices()
                 .AddOpenTracing()
                 .AddJaegerTracer()
+                .Configure<HttpHandlerDiagnosticOptions>(options =>
+                {
+                    options.OperationNameResolver =
+                        request => $"{request.Method.Method}: {request.RequestUri?.AbsoluteUri}";
+                })
                 .AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
             
             services.AddGrpc(options =>
