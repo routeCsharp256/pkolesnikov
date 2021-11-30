@@ -10,7 +10,7 @@ using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAggregate;
-using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries.IssuanceRequestAggregate;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;

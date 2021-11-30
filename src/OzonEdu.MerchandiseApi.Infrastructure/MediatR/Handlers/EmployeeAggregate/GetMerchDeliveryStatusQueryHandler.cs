@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
-using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries.IssuanceRequestAggregate;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.EmployeeAggregate

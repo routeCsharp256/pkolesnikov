@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OzonEdu.MerchandiseApi.Constants;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Commands;
-using OzonEdu.MerchandiseApi.Domain.Services.MediatR.Queries.IssuanceRequestAggregate;
 using OzonEdu.MerchandiseApi.HttpModels;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries;
 
 namespace OzonEdu.MerchandiseApi.Controllers
 {

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry;
+using OpenTelemetry.Trace;
 using OpenTracing.Contrib.NetCore.Configuration;
 using OzonEdu.MerchandiseApi.GrpcServices;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
@@ -37,6 +39,17 @@ namespace OzonEdu.MerchandiseApi
                         request => $"{request.Method.Method}: {request.RequestUri?.AbsoluteUri}";
                 })
                 .AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
+
+            services.AddOpenTelemetryTracing(builder =>
+                builder
+                    .AddHttpClientInstrumentation()
+                    .AddAspNetCoreInstrumentation()
+                    .AddJaegerExporter(options =>
+                    {
+                        options.AgentHost = "localhost";
+                        options.AgentPort = 6831;
+                        options.ExportProcessorType = ExportProcessorType.Simple;
+                    }));
             
             services.AddGrpc(options =>
             {
