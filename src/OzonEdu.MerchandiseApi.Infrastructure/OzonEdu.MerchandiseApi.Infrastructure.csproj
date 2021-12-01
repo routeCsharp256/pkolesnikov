@@ -15,10 +15,13 @@
 
     <ItemGroup>
       <PackageReference Include="Dapper" Version="2.0.123" />
+      <PackageReference Include="Jaeger.Core" Version="1.0.3" />
+      <PackageReference Include="Jaeger.Senders.Thrift" Version="1.0.3" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
       <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
       <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
       <PackageReference Include="Npgsql" Version="6.0.0" />
-    </ItemGroup>
+      <PackageReference Include="OpenTracing" Version="0.12.1" />
+    </ItemGroup> 
 
 </Project>

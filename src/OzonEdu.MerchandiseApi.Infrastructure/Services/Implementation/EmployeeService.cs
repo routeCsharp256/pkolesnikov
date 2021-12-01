@@ -6,23 +6,31 @@ using System.Threading.Tasks;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
 {
     public class EmployeeService : IEmployeeService
     {
+        private const string ServiceName = nameof(EmployeeService);
+        
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMerchDeliveryRepository _merchDeliveryRepository;
+        private readonly CustomTracer _tracer;
 
         public EmployeeService(IEmployeeRepository employeeRepository, 
-            IMerchDeliveryRepository merchDeliveryRepository)
+            IMerchDeliveryRepository merchDeliveryRepository,
+            CustomTracer tracer)
         {
             _employeeRepository = employeeRepository;
             _merchDeliveryRepository = merchDeliveryRepository;
+            _tracer = tracer;
         }
 
         public async Task<Employee?> FindAsync(int id, CancellationToken token = default)
         {
+            using var span = _tracer.GetSpan(ServiceName, nameof(FindAsync), ("filter", "id"));
+
             var employee = await _employeeRepository.FindAsync(id, token);
 
             if (employee is null)
@@ -35,6 +43,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
 
         public async Task<Employee?> FindAsync(string email, CancellationToken token)
         {
+            using var span = _tracer.GetSpan(ServiceName, nameof(FindAsync), ("filter", "email"));
+            
             var employee = await _employeeRepository.FindAsync(email, token);
             
             if (employee is null)
@@ -47,6 +57,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
 
         public async Task<Employee> CreateAsync(string name, string email, CancellationToken token)
         {
+            using var span = _tracer.GetSpan(ServiceName, nameof(CreateAsync));
+                
             var employeeData = new Employee(
                 new Name(name),
                 new EmailAddress(email));
@@ -60,6 +72,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
 
         public async Task<Employee> UpdateAsync(Employee employeeForUpdate, CancellationToken token = default)
         {
+            using var span = _tracer.GetSpan(ServiceName, nameof(UpdateAsync));
+            
             var updatedEmployee = await _employeeRepository.UpdateAsync(employeeForUpdate, token);
             if (updatedEmployee is null)
                 throw new Exception("employee wasn't updated");
@@ -68,6 +82,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
 
         public async Task AddMerchDelivery(int employeeId, int merchDeliveryId, CancellationToken token)
         {
+            using var span = _tracer.GetSpan(ServiceName, nameof(AddMerchDelivery));
             await _employeeRepository.AddMerchDelivery(employeeId, merchDeliveryId, token);
         }
 
@@ -75,6 +90,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
             IEnumerable<long> suppliedSkuCollection, 
             CancellationToken token = default)
         {
+            using var span = _tracer.GetSpan(ServiceName, nameof(GetAsync));
+
             var statusId = MerchDeliveryStatus
                 .GetAll<MerchDeliveryStatus>()
                 .FirstOrDefault(s => s.Equals(status))?
