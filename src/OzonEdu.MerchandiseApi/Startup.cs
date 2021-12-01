@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTracing.Contrib.NetCore.Configuration;
 using OzonEdu.MerchandiseApi.GrpcServices;
+using OzonEdu.MerchandiseApi.HostedServices;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.Extensions;
 using OzonEdu.MerchandiseApi.Infrastructure.Filters;
@@ -24,6 +25,8 @@ namespace OzonEdu.MerchandiseApi
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .Configure<KafkaConfiguration>(Configuration.GetSection(nameof(KafkaConfiguration)))
+                .AddHostedService<StockReplenishedHostedService>()
                 .AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions))
                 .AddMediatorHandlers()
                 .AddDatabaseComponents(Configuration)
