@@ -39,6 +39,7 @@ namespace OzonEdu.MerchandiseApi
                     options.OperationNameResolver =
                         request => $"{request.Method.Method}: {request.RequestUri?.AbsoluteUri}";
                 })
+                .AddStockApiGrpcClient(Configuration)
                 .AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
 
             services.AddGrpc(options =>

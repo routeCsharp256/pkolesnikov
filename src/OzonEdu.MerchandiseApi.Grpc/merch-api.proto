@@ -1,6 +1,6 @@
 syntax = "proto3";
 option csharp_namespace = "OzonEdu.MerchandiseApi.Grpc";
-package MerchandiseApi;
+package OzonEdu.MerchandiseApi.Grpc;
 
 import "google/protobuf/empty.proto";
 

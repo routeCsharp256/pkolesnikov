@@ -102,7 +102,9 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
         public async Task<IEnumerable<MerchDelivery>?> GetAsync(int employeeId, 
             CancellationToken token = default)
         {
-            using var span = _tracer.GetSpan(ClassName, nameof(GetAsync));
+            using var span = _tracer.GetSpan(ClassName, 
+                nameof(GetAsync),
+                ("filter", "employee_id"));
 
             var commandDefinition = new CommandDefinition(
                 MerchDeliveryQuery.FilterByEmployeeId,
@@ -166,6 +168,41 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             return dbResult is null
                 ? null
                 : new MerchDeliveryStatus(dbResult.Id.Value, dbResult.Name);
+        }
+
+        public async Task<IEnumerable<MerchDelivery>> GetAsync(int employeeId,
+            int statusId,
+            IEnumerable<long> skuCollection,
+            CancellationToken token)
+        {
+            using var span = _tracer.GetSpan(ClassName, 
+                nameof(GetAsync),
+                ("filter", "sku_collection"));
+
+            var parameters = new
+            {
+                EmployeeId = employeeId,
+                MerchDeliveryStatusId = statusId,
+                SkuCollection = skuCollection.ToArray()
+            };
+            
+            var commandDefinition = new CommandDefinition(
+                MerchDeliveryQuery.FilterByEmployeeIdAndStatusIdAndSkuCollection,
+                parameters,
+                commandTimeout: Connection.Timeout,
+                cancellationToken: token);
+
+            // TODO Нужен один запрос вместо двух
+            var merchTypes = await GetMerchTypes(token);
+
+            var connection = await _dbConnectionFactory.CreateConnection(token);
+            
+            return await connection
+                .QueryAsync<Models.MerchDelivery, Models.MerchPackType, Models.MerchDeliveryStatus, MerchDelivery>(
+                    commandDefinition,
+                    (delivery, type, status) => 
+                        MerchDeliveryMap.CreateMerchDelivery(delivery, type, status, merchTypes));
+
         }
 
         private async Task<Dictionary<int, MerchType>> GetMerchTypes(CancellationToken token)

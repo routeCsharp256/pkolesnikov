@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Grpc.Net.Client;
 using Jaeger;
 using Jaeger.Reporters;
 using Jaeger.Samplers;
@@ -23,6 +24,7 @@ using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfac
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
+using OzonEdu.StockApi.Grpc;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
 {
@@ -82,6 +84,22 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
                     return tracer;
                 })
                 .AddSingleton<CustomTracer>();
+        }
+
+        public static IServiceCollection AddStockApiGrpcClient(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var address = configuration
+                .GetSection(nameof(StockApiGrpcClientConfiguration))
+                .Get<StockApiGrpcClientConfiguration>()
+                .Address;
+
+            return services
+                .AddScoped(_ =>
+                {
+                    var channel = GrpcChannel.ForAddress(address);
+                    return new StockApiGrpc.StockApiGrpcClient(channel);
+                });
         }
     }
 }

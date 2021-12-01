@@ -60,7 +60,7 @@ namespace OzonEdu.MerchandiseApi.HostedServices
                         if (message is null)
                             continue;
 
-                        await _mediator.Send(new StockReplenishedDomainEvent(message), stoppingToken);
+                        await _mediator.Publish(new StockReplenishedDomainEvent(message), stoppingToken);
                     }
                     catch (Exception ex)
                     {

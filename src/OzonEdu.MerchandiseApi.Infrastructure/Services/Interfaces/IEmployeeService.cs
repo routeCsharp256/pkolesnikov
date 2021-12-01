@@ -19,7 +19,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces
         Task<Employee> UpdateAsync(Employee employee, CancellationToken token = default);
         
         Task<IEnumerable<Employee>> GetAsync(MerchDeliveryStatus status,
-            IEnumerable<long> suppliedSkuCollection,
+            IEnumerable<long> skuCollection,
             CancellationToken token = default);
     }
 }

@@ -87,10 +87,12 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
         }
 
         public async Task<IEnumerable<Employee>> GetAsync(MerchDeliveryStatus status, 
-            IEnumerable<long> suppliedSkuCollection, 
+            IEnumerable<long> skuCollection, 
             CancellationToken token = default)
         {
-            using var span = _tracer.GetSpan(ServiceName, nameof(GetAsync));
+            using var span = _tracer.GetSpan(ServiceName, 
+                nameof(GetAsync), 
+                ("filter", "sku_collection"));
 
             var statusId = MerchDeliveryStatus
                 .GetAll<MerchDeliveryStatus>()
@@ -99,9 +101,19 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
             
             if (statusId is null)
                 throw new Exception("Status not exists");
+
+            var employees = await _employeeRepository
+                .GetByMerchDeliveryStatusAndSkuCollection(statusId.Value, skuCollection, token);
             
-            return await _employeeRepository
-                .GetByMerchDeliveryStatusAndSkuCollection(statusId.Value, suppliedSkuCollection, token);
+            if (!employees.Any())
+                return Enumerable.Empty<Employee>();
+
+            foreach (var employee in employees)
+            {
+                await AttachMerchDeliveries(employee, statusId.Value, skuCollection, token);
+            }
+
+            return employees;
         }
 
         private async Task AttachMerchDeliveries(Employee employee, CancellationToken token)
@@ -112,6 +124,18 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
             if (merchDeliveries is null)
                 return;
             
+            foreach (var delivery in merchDeliveries)
+                employee.AddMerchDelivery(delivery);
+        }
+
+        private async Task AttachMerchDeliveries(Employee employee,
+            int statusId,
+            IEnumerable<long> skuCollection,
+            CancellationToken token)
+        {
+            var merchDeliveries = await _merchDeliveryRepository
+                .GetAsync(employee.Id, statusId, skuCollection, token);
+
             foreach (var delivery in merchDeliveries)
                 employee.AddMerchDelivery(delivery);
         }
