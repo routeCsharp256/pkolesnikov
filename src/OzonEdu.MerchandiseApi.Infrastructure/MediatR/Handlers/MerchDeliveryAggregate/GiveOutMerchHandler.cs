@@ -8,24 +8,32 @@ using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAggregate
 {
     public class GiveOutMerchHandler : IRequestHandler<GiveOutMerchCommand>
     {
+        private const string HandlerName = nameof(GiveOutMerchHandler);
+        
         private readonly IMerchService _merchService;
         private readonly IEmployeeService _employeeService;
+        private readonly CustomTracer _tracer;
 
         public GiveOutMerchHandler(IMerchService merchService,
-            IEmployeeService employeeService)
+            IEmployeeService employeeService,
+            CustomTracer tracer)
         {
+            _tracer = tracer;
             _merchService = merchService;
             _employeeService = employeeService;
         }
         
         public async Task<Unit> Handle(GiveOutMerchCommand request, CancellationToken token)
         {
+            using var span = _tracer.GetSpan(HandlerName, nameof(Handle));
+            
             var employee = await _employeeService.FindAsync(request.EmployeeId, token);
             if (employee is null)
                 throw new NotExistsException($"Employee with id={request.EmployeeId} does not exists");
