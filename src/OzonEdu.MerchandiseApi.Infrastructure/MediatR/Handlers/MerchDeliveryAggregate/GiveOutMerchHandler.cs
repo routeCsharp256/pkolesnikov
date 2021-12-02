@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CSharpCourse.Core.Lib.Enums;
+using CSharpCourse.Core.Lib.Events;
 using MediatR;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
@@ -74,7 +75,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAg
             if (await _stockService.IsReadyToGiveOut(merchDelivery, token))
             {
                 var isReserved = await _stockService.TryGiveOutItems(merchDelivery, token);
-                if (!isReserved)
+                if (isReserved)
+                {
+                    await SendMessageToBroker(employee, merchDelivery, token);
+                }
+                else
                 {
                     newStatus = request.IsManual
                         ? MerchDeliveryStatus.EmployeeCame
@@ -96,6 +101,35 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAg
             merchDelivery.SetStatus(newStatus);
             await _merchService.UpdateAsync(merchDelivery, token);
             return Unit.Value;
+        }
+        
+        // TODO Нужен сервис для работы с Kafka. Метод ниже используется в двух местах.
+        private async Task SendMessageToBroker(Employee employee, 
+            MerchDelivery delivery,
+            CancellationToken token)
+        {
+            var topic = _kafka
+                .Configuration
+                .EmployeeNotificationEventTopic;
+                
+            var key = delivery
+                .Id
+                .ToString();
+                
+            var notificationEvent = new NotificationEvent
+            {
+                EmployeeEmail = employee.EmailAddress?.Value ?? string.Empty,
+                EmployeeName = employee.Name.Value,
+                EventType = EmployeeEventType.MerchDelivery,
+                Payload = new
+                {
+                    MerchType = delivery
+                        .MerchPackType
+                        .Id
+                }
+            };
+                
+            await _kafka.ProcessAsync(topic, key, notificationEvent, token);
         }
     }
 }
