@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
@@ -12,6 +13,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MessageBroker
     public class KafkaManager
     {
         private readonly ConsumerConfig _consumerConfig;
+        private readonly ProducerConfig _producerConfig;
         private readonly ILogger<KafkaManager> _logger;
         
         public KafkaConfiguration Configuration { get; }
@@ -25,22 +27,24 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MessageBroker
                 GroupId = Configuration.GroupId,
                 BootstrapServers = Configuration.BootstrapServers
             };
+            _producerConfig = new ProducerConfig
+            {
+                BootstrapServers = Configuration.BootstrapServers
+            };
             _logger = logger;
         }
 
-        public async Task ProcessAsync(string key, object value)
+        public async Task ProcessAsync(string topic, string key, object value, CancellationToken token)
         {
-            var producerConfig = new ProducerConfig
-            {
-                BootstrapServers = _kafkaConfiguration.BootstrapServers
-            };
-            var producer = new ProducerBuilder<string, string>(producerConfig).Build();
-            var topic = _kafkaConfiguration.EmployeeNotificationEventTopic;
+            var producer = new ProducerBuilder<string, string>(_producerConfig).Build();
+            
             var message = new Message<string, string>
             {
-                Key = 
+                Key = key,
+                Value = JsonSerializer.Serialize(value)
             };
-            await producer.ProduceAsync(topic, )
+            
+            await producer.ProduceAsync(topic, message, token);
         }
         
         public async Task StartConsuming(string topic, 

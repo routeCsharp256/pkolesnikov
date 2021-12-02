@@ -11,8 +11,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Events;
+using OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 using OzonEdu.StockApi.Grpc;
 
@@ -24,19 +26,19 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
         private readonly IMediator _mediator;
         private readonly StockApiGrpc.StockApiGrpcClient _stockClient;
         private readonly ILogger<StockReplenishedDomainEventHandler> _logger;
-        private readonly KafkaConfiguration _kafkaConfiguration;
+        private readonly KafkaManager _kafka;
 
         public StockReplenishedDomainEventHandler(IEmployeeService employeeService,
             IMediator mediator,
             StockApiGrpc.StockApiGrpcClient stockClient,
             ILogger<StockReplenishedDomainEventHandler> logger,
-            IOptions<KafkaConfiguration> kafkaOptions)
+            KafkaManager kafka)
         {
             _employeeService = employeeService;
             _mediator = mediator;
             _stockClient = stockClient;
             _logger = logger;
-            _kafkaConfiguration = kafkaOptions.Value;
+            _kafka = kafka;
         }
         
         public async Task Handle(StockReplenishedDomainEvent notification, CancellationToken token)
@@ -45,7 +47,9 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
                 .Items
                 .Select(it => it.Sku)
                 .ToArray();
-            
+
+            var manual = new ManualAppealProcessor(skuCollection);
+            manual.Do();
             await NotifyByEmail(skuCollection, token);
             await TryToGiveUp(skuCollection, token);
         }
@@ -64,11 +68,10 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
 
             var deliveries = employeesForNotify
                 .SelectMany(e => e.MerchDeliveries,
-                    (employee, md) => new
+                    (e, md) => new
                     {
-                        Employee = employee, 
-                        MerchType = md.MerchPackType,
-                        SkuCollection = md.SkuCollection
+                        Employee = e, 
+                        MerchDelivery = md
                     });
 
             foreach (var delivery in deliveries)
@@ -83,6 +86,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
 
                 var request = new SkusRequest();
                 request.Skus.AddRange(delivery
+                    .MerchDelivery
                     .SkuCollection
                     .Select(s => s.Value)
                     .ToArray());
@@ -97,6 +101,15 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
                 if (!isReadyToGiveOut)
                     continue;
 
+                var topic = _kafka
+                    .Configuration
+                    .EmployeeNotificationEventTopic;
+                
+                var key = delivery
+                    .MerchDelivery
+                    .Id
+                    .ToString();
+                
                 var notificationEvent = new NotificationEvent
                 {
                     EmployeeEmail = employee.EmailAddress.Value,
@@ -104,20 +117,14 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
                     EventType = EmployeeEventType.MerchDelivery,
                     Payload = new
                     {
-                        MerchType = delivery.MerchType.Id
+                        MerchType = delivery
+                            .MerchDelivery
+                            .MerchPackType
+                            .Id
                     }
                 };
-                var producerConfig = new ProducerConfig
-                {
-                    BootstrapServers = _kafkaConfiguration.BootstrapServers
-                };
-                var producer = new ProducerBuilder<string, string>(producerConfig).Build();
-                var topic = _kafkaConfiguration.EmployeeNotificationEventTopic;
-                var message = new Message<string, string>
-                {
-                    Key = 
-                };
-                await producer.ProduceAsync(topic, )
+                
+                await _kafka.ProcessAsync(topic, key, notificationEvent, token);
             }
         }
 
