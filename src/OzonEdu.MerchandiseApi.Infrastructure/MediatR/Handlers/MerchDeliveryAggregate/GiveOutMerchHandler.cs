@@ -7,6 +7,7 @@ using MediatR;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
@@ -19,15 +20,22 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAg
         
         private readonly IMerchService _merchService;
         private readonly IEmployeeService _employeeService;
+        private readonly IStockService _stockService;
         private readonly CustomTracer _tracer;
+        private readonly KafkaManager _kafka;
 
         public GiveOutMerchHandler(IMerchService merchService,
             IEmployeeService employeeService,
-            CustomTracer tracer)
+            IStockService stockService,
+            CustomTracer tracer,
+            KafkaManager kafka)
         {
+            _kafka = kafka;
             _tracer = tracer;
             _merchService = merchService;
             _employeeService = employeeService;
+            _stockService = stockService;
+            
         }
         
         public async Task<Unit> Handle(GiveOutMerchCommand request, CancellationToken token)
@@ -63,27 +71,31 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAg
 
             var newStatus = MerchDeliveryStatus.Done;
 
-            if (await CanDelivery(merchDelivery.SkuCollection))
+            if (await _stockService.IsReadyToGiveOut(merchDelivery, token))
             {
-                // TODO Отправка в Stock API запрос на резервирование
+                var isReserved = await _stockService.TryGiveOutItems(merchDelivery, token);
+                if (!isReserved)
+                {
+                    newStatus = request.IsManual
+                        ? MerchDeliveryStatus.EmployeeCame
+                        : MerchDeliveryStatus.Notify;
+                }
             }
             else
             {
-                // TODO Здесь будет отправка сообщения HR, что закончился мерч с таким-то SKU (для автоматической выдачи)
-                newStatus = request.IsManual
-                    ? MerchDeliveryStatus.EmployeeCame
-                    : MerchDeliveryStatus.Notify;
+                if (request.IsManual)
+                    newStatus = MerchDeliveryStatus.EmployeeCame;
+                else
+                {
+                    // TODO Здесь будет отправка сообщения HR, что закончился мерч с таким-то SKU (для автоматической выдачи)
+                    // TODO Но как это сделать? Не нашёл подходящего в описании.
+                    newStatus = MerchDeliveryStatus.Notify;
+                }
             }
             
             merchDelivery.SetStatus(newStatus);
             await _merchService.UpdateAsync(merchDelivery, token);
             return Unit.Value;
-        }
-
-        private async Task<bool> CanDelivery(ICollection<Sku> skuCollection)
-        {
-            // TODO Проверка каждого SKU, что его можно выдать
-            return await Task.FromResult(true);
         }
     }
 }

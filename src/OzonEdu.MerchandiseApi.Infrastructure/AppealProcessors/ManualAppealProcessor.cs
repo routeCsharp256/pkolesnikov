@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpCourse.Core.Lib.Enums;
@@ -9,7 +8,6 @@ using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
-using OzonEdu.StockApi.Grpc;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors
 {
@@ -17,7 +15,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors
     {
         private readonly IEmployeeService _employeeService;
         private readonly ILogger<ManualAppealProcessor> _logger;
-        private readonly StockApiGrpc.StockApiGrpcClient _stockClient;
+        private readonly IStockService _stockService;
         private readonly KafkaManager _kafka;
 
         public MerchDeliveryStatus MerchDeliveryStatus { get; } = 
@@ -25,11 +23,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors
 
         public ManualAppealProcessor(IEmployeeService employeeService, 
             ILogger<ManualAppealProcessor> logger,
-            StockApiGrpc.StockApiGrpcClient stockClient,
+            IStockService stockService,
             KafkaManager kafka)
         {
             _kafka = kafka;
-            _stockClient = stockClient;
+            _stockService = stockService;
             _employeeService = employeeService;
             _logger = logger;
         }
@@ -56,27 +54,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors
                     continue;
                 }
 
-                if (!await IsReadyToGiveOut(delivery, token))
+                if (!await _stockService.IsReadyToGiveOut(delivery, token))
                     continue;
 
                 await SendMessageToBroker(employee, delivery, token);
             }
-        }
-
-        private async Task<bool> IsReadyToGiveOut(MerchDelivery delivery, CancellationToken token)
-        {
-            var request = new SkusRequest();
-            request.Skus.AddRange(delivery
-                .SkuCollection
-                .Select(s => s.Value)
-                .ToArray());
-                
-            var response = await _stockClient
-                .GetStockItemsAvailabilityAsync(request, cancellationToken: token);
-                
-            return response
-                .Items
-                .All(i => i.Quantity > 0);
         }
 
         private async Task SendMessageToBroker(Employee employee, 

@@ -13,9 +13,11 @@ using OpenTracing;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
+using OzonEdu.MerchandiseApi.Domain.Events;
 using OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
+using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries;
@@ -34,10 +36,14 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
         public static IServiceCollection AddMediatorHandlers(this IServiceCollection services)
         {
             return services
-                .AddScoped<IRequestHandler<GiveOutMerchCommand, Unit>, 
+                .AddScoped<IRequestHandler<GiveOutMerchCommand, Unit>,
                     GiveOutMerchHandler>()
-                .AddScoped<IRequestHandler<GetMerchDeliveryStatusQuery, string>, 
-                    GetMerchDeliveryStatusQueryHandler>();
+                .AddScoped<IRequestHandler<GetMerchDeliveryStatusQuery, string>,
+                    GetMerchDeliveryStatusQueryHandler>()
+                .AddScoped<INotificationHandler<StockReplenishedDomainEvent>,
+                    StockReplenishedDomainEventHandler>()
+                .AddScoped<INotificationHandler<EmployeeNotificationDomainEvent>,
+                    EmployeeNotificationDomainEventHandler>();
         }
 
         public static IServiceCollection AddDatabaseComponents(this IServiceCollection services,
@@ -63,7 +69,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
         {
             return services
                 .AddScoped<IEmployeeService, EmployeeService>()
-                .AddScoped<IMerchService, MerchService>();
+                .AddScoped<IMerchService, MerchService>()
+                .AddScoped<IStockService, StockService>();
         }
         
         public static IServiceCollection AddJaegerTracer(this IServiceCollection services)
