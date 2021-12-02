@@ -2,15 +2,12 @@
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Confluent.Kafka;
 using CSharpCourse.Core.Lib.Events;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using OzonEdu.MerchandiseApi.Domain.Events;
-using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
 
 namespace OzonEdu.MerchandiseApi.HostedServices

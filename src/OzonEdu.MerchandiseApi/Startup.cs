@@ -28,9 +28,6 @@ namespace OzonEdu.MerchandiseApi
             services
                 .Configure<KafkaConfiguration>(Configuration.GetSection(nameof(KafkaConfiguration)))
                 .AddSingleton<KafkaManager>()
-                .AddHostedService<StockReplenishedHostedService>()
-                .AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions))
-                .AddMediatorHandlers()
                 .AddDatabaseComponents(Configuration)
                 .AddRepositories()
                 .AddDomainServices()
@@ -42,6 +39,10 @@ namespace OzonEdu.MerchandiseApi
                         request => $"{request.Method.Method}: {request.RequestUri?.AbsoluteUri}";
                 })
                 .AddStockApiGrpcClient(Configuration)
+                .AddAppealProcessors()
+                .AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions))
+                .AddMediatorHandlers()
+                .AddHostedService<StockReplenishedHostedService>()
                 .AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
 
             services.AddGrpc(options =>

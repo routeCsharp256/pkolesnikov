@@ -13,6 +13,7 @@ using OpenTracing;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
+using OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.EmployeeAggregate;
@@ -100,6 +101,13 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
                     var channel = GrpcChannel.ForAddress(address);
                     return new StockApiGrpc.StockApiGrpcClient(channel);
                 });
+        }
+
+        public static IServiceCollection AddAppealProcessors(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<ManualAppealProcessor>()
+                .AddScoped<AutoAppealProcessor>();
         }
     }
 }
