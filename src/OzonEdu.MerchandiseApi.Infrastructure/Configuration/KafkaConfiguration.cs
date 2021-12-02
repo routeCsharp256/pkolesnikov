@@ -4,6 +4,7 @@
     {
         public string? BootstrapServers { get; set; }
         public string? StockReplenishedEventTopic { get; set; }
+        public string? EmployeeNotificationEventTopic { get; set; }
         public string? GroupId { get; set; }
     }
 }

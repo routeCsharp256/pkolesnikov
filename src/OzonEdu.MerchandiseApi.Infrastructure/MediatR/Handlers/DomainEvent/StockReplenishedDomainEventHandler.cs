@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Confluent.Kafka;
+using CSharpCourse.Core.Lib.Enums;
+using CSharpCourse.Core.Lib.Events;
 using MediatR;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Events;
+using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 using OzonEdu.StockApi.Grpc;
@@ -17,14 +23,20 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
         private readonly IEmployeeService _employeeService;
         private readonly IMediator _mediator;
         private readonly StockApiGrpc.StockApiGrpcClient _stockClient;
-        
+        private readonly ILogger<StockReplenishedDomainEventHandler> _logger;
+        private readonly KafkaConfiguration _kafkaConfiguration;
+
         public StockReplenishedDomainEventHandler(IEmployeeService employeeService,
             IMediator mediator,
-            StockApiGrpc.StockApiGrpcClient stockClient)
+            StockApiGrpc.StockApiGrpcClient stockClient,
+            ILogger<StockReplenishedDomainEventHandler> logger,
+            IOptions<KafkaConfiguration> kafkaOptions)
         {
             _employeeService = employeeService;
             _mediator = mediator;
             _stockClient = stockClient;
+            _logger = logger;
+            _kafkaConfiguration = kafkaOptions.Value;
         }
         
         public async Task Handle(StockReplenishedDomainEvent notification, CancellationToken token)
@@ -50,17 +62,25 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
             var employeesForNotify = await _employeeService
                 .GetAsync(employeeCameStatus, suppliedSkuCollection, token);
 
-            var deliveries = employeesForNotify?
+            var deliveries = employeesForNotify
                 .SelectMany(e => e.MerchDeliveries,
-                    (employee, md) => new { Employee = employee, SkuCollection = md.SkuCollection });
-
-            if (deliveries is null)
-                return;
+                    (employee, md) => new
+                    {
+                        Employee = employee, 
+                        MerchType = md.MerchPackType,
+                        SkuCollection = md.SkuCollection
+                    });
 
             foreach (var delivery in deliveries)
             {
-                
-                // TODO Проверить, что все товары есть на складе
+                var employee = delivery.Employee;
+                if (employee.EmailAddress is null)
+                {
+                    _logger.LogWarning("The email of employee {name} is not specified", 
+                        employee.Name.Value);
+                    continue;
+                }
+
                 var request = new SkusRequest();
                 request.Skus.AddRange(delivery
                     .SkuCollection
@@ -76,11 +96,28 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
 
                 if (!isReadyToGiveOut)
                     continue;
-                
-                // TODO Уведомить сотрудника по email, что он может прийти за мерчем
-                var email = employee.EmailAddress;
 
-                return;
+                var notificationEvent = new NotificationEvent
+                {
+                    EmployeeEmail = employee.EmailAddress.Value,
+                    EmployeeName = employee.Name.Value,
+                    EventType = EmployeeEventType.MerchDelivery,
+                    Payload = new
+                    {
+                        MerchType = delivery.MerchType.Id
+                    }
+                };
+                var producerConfig = new ProducerConfig
+                {
+                    BootstrapServers = _kafkaConfiguration.BootstrapServers
+                };
+                var producer = new ProducerBuilder<string, string>(producerConfig).Build();
+                var topic = _kafkaConfiguration.EmployeeNotificationEventTopic;
+                var message = new Message<string, string>
+                {
+                    Key = 
+                };
+                await producer.ProduceAsync(topic, )
             }
         }
 

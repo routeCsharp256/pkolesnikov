@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OzonEdu.MerchandiseApi.Domain.Events;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
+using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
 
 namespace OzonEdu.MerchandiseApi.HostedServices
 {
@@ -18,61 +19,34 @@ namespace OzonEdu.MerchandiseApi.HostedServices
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<StockReplenishedHostedService> _logger;
-        private readonly KafkaConfiguration _kafkaConfiguration;
         private readonly IMediator _mediator;
+        private readonly KafkaManager _kafka;
 
         public StockReplenishedHostedService(IServiceScopeFactory scopeFactory,
             ILogger<StockReplenishedHostedService> logger,
-            IOptions<KafkaConfiguration> options,
-            IMediator mediator)
+            IMediator mediator,
+            KafkaManager kafka)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
-            _kafkaConfiguration = options.Value;
             _mediator = mediator;
+            _kafka = kafka;
         }
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // TODO Нужна проверка, не пустая ли конфигурация
-            var consumerConfig = new ConsumerConfig
-            {
-                GroupId = _kafkaConfiguration.GroupId,
-                BootstrapServers = _kafkaConfiguration.BootstrapServers
-            };
+            var topic = _kafka.Configuration.StockReplenishedEventTopic;
+            if (topic is null)
+                throw new ApplicationException("No name of stock replenished event topic");
+            await _kafka.StartConsuming(topic, _scopeFactory, PublishEvent, stoppingToken);
+        }
 
-            using var consumer = new ConsumerBuilder<Ignore, string>(consumerConfig).Build();
-            consumer.Subscribe(_kafkaConfiguration.StockReplenishedEventTopic);
-            try
-            {
-                while (!stoppingToken.IsCancellationRequested)
-                {
-                    using var scope = _scopeFactory.CreateScope();
-                    try
-                    {
-                        await Task.Yield();
-                        var consumeResult = consumer.Consume(stoppingToken);
-                        if (consumeResult is null)
-                            continue;
-
-                        var serializedMessage = consumeResult.Message.Value;
-                        var message = JsonSerializer.Deserialize<StockReplenishedEvent>(serializedMessage);
-                        if (message is null)
-                            continue;
-
-                        await _mediator.Publish(new StockReplenishedDomainEvent(message), stoppingToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("Error when consume stock replenished event topic: {error}", ex.Message);
-                    }
-                }
-            }
-            finally
-            {
-                consumer.Commit();
-                consumer.Close();
-            }
+        private async Task PublishEvent(string serializedMessage, CancellationToken token)
+        {
+            var message = JsonSerializer.Deserialize<StockReplenishedEvent>(serializedMessage);
+            if (message is null)
+                return;
+            await _mediator.Publish(new StockReplenishedDomainEvent(message), token);
         }
     }
 }

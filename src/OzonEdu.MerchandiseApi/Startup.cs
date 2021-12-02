@@ -10,6 +10,7 @@ using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.Extensions;
 using OzonEdu.MerchandiseApi.Infrastructure.Filters;
 using OzonEdu.MerchandiseApi.Infrastructure.Interceptors;
+using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
 
 namespace OzonEdu.MerchandiseApi
 {
@@ -26,6 +27,7 @@ namespace OzonEdu.MerchandiseApi
         {
             services
                 .Configure<KafkaConfiguration>(Configuration.GetSection(nameof(KafkaConfiguration)))
+                .AddSingleton<KafkaManager>()
                 .AddHostedService<StockReplenishedHostedService>()
                 .AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions))
                 .AddMediatorHandlers()
