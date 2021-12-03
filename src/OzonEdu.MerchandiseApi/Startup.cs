@@ -43,6 +43,7 @@ namespace OzonEdu.MerchandiseApi
                 .AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions))
                 .AddMediatorHandlers()
                 .AddHostedService<StockReplenishedHostedService>()
+                .AddHostedService<EmployeeNotificationHostedService>()
                 .AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
 
             services.AddGrpc(options =>
