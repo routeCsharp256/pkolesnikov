@@ -7,6 +7,7 @@ using MediatR;
 using OzonEdu.MerchandiseApi.Domain.Events;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
@@ -16,11 +17,14 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
         private readonly IEmployeeService _employeeService;
         private readonly IMerchService _merchService;
         private readonly IMediator _mediator;
+        private readonly CustomTracer _tracer;
 
         public EmployeeNotificationDomainEventHandler(IEmployeeService employeeService, 
             IMerchService merchService,
-            IMediator mediator)
+            IMediator mediator,
+            CustomTracer tracer)
         {
+            _tracer = tracer;
             _employeeService = employeeService;
             _merchService = merchService;
             _mediator = mediator;
@@ -28,6 +32,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
         
         public async Task Handle(EmployeeNotificationDomainEvent notification, CancellationToken token)
         {
+            using var span = _tracer.GetSpan(nameof(EmployeeNotificationDomainEventHandler), nameof(Handle));
             var notificationEvent = notification.NotificationEvent;
             var eventPayload = notificationEvent.Payload;
             if (eventPayload is not MerchDeliveryEventPayload merchDeliveryEventPayload)
