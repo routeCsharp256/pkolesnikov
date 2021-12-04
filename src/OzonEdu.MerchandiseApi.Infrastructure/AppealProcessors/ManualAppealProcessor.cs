@@ -86,7 +86,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors
                 }
             };
                 
-            await _kafka.ProcessAsync(topic, key, notificationEvent, token);
+            await _kafka.ProduceAsync(topic, key, notificationEvent, token);
         }
     }
 }

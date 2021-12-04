@@ -34,7 +34,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MessageBroker
             _logger = logger;
         }
 
-        public async Task ProcessAsync(string topic, string key, object value, CancellationToken token)
+        public async Task ProduceAsync(string topic, string key, object value, CancellationToken token)
         {
             var producer = new ProducerBuilder<string, string>(_producerConfig).Build();
             
