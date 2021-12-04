@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpCourse.Core.Lib.Events;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OzonEdu.MerchandiseApi.Domain.Events;
 using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
+#pragma warning disable 8604
 
 namespace OzonEdu.MerchandiseApi.HostedServices
 {
@@ -29,8 +29,6 @@ namespace OzonEdu.MerchandiseApi.HostedServices
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var topic = _kafka.Configuration.EmployeeNotificationEventTopic;
-            if (topic is null)
-                throw new ApplicationException("No name of stock replenished event topic");
             await _kafka.StartConsuming(topic, _scopeFactory, PublishEvent, stoppingToken);
         }
 
