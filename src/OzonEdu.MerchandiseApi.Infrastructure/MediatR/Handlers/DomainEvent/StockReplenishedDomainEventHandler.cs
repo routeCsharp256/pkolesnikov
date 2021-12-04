@@ -14,12 +14,12 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
         private readonly ILogger<StockReplenishedDomainEventHandler> _logger;
         private readonly AutoAppealProcessor _autoAppealProcessor;
         private readonly ManualAppealProcessor _manualAppealProcessor;
-        private readonly CustomTracer _tracer;
+        private readonly ICustomTracer _tracer;
 
         public StockReplenishedDomainEventHandler(ILogger<StockReplenishedDomainEventHandler> logger,
             AutoAppealProcessor autoAppealProcessor,
             ManualAppealProcessor manualAppealProcessor,
-            CustomTracer tracer)
+            ICustomTracer tracer)
         {
             _tracer = tracer;
             _manualAppealProcessor = manualAppealProcessor;

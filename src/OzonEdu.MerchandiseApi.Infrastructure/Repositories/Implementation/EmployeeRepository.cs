@@ -21,11 +21,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
         
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
         private readonly IChangeTracker _changeTracker;
-        private readonly CustomTracer _tracer;
+        private readonly ICustomTracer _tracer;
 
         public EmployeeRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory,
             IChangeTracker changeTracker,
-            CustomTracer tracer)
+            ICustomTracer tracer)
         {
             _dbConnectionFactory = dbConnectionFactory;
             _changeTracker = changeTracker;

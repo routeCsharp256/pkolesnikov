@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using OpenTracing;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
@@ -14,11 +13,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.EmployeeAggrega
     {
         private readonly IMerchService _merchService;
         private readonly IEmployeeService _employeeService;
-        private readonly CustomTracer _tracer;
+        private readonly ICustomTracer _tracer;
 
         public GetMerchDeliveryStatusQueryHandler(IMerchService merchService, 
             IEmployeeService employeeService,
-            CustomTracer tracer)
+            ICustomTracer tracer)
         {
             _employeeService = employeeService;
             _merchService = merchService;

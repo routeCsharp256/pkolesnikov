@@ -22,13 +22,13 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAg
         private readonly IMerchService _merchService;
         private readonly IEmployeeService _employeeService;
         private readonly IStockService _stockService;
-        private readonly CustomTracer _tracer;
+        private readonly ICustomTracer _tracer;
         private readonly KafkaManager _kafka;
 
         public GiveOutMerchHandler(IMerchService merchService,
             IEmployeeService employeeService,
             IStockService stockService,
-            CustomTracer tracer,
+            ICustomTracer tracer,
             KafkaManager kafka)
         {
             _kafka = kafka;

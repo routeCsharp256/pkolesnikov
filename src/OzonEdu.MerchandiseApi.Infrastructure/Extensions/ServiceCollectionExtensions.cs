@@ -93,7 +93,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
 
                     return tracer;
                 })
-                .AddSingleton<CustomTracer>();
+                .AddSingleton<ICustomTracer, CustomTracer>();
         }
 
         public static IServiceCollection AddStockApiGrpcClient(this IServiceCollection services,

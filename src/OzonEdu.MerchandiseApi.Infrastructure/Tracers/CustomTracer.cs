@@ -3,7 +3,7 @@
 namespace OzonEdu.MerchandiseApi.Infrastructure.Tracers
 {
     // TODO Использование tracer попробовать вынести в атрибут (для уменьшения количества кода)
-    public class CustomTracer
+    public class CustomTracer : ICustomTracer
     {
         private readonly ITracer _tracer;
 
