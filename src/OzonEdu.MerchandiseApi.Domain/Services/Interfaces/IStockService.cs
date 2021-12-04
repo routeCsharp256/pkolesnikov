@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 
-namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces
+namespace OzonEdu.MerchandiseApi.Domain.Services.Interfaces
 {
     public interface IStockService
     {

@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
-using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
+using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.StockApi.Grpc;
 
-namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
+namespace OzonEdu.MerchandiseApi.Infrastructure.Services
 {
     public class StockService : IStockService
     {

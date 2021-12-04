@@ -2,13 +2,14 @@
 using System.Threading.Tasks;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
-using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
-namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces
+namespace OzonEdu.MerchandiseApi.Domain.Services.Interfaces
 {
     public interface IMerchService
     {
-        Task<MerchDelivery> CreateMerchDeliveryAsync(MerchType merchType, ClothingSize? size, CancellationToken token);
+        Task<MerchDelivery> CreateMerchDeliveryAsync(MerchPackType merchPackType, 
+            ClothingSize? size, 
+            CancellationToken token);
         Task<MerchDeliveryStatus?> FindStatus(int employeeId, int merchPackTypeId, CancellationToken token);
         Task<MerchPackType?> FindMerchPackType(int typeId, CancellationToken token);
         Task<MerchDelivery?> UpdateAsync(MerchDelivery delivery, CancellationToken token);

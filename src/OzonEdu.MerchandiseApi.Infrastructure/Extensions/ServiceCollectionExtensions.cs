@@ -14,6 +14,8 @@ using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Contracts;
 using OzonEdu.MerchandiseApi.Domain.Events;
+using OzonEdu.MerchandiseApi.Domain.Services.Implementation;
+using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors;
 using OzonEdu.MerchandiseApi.Infrastructure.Configuration;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
@@ -24,8 +26,8 @@ using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
+using OzonEdu.MerchandiseApi.Infrastructure.Services;
 using OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation;
-using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
 using OzonEdu.StockApi.Grpc;
 

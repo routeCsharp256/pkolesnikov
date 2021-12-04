@@ -6,10 +6,10 @@ using CSharpCourse.Core.Lib.Events;
 using MediatR;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
+using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
 using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
-using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
@@ -60,7 +60,7 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAg
 
             if (merchDelivery is null)
             {
-                merchDelivery = await _merchService.CreateMerchDeliveryAsync((MerchType)merchPackType.Id, 
+                merchDelivery = await _merchService.CreateMerchDeliveryAsync(merchPackType, 
                     employee.ClothingSize, 
                     token);
                 

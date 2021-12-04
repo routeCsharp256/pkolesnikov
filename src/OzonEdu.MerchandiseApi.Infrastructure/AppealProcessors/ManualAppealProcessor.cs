@@ -6,8 +6,8 @@ using CSharpCourse.Core.Lib.Events;
 using Microsoft.Extensions.Logging;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
+using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
-using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors
 {

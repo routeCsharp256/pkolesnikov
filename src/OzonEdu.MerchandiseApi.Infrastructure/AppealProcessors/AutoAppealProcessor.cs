@@ -5,8 +5,8 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
+using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
-using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors
 {

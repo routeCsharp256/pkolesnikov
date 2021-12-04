@@ -4,9 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using CSharpCourse.Core.Lib.Events;
 using MediatR;
+using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Events;
+using OzonEdu.MerchandiseApi.Domain.Models;
+using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
-using OzonEdu.MerchandiseApi.Infrastructure.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
@@ -49,10 +51,18 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
 
             var merchDelivery = employee
                 .MerchDeliveries
-                .FirstOrDefault(d => d.MerchPackType.Id == (int)merchType) 
-                                ?? await _merchService.CreateMerchDeliveryAsync(merchType, 
-                                    employee.ClothingSize, 
-                                    token);
+                .FirstOrDefault(d => d.MerchPackType.Id == (int)merchType);
+
+            if (merchDelivery is null)
+            {
+                var merchPackType = Enumeration
+                    .GetAll<MerchPackType>()
+                    .First(t => t.Id == (int)merchType);
+                
+                merchDelivery = await _merchService.CreateMerchDeliveryAsync(merchPackType, 
+                    employee.ClothingSize, 
+                    token);
+            }
             
             var command = new GiveOutMerchCommand
             {
