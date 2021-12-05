@@ -10,7 +10,8 @@ using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
 using OzonEdu.MerchandiseApi.Infrastructure.MessageBroker;
-using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.MerchDeliveryAggregate

@@ -9,20 +9,22 @@ using OzonEdu.MerchandiseApi.Domain.Events;
 using OzonEdu.MerchandiseApi.Domain.Models;
 using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Commands;
-using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace.Services;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer;
 using MerchType = CSharpCourse.Core.Lib.Enums.MerchType;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
 {
     public class EmployeeNotificationDomainEventHandler : INotificationHandler<EmployeeNotificationDomainEvent>
     {
-        private readonly IEmployeeService _employeeService;
-        private readonly IMerchService _merchService;
+        private readonly ITraceableEmployeeService _employeeService;
+        private readonly ITraceableMerchService _merchService;
         private readonly IMediator _mediator;
         private readonly ICustomTracer _tracer;
 
-        public EmployeeNotificationDomainEventHandler(IEmployeeService employeeService, 
-            IMerchService merchService,
+        public EmployeeNotificationDomainEventHandler(ITraceableEmployeeService employeeService, 
+            ITraceableMerchService merchService,
             IMediator mediator,
             ICustomTracer tracer)
         {

@@ -9,7 +9,8 @@ using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Constants;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Maps;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Queries;
-using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer;
 
 #pragma warning disable 1998
 

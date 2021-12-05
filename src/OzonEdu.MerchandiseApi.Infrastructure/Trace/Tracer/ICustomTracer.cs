@@ -1,6 +1,6 @@
 ﻿using OpenTracing;
 
-namespace OzonEdu.MerchandiseApi.Infrastructure.Tracers
+namespace OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer
 {
     public interface ICustomTracer
     {

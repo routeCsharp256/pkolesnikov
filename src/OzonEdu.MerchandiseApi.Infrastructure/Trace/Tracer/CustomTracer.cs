@@ -1,6 +1,6 @@
 ﻿using OpenTracing;
 
-namespace OzonEdu.MerchandiseApi.Infrastructure.Tracers
+namespace OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer
 {
     // TODO Использование tracer попробовать вынести в атрибут (для уменьшения количества кода)
     public class CustomTracer : ICustomTracer

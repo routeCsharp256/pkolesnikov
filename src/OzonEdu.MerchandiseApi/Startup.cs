@@ -30,9 +30,9 @@ namespace OzonEdu.MerchandiseApi
                 .AddSingleton<KafkaManager>()
                 .AddDatabaseComponents(Configuration)
                 .AddRepositories()
+                .AddJaegerTracer()
                 .AddDomainServices()
                 .AddOpenTracing()
-                .AddJaegerTracer()
                 .Configure<HttpHandlerDiagnosticOptions>(options =>
                 {
                     options.OperationNameResolver =

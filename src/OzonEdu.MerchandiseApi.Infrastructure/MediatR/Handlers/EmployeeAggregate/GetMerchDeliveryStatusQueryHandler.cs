@@ -5,7 +5,8 @@ using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Exceptions;
 using OzonEdu.MerchandiseApi.Infrastructure.MediatR.Queries;
-using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.EmployeeAggregate
 {

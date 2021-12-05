@@ -5,7 +5,8 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using OzonEdu.MerchandiseApi.Domain.Events;
 using OzonEdu.MerchandiseApi.Infrastructure.AppealProcessors;
-using OzonEdu.MerchandiseApi.Infrastructure.Tracers;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
 {

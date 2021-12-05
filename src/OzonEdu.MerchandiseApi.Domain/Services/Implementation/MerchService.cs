@@ -6,7 +6,7 @@ using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.MerchDeliveryAggregate;
 using OzonEdu.MerchandiseApi.Domain.Services.Interfaces;
 
-namespace OzonEdu.MerchandiseApi.Infrastructure.Services.Implementation
+namespace OzonEdu.MerchandiseApi.Domain.Services.Implementation
 {
     public class MerchService : IMerchService
     {
