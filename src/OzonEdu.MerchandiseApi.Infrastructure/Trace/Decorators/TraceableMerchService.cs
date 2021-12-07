@@ -8,7 +8,7 @@ using OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Trace.Decorators
 {
-    public class TraceableMerchService : ITraceableMerchService
+    public class TraceableMerchService : IMerchService, ITraceable
     {
         private const string ServiceName = nameof(TraceableMerchService);
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Authentication.ExtendedProtection;
 using System.Threading;
 using System.Threading.Tasks;
 using OzonEdu.MerchandiseApi.Domain.AggregationModels.EmployeeAggregate;
@@ -10,7 +9,7 @@ using OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer;
 
 namespace OzonEdu.MerchandiseApi.Infrastructure.Trace.Decorators
 {
-    public class TraceableEmployeeService : ITraceableEmployeeService
+    public class TraceableEmployeeService : IEmployeeService, ITraceable
     {
         private const string ServiceName = nameof(TraceableEmployeeService);
 

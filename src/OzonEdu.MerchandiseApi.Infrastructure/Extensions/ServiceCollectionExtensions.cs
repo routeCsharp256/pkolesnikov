@@ -28,7 +28,6 @@ using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Services;
 using OzonEdu.MerchandiseApi.Infrastructure.Trace.Decorators;
-using OzonEdu.MerchandiseApi.Infrastructure.Trace.Services;
 using OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer;
 using OzonEdu.StockApi.Grpc;
 
@@ -88,10 +87,10 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
         {
             return services
                 .AddScoped<IEmployeeService, EmployeeService>()
+                .Decorate<IEmployeeService, TraceableEmployeeService>()
                 .AddScoped<IMerchService, MerchService>()
-                .AddScoped<IStockService, StockService>()
-                .AddScoped<ITraceableEmployeeService, TraceableEmployeeService>()
-                .AddScoped<ITraceableMerchService, TraceableMerchService>();
+                .Decorate<IMerchService, TraceableMerchService>()
+                .AddScoped<IStockService, StockService>();
         }
         
         public static IServiceCollection AddJaegerTracer(this IServiceCollection services)

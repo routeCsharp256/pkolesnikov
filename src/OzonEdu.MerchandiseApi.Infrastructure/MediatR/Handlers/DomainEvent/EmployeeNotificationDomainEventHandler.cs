@@ -18,13 +18,13 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.MediatR.Handlers.DomainEvent
 {
     public class EmployeeNotificationDomainEventHandler : INotificationHandler<EmployeeNotificationDomainEvent>
     {
-        private readonly ITraceableEmployeeService _employeeService;
-        private readonly ITraceableMerchService _merchService;
+        private readonly IEmployeeService _employeeService;
+        private readonly IMerchService _merchService;
         private readonly IMediator _mediator;
         private readonly ICustomTracer _tracer;
 
-        public EmployeeNotificationDomainEventHandler(ITraceableEmployeeService employeeService, 
-            ITraceableMerchService merchService,
+        public EmployeeNotificationDomainEventHandler(IEmployeeService employeeService, 
+            IMerchService merchService,
             IMediator mediator,
             ICustomTracer tracer)
         {
