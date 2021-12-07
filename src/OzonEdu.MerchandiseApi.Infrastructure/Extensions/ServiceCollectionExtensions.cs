@@ -36,6 +36,25 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static void AddConfiguration(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services
+                .AddOptions<KafkaConfiguration>()
+                .Bind(configuration.GetSection(nameof(KafkaConfiguration)))
+                .ValidateDataAnnotations();
+
+            services
+                .AddOptions<DatabaseConnectionOptions>()
+                .Bind(configuration.GetSection(nameof(DatabaseConnectionOptions)))
+                .ValidateDataAnnotations();
+            
+            services
+                .AddOptions<StockApiGrpcClientConfiguration>()
+                .Bind(configuration.GetSection(nameof(StockApiGrpcClientConfiguration)))
+                .ValidateDataAnnotations();
+        }
+        
         public static IServiceCollection AddMediatorHandlers(this IServiceCollection services)
         {
             return services
@@ -49,12 +68,9 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
                     EmployeeNotificationDomainEventHandler>();
         }
 
-        public static IServiceCollection AddDatabaseComponents(this IServiceCollection services,
-            IConfiguration configuration)
+        public static IServiceCollection AddDatabaseComponents(this IServiceCollection services)
         {
-            var section = configuration.GetSection(nameof(DatabaseConnectionOptions));
             return services
-                .Configure<DatabaseConnectionOptions>(section)
                 .AddScoped<IDbConnectionFactory<NpgsqlConnection>, NpgsqlConnectionFactory>()
                 .AddScoped<IUnitOfWork, UnitOfWork>()
                 .AddScoped<IChangeTracker, ChangeTracker>();

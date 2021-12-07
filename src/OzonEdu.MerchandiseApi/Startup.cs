@@ -26,9 +26,12 @@ namespace OzonEdu.MerchandiseApi
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddConfiguration(Configuration);
+            
+            services
                 .Configure<KafkaConfiguration>(Configuration.GetSection(nameof(KafkaConfiguration)))
                 .AddSingleton<KafkaManager>()
-                .AddDatabaseComponents(Configuration)
+                .AddDatabaseComponents()
                 .AddRepositories()
                 .AddJaegerTracer()
                 .AddDomainServices()
