@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OzonEdu.MerchandiseApi.Domain.Exceptions.IssuanceRequestAggregate
+namespace OzonEdu.MerchandiseApi.Domain.Exceptions.MerchDeliveryAggregate
 {
     public class MerchDeliveryAlreadyDone : Exception
     {

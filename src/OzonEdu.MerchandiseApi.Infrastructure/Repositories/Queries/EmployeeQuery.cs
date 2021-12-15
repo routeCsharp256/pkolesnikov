@@ -32,11 +32,10 @@
                    cs.id, cs.name
             FROM employees e
             INNER JOIN employee_merch_delivery_maps emdm ON e.employee_id = emdm.employee_id
-            INNER JOIN merch_deliveries md ON emdm.merch_delivery_id = md.id
-            INNER JOIN merch_delivery_sku_maps mdsm ON md.id = mdsm.merch_delivery_id
+            INNER JOIN merch_deliveries md ON emdm.merch_delivery_id = md.id            
             LEFT JOIN clothing_sizes cs ON e.clothing_size_id = cs.clothing_size_id                
             WHERE md.merch_delivery_status_id = @StatusId
-            AND mdsm.sku_id = ANY(@SkuIds);";
+            AND md.sku_ids && @SkuIds;";
 
         internal const string AddMerchDelivery = @"
             INSERT INTO employee_merch_delivery_maps(employee_id, merch_delivery_id)

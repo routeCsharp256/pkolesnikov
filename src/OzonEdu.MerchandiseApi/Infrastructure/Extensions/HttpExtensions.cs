@@ -49,20 +49,5 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Extensions
             
             return Encoding.UTF8.GetString(buffer);
         }
-        
-        internal static async Task<string> BodyToString(this HttpResponse response)
-        {
-            var length = response.ContentLength;
-            if (length is null or 0)
-                return string.Empty;
-
-            var buffer = new byte[length.Value];
-
-            await response
-                .Body
-                .ReadAsync(buffer.AsMemory(0, buffer.Length));
-           
-            return Encoding.UTF8.GetString(buffer);
-        }
     }
 }

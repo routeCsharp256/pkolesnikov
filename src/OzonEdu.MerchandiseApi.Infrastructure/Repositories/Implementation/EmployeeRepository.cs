@@ -9,6 +9,8 @@ using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Constants;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Infrastructure.Interfaces;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Maps;
 using OzonEdu.MerchandiseApi.Infrastructure.Repositories.Queries;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace;
+using OzonEdu.MerchandiseApi.Infrastructure.Trace.Tracer;
 
 #pragma warning disable 1998
 
@@ -16,18 +18,25 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 {
     public class EmployeeRepository : IEmployeeRepository
     {
+        private const string ClassName = nameof(EmployeeRepository);
+        
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
         private readonly IChangeTracker _changeTracker;
+        private readonly ICustomTracer _tracer;
 
         public EmployeeRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory,
-            IChangeTracker changeTracker)
+            IChangeTracker changeTracker,
+            ICustomTracer tracer)
         {
             _dbConnectionFactory = dbConnectionFactory;
             _changeTracker = changeTracker;
+            _tracer = tracer;
         }
 
         public async Task<Employee?> CreateAsync(Employee itemToCreate, CancellationToken token)
         {
+            using var span = _tracer.GetSpan(ClassName, nameof(CreateAsync));
+            
             var parameters = new
             {
                 Name = itemToCreate.Name.Value,
@@ -54,6 +63,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<Employee?> UpdateAsync(Employee itemToUpdate, CancellationToken cancellationToken = default)
         {
+            using var span = _tracer.GetSpan(ClassName, nameof(UpdateAsync));
+            
             var parameters = new
             {
                 EmployeeId = itemToUpdate.Id,
@@ -77,6 +88,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task AddMerchDelivery(int employeeId, int merchDeliveryId, CancellationToken token)
         {
+            using var span = _tracer.GetSpan(ClassName, nameof(AddMerchDelivery));
+
             var parameters = new
             {
                 EmployeeId = employeeId,
@@ -95,11 +108,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<Employee?> FindAsync(int id, CancellationToken token = default)
         {
-            var parameters = new { Id = id };
-            
+            using var span = _tracer.GetSpan(ClassName, nameof(FindAsync), ("filter", "id"));
+
             var commandDefinition = new CommandDefinition(
                 EmployeeQuery.FilterById,
-                parameters,
+                new { Id = id },
                 commandTimeout: Connection.Timeout,
                 cancellationToken: token);
             
@@ -113,11 +126,11 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
 
         public async Task<Employee?> FindAsync(string email, CancellationToken token = default)
         {
-            var parameters = new { Email = email };
+            using var span = _tracer.GetSpan(ClassName, nameof(FindAsync), ("filter", "email"));
             
             var commandDefinition = new CommandDefinition(
                 EmployeeQuery.FilterByEmail,
-                parameters,
+                new { Email = email },
                 commandTimeout: Connection.Timeout,
                 cancellationToken: token);
             
@@ -133,6 +146,8 @@ namespace OzonEdu.MerchandiseApi.Infrastructure.Repositories.Implementation
             IEnumerable<long> skuIdCollection,
             CancellationToken token = default)
         {
+            using var span = _tracer.GetSpan(ClassName, nameof(GetByMerchDeliveryStatusAndSkuCollection));
+            
             var parameters = new
             {
                 StatusId = statusId,
